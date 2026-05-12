@@ -1,0 +1,32 @@
+﻿@using Umbraco.Cms.Core.Models;
+@using Microsoft.AspNetCore.Html;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Blocks;
+@using Umbraco.Cms.Core.Models.Blocks
+@{
+    Layout = null;
+
+    // Accept an explicit block collection from ViewData, or fall back to Model's "Widgets"
+    var blocks = ViewData.ContainsKey("Blocks")
+        ? ViewData["Blocks"] as IEnumerable<BlockListItem>
+        : Model.Value<IEnumerable<BlockListItem>>("Widgets");
+
+    var startIndex = ViewData.ContainsKey("StartIndex") ? (int)ViewData["StartIndex"] : 0;
+    var parentPage = ViewData.ContainsKey("ParentPage") ? ViewData["ParentPage"] : null;
+}
+
+@if (blocks != null && blocks.Any())
+{
+    int index = startIndex;
+    foreach (var block in blocks)
+    {
+        var content = block.Content;
+        @await Html.PartialAsync(
+            "Widgets/" + content.ContentType.Alias,
+            block,
+            new ViewDataDictionary(ViewData) { { "Order", index }, { "ParentPage", parentPage } }
+        );
+        index++;
+    }
+}

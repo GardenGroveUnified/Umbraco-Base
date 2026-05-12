@@ -1,0 +1,45 @@
+#communityTabs{
+
+    background-color: transparent;
+
+    .tabs__nav{
+        background-color: transparent;
+    }
+
+    .nav-tabs{
+        border-bottom: 0px solid var(--background-color);
+    }
+
+    .tab-btn{
+        background-color: var(--background-color);
+        color: #000;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 1px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .tab-btn:hover{
+        border: 1px solid #000;
+    }
+
+    .tab-btn.active{
+        background-color: #1E211C;
+        color: #fff !important;
+        border: 3px solid #A1CF7C;
+
+    }
+    .tab-btn.active::after{
+        border-top-color:#1E211C;
+    }
+
+    @media (max-width:576px) {
+        .tab-btn{
+        letter-spacing: 0px;
+        margin-left: 0px;
+        margin-right: 0px;
+        }
+    }
+}

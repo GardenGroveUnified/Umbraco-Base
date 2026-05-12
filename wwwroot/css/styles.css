@@ -1,0 +1,622 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Yeseva+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+AU+NSW:wght@100..400&display=swap');
+
+:root{
+    --bs-nav-link-font-size: 16px;
+    --tw-gradient-from-position: ;
+    --tw-gradient-via-position: ;
+    --tw-gradient-to-position: ;
+    --tw-gradient-to: #9333ea var(--tw-gradient-to-position);
+    --tw-gradient-from: #3b82f6 var(--tw-gradient-from-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+    --font-titles: "Yeseva One", serif;
+    --heading-font: "Yeseva One", serif;
+    --font-nav-and-texts: "Montserrat", sans-serif;
+    --body-font: "Montserrat", sans-serif;
+    --mdc-theme-primary: #003768;
+    --mdc-theme-secondary: #ec971f;
+    --background-color: rgba(255,255,255,0.7);
+    --swiper-pagination-color: #fff;
+    --quote-font: "Playwrite AU NSW", cursive;
+}
+
+body{
+    background-image: url('/background.png');
+    background-position: top;
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.clipart-top-left{
+    width: 100px;
+    z-index: 6;
+}
+
+.bg-white{
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 10px;
+}
+
+.cursor-default{
+    cursor: default !important;
+}
+
+p{
+    font-family: var(--font-nav-and-texts);
+}
+
+#FoodServicesHero{
+    background-color: #1E211C;
+}
+
+.bg-gradient-1{
+    background: linear-gradient(135deg, #003768, #FFF, #fdb820);
+}
+
+.bg-orange{
+    background-color: #fdb820;
+}.text-orange{
+    color: #fdb820 !important;
+}.bg-orange-hover:hover{
+    background-color: #fdb820;
+    transition: all 0.5s ease;
+}
+.bg-blue{
+    background-color: #003768 !important;
+}.bg-blue-hover:hover{
+    background-color: #003768;
+    transition: all 0.5s ease;
+}.text-blue{
+    color: #003768 !important;
+}
+.text-green{
+    color: #5CA043;
+}
+.text-grey{
+    color: #6D6E70;
+}.bg-grey{
+    --bs-bg-opacity: 1;
+    background-color: #6D6E70;
+}.bg-neutral-darker{
+    background-color: #1E211C;
+}.bg-sushi{
+    background-color: #A1CF7C;
+}.bg-phatalo-green{
+    background-color: #123524;
+}
+.text-darkorange{
+    color: #E35725;
+}
+.bg-text-blue{
+    background-color: #d9e2f3 !important;
+    border: 1px solid #8496b0;
+}
+#nominate img{
+    width: 30px;
+    position: relative;
+    top: -2px;
+    padding-right: 6px;
+}
+
+.col-10{
+    flex: 0 0 auto !important;
+    max-width: 83.33333% !important;
+}
+
+.icon{
+    max-width: 100px;
+    transform: translateX(-6px) translateY(-15px);
+}
+
+/* Main Navbar CSS */
+
+#header{
+    z-index: 20 !important;
+}
+
+    .navbar-expand-lg {
+        flex-wrap: wrap;
+    }
+
+
+#navbarMainNav .dropdown-link:hover{
+    color: black !important;
+}
+#navbarMainNav .nav-item:first-child{
+    margin-left: 0 !important;
+}
+#navbarMainNav .nav-item:last-child{
+    margin-right: 0 !important;
+}
+#navbarMainNav .nav-item:hover .nav-link{
+    background-color: #aaa;
+}
+#navbarMainNav .active>.nav-link{
+    background-color: #003768;
+    color: #fff !important;
+}
+
+#navbarMainNav .nav-item:hover .nav-link{
+    color: white !important;
+}
+#navbarMainNav .dropdown-item:hover .drop{
+    background-color: #fff;
+    color: #003768 !important;
+}
+#navbarMainNav .nav-item .nav-link{
+    font-size: 15px;
+    color: #000;
+    padding: 0px 20px;
+    letter-spacing: 2px;
+    font-family: var(--font-nav-and-texts);
+    max-width: 200px;
+}
+#navbarMainNav .dropdown-item{
+    background-color: #CABA9c;
+}
+#navbarMainNav .dropdown-item .dropdown-link{
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #CABA9c;
+    font-family: var(--font-nav-and-texts);
+}
+#navbarMainNav .dropdown-menu{
+    background-color: #CABA9c;
+}
+/* #navbarMainNav .dropdown-item{
+    border-bottom: #65676B 1px solid;
+}
+#navbarMainNav .dropdown-item:nth-last-child(1){
+    border-bottom: none;
+} */
+#navbarMainNav .dropdown-item .dropdown-link.l3{
+    font-size: 13px;
+}
+#navbarMainNav .dropdown-menu, #navbarMainNav .dropdown-menu .dropdown-item{
+    top: -1px;
+    position: relative;
+}
+.navbar-nav:not(.navbar-sm) {
+        height: 66px;
+    }
+    nav.navbar:not(.h-auto) {
+        min-height: 50px;
+    }
+
+.cta{
+    transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    border-radius: 5px;
+    display: grid;
+    justify-items: center;
+}
+
+.cta a{
+    border-radius: 5px;
+    background-color: #ec971f;
+}
+
+.cta a:hover{
+    transform:scale(1.1);
+    background-color: #ec971f;
+}
+
+.feedbtn{
+    display: grid;
+    width: 100%;
+}
+
+
+/* h1.head{
+    color:#003768 !important;
+}
+h1.head span{
+    color:#fdb820;
+} */
+
+
+/* Latest From Feed CSS */
+
+.hover-zoom .card img{
+    transition: all 1s ease-in-out;
+    opacity: 1;
+}
+
+.hover-zoom:hover .card img {
+    opacity: 0;
+    transform: scale(2);
+}
+
+.card-img-overlay{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: all 1s ease-in-out;
+}
+
+.hover-zoom:hover .card-img-overlay{
+    opacity: 1;
+}
+
+.card{
+    --bs-card-border-radius: 0 !important;
+}
+
+/* Calendar CSS */
+
+.event-container.event-calendar-horizontal .event{
+    flex-grow: 0 !important;
+    flex-basis: 300px !important;
+}
+
+
+/* Videos CSS */
+
+#GGUSD-Videos img{
+    aspect-ratio: 16 / 9;
+}
+
+
+/* Footer CSS */
+
+#footer ul.link-arrow>li>a::before {
+    content: "\f105";
+    display: inline-block;
+    font: normal normal normal 14px / 1 FontAwesome;
+    padding-right: 7px;
+}
+
+#footer .fs-7{
+    font-size: 0.8rem !important;
+}
+
+/* Icon Boxes CSS */
+
+/* Board Webpage and Children */
+
+#boardHero .head, #boardHero .head span {
+    color: #fff !important;
+}
+
+#boardMenuTab .active{
+    background-color: var(--theme);
+}
+
+#boardMeetingsTable .head span{
+    display: initial;
+}
+
+#boardMembersText p{
+    font-size: 16px;
+}
+
+.block-text-images p {
+    font-size: 15px;
+    margin-bottom: 2rem !important;
+}
+
+.block-text-images a, #HRTF a{
+    color: #003768 !important;
+    background-color: transparent;
+}
+
+.block-text-images a:hover, #HRTF a:hover{
+    transform: none;
+    background-color: transparent;
+}
+
+.block-text-images .cta{
+    /* text-align: left !important; */
+    justify-items: start;
+}
+
+.block-text-images .cta .btn, #HRTF .cta .btn{
+    margin-left: 0 !important;
+    padding: 2px 0px !important;
+}
+
+.block-text-images .split__image{
+    width: 40%;
+}
+
+.block-text-images .split{
+    justify-content: space-evenly;
+}
+
+
+/* District Webpages */
+
+#districtHero .pre-head{
+    width: 50%;
+    margin: auto;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px 0px;
+}
+
+
+.why-choose-ggusd a{
+    color: #ec971f;
+}
+.why-choose-ggusd a:hover{
+    color:#fdb820;
+}
+
+.why-choose-ggusd {
+    color: white;
+    font-size: 16px;
+}
+
+.why-choose-ggusd h1, .why-choose-ggusd h1 span{
+    font-size: 2rem;
+    color: white !important;
+}
+
+#district-choose-ggusd-videos {
+    padding: 1rem 0px !important;
+}
+
+#Covid19DetailsTable .card{
+    padding: 0 !important;
+}
+#Covid19DetailsTable .card .table{margin: 0;}
+
+.sidebar-container .nav-item a:hover{
+    color: #ec971f;
+}
+#financial-accordion .btn{
+    outline: none !important;
+}
+
+#lcap-resources .cta{
+    justify-content: start;
+}
+
+#annual-report img{
+    object-fit: contain;
+}
+
+section#superintendent .split__text{
+    width: 75%;
+}
+section#superintendent .split__image{
+    width: 25%;
+}
+section#superintendent .split__image-item{
+    background-position: top;
+}
+
+section#bocAgendas .card-header button{
+    background-color: #003768 !important;
+}
+
+section#facilitySlider .vh-75{
+    height: 40dvh !important;
+}
+
+section#measurePTextandImage .grid-2{
+    grid-template-columns: repeat(1, 1fr);
+}
+
+#measureALosAmigos .gallery__item, #measureARalston .gallery__item{
+    width: 300px;
+    height: 300px;
+}
+
+#measureALosAmigos .grid-2, #measureARalston .grid-2{
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.figure-caption{
+    background-color: #65676B;
+    background: rgba(35, 31, 32, 0.9);
+    position: absolute;
+    color: #fff !important;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+    font-size: 13px !important;
+    font-weight: normal !important;
+    padding: 10px 5px !important;
+    display: inline-block;
+    text-shadow: #333 1px 1px;
+    z-index: 1000;
+}
+
+a.nav-link.active{
+    color: #ec971f !important;
+}
+
+#Intermediate-Image{
+    padding: 0 !important;
+}
+
+#school-sarc-tabs .dropdown-menu a{
+    padding: 0;
+    padding-left: 10%;
+}
+
+section#facilities-curr-projects h1{
+    font-size: 1.5rem;
+    background-color: #003768;
+    color: #fff !important;
+}
+
+section#facilities-text-buttons .btn+.btn{
+    margin-left: 0;
+}
+section#facilities-text-buttons a{
+    margin-bottom: 1%;
+}
+
+section#dual-text-box .btn+.btn{
+    margin-left: 0;
+}
+section#dual-text-box a{
+    margin-bottom: 1%;
+}
+
+
+section#pio-slider{
+    padding: 0 !important;
+    padding-bottom: 2rem !important;
+}
+
+section#specialEdHandbook .overlay-opacity-1:after{
+    opacity: 0;
+}
+
+div#cac-board:hover, div#cac-contact:hover{
+    transform: none;
+}
+
+section#inter-dates{
+    margin-top: 2%;
+}
+
+section#dual-language .head span{
+    color: #003768 !important;
+}
+
+section#workshop-top-videos.section:first-child:not(.block-slider, .block-heading) {
+    padding: 60px !important;
+}
+
+/* .section.block-videos:first-child:not(.block-slider, .block-heading){
+    padding: 5px !important;
+} */
+
+section#personnel-comms .split__text{
+    padding-right: 0;
+    padding-left: 0;
+}
+
+section#personnel-comms .split__text-inner{
+    padding-top: 0;
+    padding-bottom: 50px;
+}
+
+.head-text-blue .head span{
+    color: #003768 !important;
+}
+
+.portfolio-item{
+    width: 20% !important;
+}
+
+#chooseGGUSDHomeImages .swiper-button-next, #chooseGGUSDHomeImages .swiper-button-prev{
+    display: none !important;
+}
+
+#districtMission .pre-head, #districtvision .pre-head{
+    font-size: large;
+}
+
+.parents-card .card-heading{
+    color: #fff;
+    background-color: #fdb820;
+    border-color: #fdb820;
+}
+
+.parents-card .card-title-custom{
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.translate-btn{
+    font-size: 14px;
+    border: 0;
+}
+
+/* Campaign Animation */
+.campaign-item {
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.campaign-item.show {
+    max-height: 500px; /* Adjust based on content */
+    opacity: 1;
+}
+
+/* Progress Bar Animation */
+.progress-bar {
+    transition: width 0.5s ease-in-out;
+}
+
+.dept-menu{
+    grid-template-columns: 50% 50%;
+}
+
+.dropdown-fade{
+    animation: fadein 2s ease-in-out forwards;
+}
+
+@keyframes fadein{
+    from{opacity: 0;}
+    to{opacity: 1;}
+}
+
+@keyframes slideDown {
+    from{transform: translateY(-50px);}
+    to{transform: translateY(0);}
+}
+
+.animate-slideup{
+    transform-origin: top;
+    z-index: -1;
+    animation: slideDown 0.2s ease-out forwards;
+}
+
+#youtube-videos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+.youtube-video {
+    text-align: center;
+}
+.youtube-video p {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+@media (max-width: 992px){
+    #navbarMainNav .dropdown-menu{
+        background-color: #fff;
+    }
+    #navbarMainNav .nav-item .nav-link{
+        color: #1E211C;
+    }
+    #navbarMainNav .active > .nav-link{
+        color: #fff;
+    }
+    #navbarMainNav .nav-item:hover{
+    background-color: #2E6F40;
+    }
+    #navbarMainNav .nav-item:hover .dropdownMenu{
+    background-color: #CABA9c;
+    }
+    #navbarMainNav .dropdown-item{
+    background-color: transparent;
+    }
+    #navbarMainNav .dropdown-item .dropdown-link{
+        background-color: transparent;
+    }
+}

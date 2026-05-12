@@ -1,0 +1,613 @@
+﻿:root {
+    --theme: #003768;
+    --theme-50: #07294ded;
+    --theme-90: #00172b;
+    --heading-dark: #111;
+    --heading-light: #fff;
+    --text-light: #fff;
+    --text-dark: #2e2e2e;
+
+
+
+    --white: #fff;
+    --black: #000;
+    --theme-rgb: 58, 165, 237;
+    --theme-contrast: #fff;
+    --theme-alt: #2ecc71;
+    --theme-alt-darker: #25a25a;
+    --theme-alt-contrast: #fff;
+    --background-dark: #111;
+    --background-dark-lighter: #1b1b1b;
+    --border-dark: rgba(0, 0, 0, 0.08);
+    --primary: #003768;
+    --secondary: #ff6a00;
+    --text-light-20: #fff;
+    --text-light-20: #fff;
+    --overlay-dark: rgba(7, 41, 77, 0.99)
+}
+
+
+
+
+
+
+/***** override base.css  ******/
+p {
+    margin-bottom: 1rem;
+    margin-top: 0;
+    font-size: var(--size-3);
+
+}
+.hero__inner h1, .hero__inner h2 {
+    line-height: 1.2;
+}
+
+.hero {
+    padding: 30px 0;
+}
+
+
+@media (max-width: 991.98px) {
+    .hero {
+        padding: 10px 0;
+    }
+}
+
+.pre-head {
+    opacity: 1;
+}
+
+
+/***** override smarty core ******/
+.btn.focus, .btn:focus {
+    box-shadow: none;
+    outline: none !important;
+}
+
+.light-color p {
+    color: var(--text-light);
+}
+
+.text-light h1 {
+    color: var(--text-light);
+}
+
+/*
+.overlay-dark-hover:hover:after, .overlay-dark:after {
+    background-color: var(--overlay-dark);
+}
+
+.overlay-primary-hover:hover:after,
+.overlay-primary:after {
+    background-color: var(--overlay-dark);
+    color: var(--blue-6);
+}
+*/
+
+
+
+.bg-accent-1 {
+    background-color: var(--bg-accent-1);
+}
+
+.bg-accent-2 {
+    background-color: var(--bg-accent-2);
+}
+
+.bg-accent-3 {
+    background-color: var(--bg-accent-3);
+}
+
+.bg-accent-4 {
+    background-color: var(--bg-accent-4);
+}
+
+.person .contact-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+/***** Start: Adding more to core ultility ******/
+.min-h-30vh {
+    min-height: 30vh !important;
+}
+
+.min-h-35vh {
+    min-height: 35vh !important;
+}
+
+.min-h-40vh {
+    min-height: 40vh !important;
+}
+
+.min-h-45vh {
+    min-height: 45vh !important;
+}
+
+.min-h-55vh {
+    min-height: 55vh !important;
+}
+
+.min-h-60vh {
+    min-height: 60vh !important;
+}
+
+.min-h-65vh {
+    min-height: 65vh !important;
+}
+
+.min-h-70vh {
+    min-height: 70vh !important;
+}
+
+.min-h-80vh {
+    min-height: 80vh !important;
+}
+
+.min-h-55vh {
+    min-height: 85vh !important;
+}
+
+.min-h-90vh {
+    min-height: 90vh !important;
+}
+
+.min-h-95vh {
+    min-height: 95vh !important;
+}
+
+.overlay-theme, .overlay-theme-hover:after {
+    transition: all .2s ease
+}
+
+.overlay-theme, .overlay-theme-hover {
+    position: relative
+}
+
+    .overlay-theme-hover > * {
+        position: relative;
+        z-index: 0
+    }
+
+    .overlay-theme > * {
+        position: relative;
+        z-index: 1
+    }
+
+
+    .overlay-theme-hover:after {
+        opacity: 0;
+        transition: all .3s ease-in-out
+    }
+
+.rounded.overlay-theme-hover:hover, .rounded.overlay-theme:after {
+    border-radius: .25rem
+}
+
+.overlay-theme-hover:after, .overlay-theme:after {
+    bottom: 0;
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 0
+}
+
+.overlay-theme-hover:hover:after, .overlay-theme:after {
+    background: #003768;
+    background: linear-gradient(180deg,var(--theme) 0,var(--theme-90));
+}
+
+
+.btn-xs, .btn-group-xs > .btn {
+    /*padding: 0.2rem .2rem;*/
+    padding: 0 .2rem;
+    font-size: .8rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+}
+
+/*make button icon smaller*/
+.btn:not(.rounded-circle):not(.btn-xs) i.fi {
+    font-size: 12px;
+}
+
+
+
+/***** End: Adding more to core ultility ******/
+
+
+
+
+/*Section padding*/
+@media only screen and (min-width: 768px) {
+    body:not(.layout-admin) section.sp-xl, .sp-xl {
+        padding: 100px 0
+    }
+
+    body:not(.layout-admin) section.sp-lg, .sp-lg {
+        padding: 80px 0
+    }
+
+    body:not(.layout-admin) section.sp-md, .sp-md {
+        padding: 50px 0
+    }
+
+    body:not(.layout-admin) section.sp-sm, .sp-sm {
+        padding: 30px 0
+    }
+
+    body:not(.layout-admin) section.sp-xs, .sp-xs {
+        padding: 20px 0
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    body:not(.layout-admin) section.sp-xl, .sp-xl {
+        padding: 80px 0
+    }
+
+    body:not(.layout-admin) section.sp-lg, .sp-lg {
+        padding: 60px 0
+    }
+
+    body:not(.layout-admin) section.sp-md, .sp-md {
+        padding: 40px 0
+    }
+
+    body:not(.layout-admin) section.sp-sm, .sp-sm {
+        padding: 20px 0
+    }
+
+    body:not(.layout-admin) section.sp-xs, .sp-xs {
+        padding: 10px 0
+    }
+}
+
+
+/*======================================
+  #override widget.css
+======================================*/
+
+.block__header {
+    text-align: inherit;
+}
+
+
+/*======================================
+  #Adding to bootstrap
+======================================*/
+
+.container-small {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px
+}
+
+@media only screen and (min-width: 850px) {
+    .container-small {
+        max-width: 850px
+    }
+}
+
+@media only screen and (max-width: 850px) {
+    .container-small {
+        max-width: 100%
+    }
+}
+
+/***** undo the settings on widgets.css ******/
+.accordion .card span {
+    display: inline;
+    width:  auto;
+}
+
+
+
+/*======================================
+  #Header
+======================================*/
+
+#top_bar {
+    /*min-height: 50px;*/
+    background: #f8f9fa;
+    /*background: linear-gradient(to right, #fff, #f8f9fa);*/
+}
+
+.navbar-light .navbar-toggler {
+    border-color: transparent;
+}
+
+.navbar-toggler {
+    margin-left: 8px;
+    margin-right: 0;
+}
+
+
+/*======================================
+  #Brand logo
+======================================*/
+.brand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    color: #003768;
+}
+.brand img {
+    height: 70px;
+}
+.has-topbar .brand img {
+    height: 90px;
+}
+/*.sitename {
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    font-weight: 500;
+}*/
+.tagline {
+    font-size: .7rem;
+    letter-spacing: .05rem
+}
+
+
+/*======================================
+  #Block General
+======================================*/
+/* reset section padding from theme*/
+@media only screen and (min-width: 768px) {
+    body:not(.layout-admin) section {
+        padding: 0 0
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    body:not(.layout-admin) section {
+        padding: 0 0
+    }
+}
+
+/*first block on the page*/
+.main-content .section:first-child:not(.block-slider, .block-heading) {
+    padding: 60px 0 32px 0 !important;
+}
+
+/*.main-content section.section.block-heading {
+    padding: 0 0 0 0 !important;
+}*/
+
+
+
+/*======================================
+  #Heading Block
+======================================*/
+
+.block-heading h1, .block-heading h2 {
+    margin-bottom: .5rem;
+}
+
+.block-heading.overlay-dark a {
+    color: #fff;
+}
+
+/*======================================
+  #Table Block
+======================================*/
+
+.block-table th p, .block-table td p {
+    margin-bottom: 0;
+}
+
+.block-table .table-dark th p, .block-table .table-dark td p, .block-table .thead-dark th p {
+    color: #fff !important;
+}
+
+
+/*======================================
+  #Link Button
+======================================*/
+.cta {
+    padding: 1rem 0;
+}
+.cta .btn-link {
+    padding: 0;
+}
+
+
+
+
+
+
+
+/*======================================
+  #Event Calendar
+======================================*/
+
+.event-container {
+    margin-top: 35px;
+}
+
+.event-container .events {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+.event-container .event {
+    display: flex;
+}
+
+.event-container .event .event-date-wrapper {
+    border-right: 1px solid #e9e9e9;
+    margin-right: 15px;
+    padding-right: 15px;
+    order: 1;
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.event-container .event .event-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.event-container .event .event-summary {
+    order: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.event-container .event .event-date .event-month {
+    text-transform: uppercase;
+    letter-spacing: .15rem;
+    font-size: 1rem;
+    order: 1;
+}
+
+.event-container .event .event-date .event-day {
+    font-weight: 800;
+    font-size: 2rem;
+    order: 2;
+}
+
+.event-container .event .event-date .event-dayofweek {
+    text-transform: uppercase;
+    font-size: 1rem;
+    order: 3;
+}
+
+.event-container .event .event-detail h3.event-name {
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 500;
+    max-width: 100%;
+}
+
+.event-container .event .event-detail .event-description {
+    color: gray;
+}
+
+.event-container .event .event-detail + .event-detail {
+    margin-top: .6rem;
+}
+
+/*appy event-calendar-horizontal class change the styling*/
+.event-container.event-calendar-horizontal .events  {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.event-container.event-calendar-horizontal .event {
+    flex-grow: 1;
+    flex-basis: 400px;
+}
+
+/*appy event-calendar class change the styling*/
+.event-container.event-calendar .event .event-date {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+}
+
+.event-container.event-calendar .event .event-date .event-month {
+    order: 1;
+    padding: 2px 10px;
+    background: #8d8d8d;
+    color: #fff;
+}
+.event-container.event-calendar .event .event-date .event-day {
+    order: 2;
+    padding: 1px 0;
+    color: #8d8d8d;
+
+}
+.event-container.event-calendar .event .event-date .event-dayofweek {
+    order: 3;
+    padding-bottom: 4px;
+    color: #8d8d8d;
+}
+/***************************/
+
+/********** Sidebar *********/
+.sidebar-container {
+    padding: 5px;
+    background-color: var(--background-light);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/********** prism language extention - copy to clipboard *********/
+pre[class*=language-brocade]:before {
+    background: #74a988;
+    color: #fff;
+}
+pre.language-brocade1of5:before {
+    content: "script - 1 of 5";
+}
+pre.language-brocade2of5:before {
+    content: "script - 2 of 5";
+}
+pre.language-brocade3of5:before {
+    content: "script - 3 of 5";
+}
+pre.language-brocade4of5:before {
+    content: "script - 4 of 5";
+}
+pre.language-brocade5of5:before {
+    content: "script - 5 of 5";
+}
+pre.language-brocade6of6:before {
+    content: "script - 6 of 6";
+}
+pre.language-brocade1of6:before {
+    content: "script - 1 of 6";
+}
+pre.language-brocade2of6:before {
+    content: "script - 2 of 6";
+}
+pre.language-brocade3of6:before {
+    content: "script - 3 of 6";
+}
+pre.language-brocade4of6:before {
+    content: "script - 4 of 6";
+}
+pre.language-brocade5of6:before {
+    content: "script - 5 of 6";
+}
+pre.language-brocade6of6:before {
+    content: "script - 6 of 6";
+}
+
+/*code[class*=language-brocade], pre[class*=language-brocade] {
+    -o-tab-size: 2 !important;
+    tab-size: 2 !important;
+}
+*/
+/********** Footer *********/
+#footer {
+    
+
+}
+
+    #footer, #footer a, #footer p, #footer h2, #footer h3, #footer h4, #footer h5, #footer h6 {
+        color: var(--text-light);
+    }
+
+    #footer p {
+        font-size: 14px;
+    }
+
+    #footer.footer-dark {
+        background: #003768;
+        background: linear-gradient(180deg,var(--theme) 0,var(--theme-90));
+    }

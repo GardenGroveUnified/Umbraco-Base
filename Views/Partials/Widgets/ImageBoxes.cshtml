@@ -1,0 +1,171 @@
+﻿@inherits UmbracoViewPage<BlockListItem>
+
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+
+@{
+    var content = (ContentModels.ImageBoxes)Model.Content;
+    var settings = (ContentModels.ImageBoxesSettings)Model.Settings;
+
+    if (settings?.BlockVisibilty ?? false) { return; }
+
+    // --- Helpers ---
+    static string Fallback(string? value, string fallback) =>
+        string.IsNullOrWhiteSpace(value) ? fallback : value;
+
+    static string FallbackEmpty(string? value, string fallback) =>
+        string.IsNullOrEmpty(value) ? fallback : value;
+
+    // --- Block-level settings ---
+    int order                 = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+    var sectionPaddingClass   = Fallback(settings?.VerticalSpacing, "sp-xl");
+    var backgroundColorClass  = Fallback(settings?.BackgroundColor, "bg-transparent");
+    var topBorderClass        = settings!.ShowTopBorder ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "";
+    var blockItemStyle        = FallbackEmpty(settings?.BlockStyle, "Default");
+    var anchorId              = settings?.AnchorId;
+
+    // --- Item-level settings ---
+    var gutterSpacingClass  = FallbackEmpty(settings?.ColumnSpacing, "gutters-sm");
+    var justifyContentClass = FallbackEmpty(settings?.HorizontalAlignment, "justify-content-center");
+    var itemPerRow          = FallbackEmpty(settings?.ItemPerRow, "4");
+    var itemPaddingClass    = FallbackEmpty(settings?.Padding, "p-2");
+    var textAlignmentClass  = "text-" + Fallback(settings?.TextAlignment, "left");
+
+    // --- Container width ---
+    var containerWidthMap = new Dictionary<string, string>
+    {
+        ["small"]      = "container-md container-small w-md-25",
+        ["standard"]   = "container w-md-50",
+        ["big"]        = "container-xlg w-md-75",
+        ["full width"] = "container-fluid",
+    };
+    var containerWidthClass = containerWidthMap.GetValueOrDefault(settings?.ContainerWidth ?? "", "container");
+
+    // --- Columns per row ---
+    var columnMap = new Dictionary<string, string>
+    {
+        ["max"] = "col-12 col-sm-6 col-md-4 col-lg-3 col-xxxl",
+        ["6"]   = "col-12 col-sm-6 col-md-2 col-lg-2",
+        ["5"]   = "col-12 col-sm-6 col-md-4 col-lg-5th",
+        ["4"]   = "col-12 col-sm-6 col-lg-4 col-xl-3",
+        ["3"]   = "col-12 col-sm-6 col-md-4 col-lg-4",
+        ["2"]   = "col-12 col-sm-6 col-md-6 col-lg-6",
+        ["1"]   = "col-12 col-md-12 col-lg-12",
+    };
+    var numberOfColumnClass = columnMap.GetValueOrDefault(itemPerRow, "col-6 col-md-3 col-lg-3");
+
+    // --- Gutter bottom spacing ---
+    var gutterBottomMap = new Dictionary<string, string>
+    {
+        ["no-gutters"]  = "mb-0",
+        ["gutters-xxs"] = "mb-1",
+        ["gutters-xs"]  = "mb-2",
+        ["gutters-sm"]  = "mb-3",
+        ["gutters-md"]  = "mb-4",
+        ["gutters-lg"]  = "mb-5",
+        ["gutters-xl"]  = "mb-6",
+    };
+    var bottomSpacingClass = gutterBottomMap.GetValueOrDefault(gutterSpacingClass, "mb-3 mt-3");
+}
+
+@if (content.Items != null)
+{
+    <section class="@backgroundColorClass @sectionPaddingClass @topBorderClass"
+             @if (!string.IsNullOrEmpty(anchorId)) { <text>id="@anchorId"</text> }>
+
+        <div class="@containerWidthClass">
+            <div class="row @gutterSpacingClass @justifyContentClass @textAlignmentClass">
+
+                @* Section header *@
+                @if (!string.IsNullOrEmpty(content.Heading) || !string.IsNullOrEmpty(content.PreHeading))
+                {
+                    <div class="col-12">
+                        <div class="@headerCenterTextClass mb-4">
+                            @if (!string.IsNullOrEmpty(content.PreHeading))
+                            {
+                                <div class="pre-head">@content.PreHeading</div>
+                            }
+                            @if (!string.IsNullOrEmpty(content.Heading))
+                            {
+                                <h1 class="head py-2 text-white display-5 bold">@content.Heading</h1>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @* Image box items *@
+                @foreach (var item in content.Items)
+                {
+                    var imageBox = (ContentModels.ImageBox)item.Content;
+                    var hasText  = !string.IsNullOrEmpty(imageBox?.BodyText?.ToString());
+                    var hasLink  = !string.IsNullOrEmpty(imageBox?.BoxLink?.Url);
+                    var hasTitle = !string.IsNullOrEmpty(imageBox?.Title);
+
+                    <div class="@numberOfColumnClass @bottomSpacingClass">
+                        @if (blockItemStyle == "Style 2")
+                        {
+                            @* Style 2: card layout *@
+                            <div class="card widget-card h-100 img-thumbnail @itemPaddingClass shadow-primary-xs rounded-4">
+                                @if (hasLink)
+                                {
+                                    @Html.Raw($"<a href=\"{imageBox.BoxLink?.Url}\" target=\"{imageBox.BoxLink?.Target}\" class=\"stretched-link\">")
+                                }
+                                <div class="card-body p-4 p-sm-2 p-1-xs">
+                                    <div class="image-wrapper">
+                                        <img src="@imageBox.Image?.GetCropUrl()" class="card-img-top img-fluid m-auto" alt="@imageBox.Image?.Name" />
+                                    </div>
+                                    <div class="card-text mt-3">
+                                        @if (hasTitle)
+                                        {
+                                            <div class="p-4 p-sm-2 p-1-xs box-header">
+                                                <h1 class="m-0">@imageBox.Title</h1>
+                                            </div>
+                                        }
+                                        @if (hasText)
+                                        {
+                                            <div class="p-4 p-sm-2 p-1-xs box-text">@imageBox?.BodyText</div>
+                                        }
+                                    </div>
+                                </div>
+                                @if (hasLink)
+                                {
+                                    @Html.Raw("</a>")
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            @* Default style *@
+                            <div class="h-100 @itemPaddingClass image-boxes rounded">
+                                @if (hasLink)
+                                {
+                                    @Html.Raw($"<a href=\"{imageBox.BoxLink?.Url}\" target=\"{imageBox.BoxLink?.Target}\">")
+                                }
+                                <div class="d-block overflow-hidden text-decoration-none text-dark rounded">
+                                    <img src="@imageBox?.Image?.GetCropUrl(800, 450)" class="img-fluid lazyload rounded" />
+                                    @if (!settings!.HideHeading && hasTitle)
+                                    {
+                                        <div class="p-3 p-sm-2 p-1-xs head">
+                                            <h5 class="m-0 mt-4">@imageBox.Title</h5>
+                                        </div>
+                                    }
+                                    @if (hasText)
+                                    {
+                                        <div class="p-3 p-sm-2 p-xs-1 box-text">@imageBox?.BodyText</div>
+                                    }
+                                </div>
+                                @if (hasLink)
+                                {
+                                    @Html.Raw("</a>")
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

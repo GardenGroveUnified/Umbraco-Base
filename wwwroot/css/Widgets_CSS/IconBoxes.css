@@ -1,0 +1,551 @@
+@import '../styles.css';
+
+.my-icon > svg {
+    height: 75px;
+    width: 75px;
+    z-index: 6;
+}
+
+#overview-plans .icon-boxes {
+    background-color: #003768 !important;
+    color: white;
+}
+
+#overview-plans .my-icon svg{
+    fill: white;
+}
+
+.icon-style-2 .purple-box {
+  --bg-color: #CEB2FC;
+  --bg-color-light: #F0E7FF;
+  --text-color-hover: #fff;
+  --box-shadow-color: rgba(206, 178, 252, 0.48);
+  fill: #fff;
+}.icon-style-2 .purple-box:hover {
+  fill: #8b66d6; /* Dark orange on hover for a reverse effect */
+}
+
+.icon-style-2 .blue-box{
+    --bg-color: #003768;
+    --bg-color-light: #f1f7ff;
+    --text-color-hover: #fff;
+    --box-shadow-color: rgba(220, 233, 255, 1);
+    fill: #fff;
+}.icon-style-2 .blue-box:hover {
+  fill: #66a1d6; /* Dark orange on hover for a reverse effect */
+}
+
+.icon-style-2 .orange-box{
+  --bg-color: #d35400; /* Dark orange background */
+  --bg-color-light: #fde9d4; /* Light orange accent */
+  --text-color-hover: #ffffff; /* White for hover effects */
+  --box-shadow-color: rgba(211, 84, 0, 0.5); /* Soft dark orange shadow */
+  fill: #ffffff; /* White logo for contrast against dark orange */
+}.icon-style-2 .orange-box:hover {
+  fill: #d35400; /* Dark orange on hover for a reverse effect */
+}
+
+.icon-style-2 .ltgreen-box {
+    --bg-color: #B8F9D3;
+    --bg-color-light: #e2fced;
+    --text-color-hover: #4C5656;
+    --box-shadow-color: rgba(184, 249, 211, 1);
+    fill: #111;
+}.icon-style-2 .ltgreen-box:hover {
+  fill: #2f8d4a; /* Dark orange on hover for a reverse effect */
+}
+
+.icon-style-2 .default{
+  --bg-color: #5b5b5b;
+  --bg-color-light: #f1f7ff;
+  --text-color-hover: #fff;
+  --box-shadow-color: rgba(220, 233, 255, 1);
+  fill: #fff;
+}.icon-style-2 .default:hover {
+  fill: #000;
+}
+
+.icon-style-2 .facebook{
+  --bg-color: #1877f2; /* Facebook's signature blue */
+  --bg-color-light: #e7f3ff; /* Light blue for accents */
+  --text-color-hover: #ffffff; /* White for hover effects */
+  --box-shadow-color: rgba(24, 119, 242, 0.5); /* Soft blue shadow */
+  fill: #fff;
+}.icon-style-2 .facebook:hover{
+  fill: #1877f2; /* Twitter blue for the logo */
+}
+
+.icon-style-2 .twitter{
+  --bg-color: #1d9bf0; /* Twitter's signature blue */
+  --bg-color-light: #e8f5fe; /* Light blue for accents */
+  --text-color-hover: #ffffff; /* White for hover effects */
+  --box-shadow-color: rgba(29, 155, 240, 0.5); /* Soft blue shadow */
+  fill: #fff; /* Black for the X branding */
+}.icon-style-2 .twitter:hover{
+  fill: #000000; /* Black for the X branding */
+}
+
+.icon-style-2 .youtube{
+  --bg-color: #f83131;
+  --bg-color-light: #f1f7ff;
+  --text-color-hover: #fff;
+  --box-shadow-color: rgb(254, 137, 137);
+  fill: #ffffff;
+}.icon-style-2 .youtube:hover{
+  fill: #f83131;
+}
+
+.icon-style-2 .instagram{
+  --bg-color: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  --bg-color-light: #ffe8f0; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(219, 88, 186, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .instagram:hover{
+  fill: #e1306c;
+}
+
+.icon-style-2 .bolsa{
+  --bg-color: radial-gradient(circle at 50% 0%, #415d73, #032743 50%);
+  --bg-color-light: #fff; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(6, 38, 113, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .bolsa:hover{
+  fill: #415d73;
+}
+.icon-style-2 .garden{
+  --bg-color: radial-gradient(circle at 50% 0%, #370101, #aa1013 50%);
+  --bg-color-light: #fff; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(6, 38, 113, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .garden:hover{
+  fill: #9c0203;
+}
+.icon-style-2 .laquinta{
+  --bg-color: rgb(255, 219, 0);
+  --bg-color-light: #fff; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(6, 38, 113, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .laquinta:hover{
+  fill: rgb(255, 219, 0);
+}
+.icon-style-2 .losamigos{
+  --bg-color: #ee522b;
+  --bg-color-light: #fff; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(6, 38, 113, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .losamigos:hover{
+  fill: #ee522b;
+}
+.icon-style-2 .pacifica{
+  --bg-color: rgb(7, 53, 112);
+  --bg-color-light: #fff; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(6, 38, 113, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .pacifica:hover{
+  fill: rgb(7, 53, 112);
+}
+.icon-style-2 .rancho{
+  --bg-color: #316a38;
+  --bg-color-light: #fff; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(6, 38, 113, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .rancho:hover{
+  fill: #316a38;
+}
+.icon-style-2 .santiago{
+  --bg-color: #2e1772;
+  --bg-color-light: #fff; /* A light complement to the gradient */
+  --text-color-hover: #ffffff;
+  --box-shadow-color: rgba(6, 38, 113, 0.5); /* A soft pink shadow */
+  fill: #ffffff;
+}.icon-style-2 .santiago:hover{
+  fill: #2e1772;
+}
+
+.card-wrapper a{
+    text-decoration: none;
+}
+
+.icon-style-2 .card {
+    width: 220px;
+    height: 321px;
+    background: #1E211C;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 14px 26px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-out;
+    text-decoration: none;
+    white-space: normal;
+    word-break: break-word;
+    z-index: 10;
+    border: 0px transparent !important;
+}
+
+.icon-style-2 .card:hover {
+  transform: translateY(-5px) scale(1.005) translateZ(0);
+  box-shadow: 0 24px 36px rgba(0,0,0,0.11),
+    0 24px 46px var(--box-shadow-color);
+}
+
+
+
+.icon-style-2 .card:hover .overlay {
+  transform: scale(3.75) translateZ(0);
+}
+
+.icon-style-2 .card:hover .circle {
+  border-color: var(--bg-color-light);
+  background: var(--bg-color);
+}
+
+.icon-style-2 .card:hover .circle:after {
+  background: var(--bg-color-light);
+}
+
+.icon-style-2 .card:hover p {
+  color: var(--text-color-hover);
+}
+
+.icon-style-2 .card:active {
+  transform: scale(1) translateZ(0);
+  box-shadow: 0 15px 24px rgba(0,0,0,0.11),
+    0 0px 24px var(--box-shadow-color);
+}
+
+.icon-style-2 .card p {
+    font-size: 17px;
+    color: #fff;
+    margin: 5px;
+    z-index: 1;
+    transition: color 0.3s ease-out;
+    text-align: center;
+}
+
+.icon-style-2 .circle {
+  width: 131px;
+  height: 131px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease-out;
+}
+
+.icon-style-2 .circle:after {
+  content: "";
+  width: 118px;
+  height: 118px;
+  display: block;
+  position: absolute;
+  background: var(--bg-color);
+  border-radius: 50%;
+  top: 5px;
+  left: 5px;
+  transition: opacity 0.8s ease-out;
+}
+
+.icon-style-2 .circle svg {
+  z-index: 10000;
+  transform: translateZ(0);
+}
+
+.icon-style-2 .overlay {
+  width: 118px;
+  position: absolute; 
+  height: 118px;
+  border-radius: 50%;
+  background: var(--bg-color);
+  top: 75px;
+  left: 50px;
+  z-index: 1;
+  transition: transform 0.3s ease-out;
+  opacity: 1;
+}
+
+
+		.info{
+			z-index:1;
+			width:100%;
+			color: #003768;
+			transition: all 0.5s ease;
+
+		}
+
+		.info:hover{
+			text-decoration: none;
+			color: #fdb820;
+		}
+
+
+		.icon-style-2 .card-body {
+		  padding: 0px;
+		  background-color: #f8f9fa;
+		  border: 1px solid #ddd;
+			height: 230px;
+			border-radius: 10px;
+			align-content: center;
+		}
+
+		.animated-list {
+		  opacity: 1;
+		  transition: opacity 0.5s ease-in-out;
+			list-style: none;
+			padding-left: 15%;
+			z-index:1;
+      color: #fff;
+		}
+
+		.animated-item {
+		  opacity: 1;
+		  transform: translateX(-20px);
+		  transition: transform 0.3s ease, opacity 0.3s ease;
+			z-index:1;
+		}
+
+
+/* Custom CSS for Different Sections */
+
+#discoverMealIconsSection{
+
+    padding-top: 50px !important;
+
+    .discover-boxes{
+        border: 0 !important;
+
+        .my-icon{
+            display: flex;
+        }
+        
+        h4, p{
+            text-align: left;  
+        }
+
+        h4{
+          font-size: 30px;
+          font-weight: 400;
+        }
+
+        p{
+          font-size: 15px;
+        }
+
+    }
+
+    .shadow-xlg{
+            box-shadow: none !important;
+        }
+
+    .transition-hover-top{
+        transform: none !important;
+    }
+
+
+    @media (max-width:576px) {
+      .discover-boxes h4{
+        font-size: 25px;
+      }
+    }
+}
+
+#mealPrices{
+
+  .meal-price-boxes{
+    text-decoration: none;
+    color: #000 !important;
+    transform: none;
+    border:none !important;
+    background-image: url('/media/yylncsyk/pexels-pixabay-301378.jpg'); 
+    background-size: cover;
+    border-radius: 10px;
+    padding: 20px !important;
+    
+    .content{
+            background-color: #F6F4F1;
+            padding: 30px;
+            height: 100%;
+        }
+    p, li {
+          text-align: left;
+      }
+
+      h1, h4{
+        font-weight: 500;
+      }
+  }
+
+  .head{
+        font-weight: 600;
+        color: #000;
+        margin-top:2rem;
+        margin-bottom: 0 !important;
+        background-color: var(--background-color);
+        border-radius: 5px;
+  }
+
+  .shadow-xlg{
+          box-shadow: none !important;
+  }
+
+  ol {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  ol li {
+    position: relative;
+    padding-left: 2em;
+    padding-top: 1em;
+  }
+
+  ol li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 1.25em;
+    width: 1em;
+    height: 1em;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1em;
+  }
+
+    /* .transition-hover-top{
+        transform: none !important;
+    } */
+}
+
+
+#mnIconBoxes{
+
+    .row{
+          padding-bottom: 100px;
+        }
+
+    .mn-boxes{
+        border: 0 !important;
+        cursor: auto;
+        position: relative;
+
+        .my-icon{
+            display: flex;
+        }
+        
+        h4, p{
+            text-align: left;
+            color: #000;  
+        }
+
+        h4{
+          font-size: 23px;
+          font-weight: 600;
+          color: #000;
+        }
+
+        p{
+          font-size: 15px;
+        }
+
+        .btn{
+          position: absolute;
+          bottom: -25px;
+          color: #000;
+          padding-left: 0;
+        }
+
+        .btn::after {
+          content: "\203A"; /* Unicode arrow */
+          position: absolute;
+          padding-left: 10px;
+          transform: translateX(0) scale(1.3);
+          transition: transform 0.3s ease;
+        }
+
+        .btn:hover::after {
+          transform: translateX(10px) scale(1.3);
+        }
+
+    }
+
+    .shadow-xlg{
+            box-shadow: none !important;
+        }
+
+    .transition-hover-top{
+        transform: none !important;
+    }
+
+    .modal-body{
+      background-color: #1E211C;
+      border-radius: 5px;
+    }
+
+    .animated-list li::before {
+      content: "\2192";
+      position: relative;
+      left: -2em;
+      top: 1.25em;
+      width: 1em;
+      height: 1em;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1em;
+      transition: left 0.3s ease;
+    }
+
+    .animated-list li:hover::before {
+      left: -1.5em;
+    }
+
+    .modal-body li{
+      font-size: 20px;
+      text-align: left;
+      margin-bottom: 10px;
+      
+      a{
+        color: #fff;
+      }
+    }
+}
+
+#educatorContact{
+  .contact-boxes{
+      border: 0 !important;
+      cursor: auto;
+      position: relative;
+      box-shadow: none !important;
+      text-align: left !important;
+      transform: none !important;
+      background-color: var(--background-color);
+  }
+
+  p, li {
+          text-align: left;
+  }
+
+  h1, h4{
+    font-weight: 500;
+  }
+
+}

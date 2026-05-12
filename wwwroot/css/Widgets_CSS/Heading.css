@@ -1,0 +1,14 @@
+#discoverHeading{
+    h2{
+        font-size: 50px;
+        width: 60%;
+        font-weight: 400;
+        text-align: left;
+    }
+
+    @media (max-width:576px) {
+        h2{
+            width: 100%;
+        }
+    }
+}

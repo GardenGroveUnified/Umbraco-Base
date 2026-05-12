@@ -1,0 +1,176 @@
+﻿@inherits UmbracoViewPage<BlockListItem>
+
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.Accordion)Model.Content;
+    var settings = (ContentModels.AccordionSettings)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    //var order = (int)ViewData["order"];
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+    //block appearance
+    var containerWidthClass = settings?.ContainerWidth switch
+    {
+        "small" => "container-sm",
+        "standard" => "container-md",
+        "big" => "container-lg",
+        "full width" => "container-fluid",
+        _ => "container"
+    };
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-5" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "";
+
+    //block behavior
+    var questionPrefix = settings?.ItemPrefix == true ? "Q: " : "";
+    var showFirstItem = settings?.ShowFirstItem ?? false;
+    var blockStyle = settings?.BlockStyle ?? "Default";
+    var classNames = settings.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+    ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+    : string.Empty;
+
+}
+
+@if (content.AccordionList != null)
+{
+    var random = new Random();
+    var accordionId = "accordion" + random.Next(1000).ToString();
+    var itemCount = 0;
+
+    <section    class="section block-accordion @classNames @containerWidthClass @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" 
+                role="region"
+                aria-labelledby="@settings.AnchorId"
+                @if (!string.IsNullOrEmpty(settings?.AnchorId)){<text>id="@settings.AnchorId"</text>}
+    >
+            <div class="container">
+            @if (content.Preheading != "" || content.Heading != "" || content?.Text?.ToString() != "")
+            {
+                <div class="@(headerCenterTextClass)">
+                    <div class="mb-4">
+                    @if (content?.Preheading != "")
+                    {
+                        <div class="pre-head">@content?.Preheading</div>
+                    }
+                    @if (content?.Heading != "")
+                    {
+                        <h2 class="head mb-4 display-3 bold">@content?.Heading</h2>
+                    }
+                    @if (content?.Text?.ToString() != "")
+                    {
+                        <div class="block__header-text">
+                            @content?.Text
+                        </div>
+                    }
+                    </div>
+                </div>
+            }
+
+            @if(blockStyle == "Default")
+            {
+                <div class="accordion" id="@(accordionId)">
+                    @foreach (var item in content!.AccordionList)
+                    {
+                        var accordionItem = (ContentModels.AccordionItem)item.Content;
+                        itemCount++;
+                        var panelId = $"collapse-{accordionId}-{itemCount}";
+                        var headingId = $"heading-{accordionId}-{itemCount}";
+                        var isExpanded = (showFirstItem && itemCount == 1);
+                        <div class="card mb-3 rounded-4">
+                            <div class="card-header mb-0 p-0" id="@headingId">
+                                <h2 class="mb-0">
+                                    <button 
+                                        class="w-100 btn btn-link btn-block text-align-start text-black text-decoration-none rounded-0" 
+                                        type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#@panelId" 
+                                        aria-expanded="@(isExpanded.ToString().ToLower())" aria-controls="@panelId" id="btn-@panelId">
+                                        @(questionPrefix)@(accordionItem.Title)
+                                        <span class="group-icon float-end" aria-hidden="true">
+                                            <i class="fi fi-arrow-end-slim"></i>
+                                            <i class="fi fi-arrow-down-slim"></i>
+                                        </span>
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="@panelId" class="collapse @(isExpanded ? "show" : "")" aria-labelledby="@headingId" data-bs-parent="#@(accordionId)">
+                                <div class="py-3 px-5 accordion-text">@accordionItem.Description</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else if(blockStyle == "Style 2")
+            {
+                <div data-accordion-close-siblings="true" data-accordion-css-init="" role="listbox" class="accordion-css" id="@(accordionId)" aria-labelledby="heading-@(accordionId)-@(itemCount)" data-bs-parent="#@(accordionId)">
+                    <ul class="accordion-css__list">
+                         @foreach (var item in content!.AccordionList)
+                        {
+                            var accordionItem = (ContentModels.AccordionItem)item.Content;
+                            itemCount++;
+                            var panelId = $"panel-{accordionId}-{itemCount}";
+                            var headingId = $"heading-{accordionId}-{itemCount}";
+                            var isExpanded = (showFirstItem && itemCount == 1);
+                            <li data-accordion-status="@(isExpanded ? "active" : "not-active")" class="accordion-css__item">
+                                <div class="accordion-css__bg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 602 1212" fill="none" class="accordion-css__bg-svg">
+                                        <path d="M601 1199C601 1205.63 595.627 1211 589 1211H13C6.37257 1211 1 1205.63 1 1199V7.00001C1 3.68631 3.68629 1 7 1H116C118.761 1 121 3.23858 121 6V6C121 8.76142 123.239 11 126 11H595C598.314 11 601 13.6863 601 17V1199Z" fill="#123524" stroke="#fff" stroke-width="0.125em" vector-effect="non-scaling-stroke"></path>
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 372 1212" fill="none" class="accordion-css__bg-svg is--mobile">
+                                        <path d="M371 1199C371 1205.63 365.627 1211 359 1211H13C6.37258 1211 1 1205.63 1 1199V13C1 6.37261 6.37258 1 13 1H116C118.761 1 121 3.23858 121 6V6C121 8.76142 123.239 11 126 11H359C365.627 11 371 16.3726 371 23V1199Z" fill="#123524" stroke="#fff" stroke-width="0.125em" vector-effect="non-scaling-stroke"></path>
+                                    </svg>
+                                </div>
+                                <div class="accordion-css__item-bottom" id="@panelId">
+                                    <div class="accordion-css__item-bottom-wrap">
+                                        <div class="accordion-css__item-bottom-content">
+                                            <div class="accordion-css__card">
+                                                <div class="accordion-css__item-p">@accordionItem.Description</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-hover="" data-accordion-toggle="" class="accordion-css__item-top" id="@headingId">
+                                    <button class="accordion-css__item-h3 btn-reset h3" aria-expanded="@(isExpanded.ToString().ToLower())" aria-controls="@panelId" id="btn-@panelId"><strong>@(questionPrefix)@(accordionItem.Title)</strong></button>
+                                    <div class="accordion-css__item-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 18 18" fill="none" class="accordion-css__item-icon-svg">
+                                            <path d="M1.05469 9.40723H16.0547" stroke="#fff" stroke-width="0.125em" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+                                            <path d="M8.55176 1.90723L8.55176 16.9072" stroke="#fff" stroke-width="0.125em" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <script>
+                    function initAccordionCSS() {
+                    document.querySelectorAll('[data-accordion-css-init]').forEach((accordion) => {
+                        const closeSiblings = accordion.getAttribute('data-accordion-close-siblings') === 'true';
+
+                        accordion.addEventListener('click', (event) => {
+                        const toggle = event.target.closest('[data-accordion-toggle]');
+                        if (!toggle) return; // Exit if the clicked element is not a toggle
+
+                        const singleAccordion = toggle.closest('[data-accordion-status]');
+                        if (!singleAccordion) return; // Exit if no accordion container is found
+
+                        const isActive = singleAccordion.getAttribute('data-accordion-status') === 'active';
+                        singleAccordion.setAttribute('data-accordion-status', isActive ? 'not-active' : 'active');
+                        
+                        // When [data-accordion-close-siblings="true"]
+                        if (closeSiblings && !isActive) {
+                            accordion.querySelectorAll('[data-accordion-status="active"]').forEach((sibling) => {
+                            if (sibling !== singleAccordion) sibling.setAttribute('data-accordion-status', 'not-active');
+                            });
+                        }
+                        });
+                    });
+                    }
+
+                    initAccordionCSS();
+                </script>
+            }
+        </div>
+    </section>
+}

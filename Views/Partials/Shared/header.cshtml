@@ -1,0 +1,393 @@
+﻿@inherits UmbracoViewPage
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks;
+@using Umbraco.Cms.Core.Models.PublishedContent;
+@using UmbracoBase.Core.Constants;
+@using Umbraco.Cms.Web.Common.Views
+
+@functions {
+    // Recursive helper function to get all visible child pages
+    private List<IPublishedContent> GetVisibleChildren(IPublishedContent? parent)
+    {
+        if (parent == null) return new List<IPublishedContent>();
+        
+        return parent.Children()?
+            .Where(x => !x.IsVisible())
+            .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page 
+                     || x?.ContentType?.Alias == ContentTypeAlias.Link 
+                     || x?.ContentType?.Alias == ContentTypeAlias.PagesList
+                     || x?.ContentType?.Alias == ContentTypeAlias.Subsite)
+            .OrderBy(x => x.SortOrder)
+            .ToList() ?? new List<IPublishedContent>();
+    }
+    
+    // Recursive helper function to render navigation items at any depth
+    private void RenderNavigationItem(IPublishedContent page, IPublishedContent currentPage, int depth, ref int itemIndex)
+    {
+        var children = GetVisibleChildren(page);
+        var hasChildren = children.Any();
+        var pageId = "mainNav" + page.Id + "_" + depth + "_" + itemIndex;
+        itemIndex++;
+        
+        var isHomeLink = page.ContentType.Alias == ContentTypeAlias.Link && page.Value<Link>("link")?.Url == "/";
+        var menuItemSelectedClass = (page.IsAncestorOrSelf(currentPage) || (isHomeLink && currentPage.Url() == "/"))
+            ? UmbracoBase.Core.Constants.Constants.MenuItemSelectedClass
+            : null;
+        
+        if (depth == 1)
+        {
+            // Top level navigation items
+            if (hasChildren && page.ContentType.Alias != ContentTypeAlias.Subsite)
+            {
+                if (page.ContentType.Alias != ContentTypeAlias.PagesList)
+                {
+                    var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
+                    
+                    <li class="nav-item @(menuItemSelectedClass) w-100 text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                        <a href="@(page.Url())" id="@(pageId)" 
+                           class="nav-link text-uppercase dropdown-menu-hover align-content-center"
+                           aria-haspopup="true"
+                           aria-expanded="false"
+                           role="menuitem">
+                            <b>@(linkTitle)</b>
+                        </a>
+                        
+                        <div aria-labelledby="@(pageId)" 
+                             class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0"
+                             role="menu">
+                            <ul class="list-unstyled" role="none">
+                                @foreach (var childPage in children)
+                                {
+                                    RenderNavigationItem(childPage, currentPage, depth + 1, ref itemIndex);
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                }
+                else
+                {
+                    var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
+                    
+                    <li class="nav-item @(menuItemSelectedClass) w-100 text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                        <button id="@(pageId)" 
+                                class="nav-link text-uppercase dropdown-menu-hover align-content-center h-100 w-100 cursor-default"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                role="menuitem">
+                            <b>@(linkTitle)</b>
+                        </button>
+                        
+                        <div aria-labelledby="@(pageId)" 
+                             class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0"
+                             role="menu">
+                            <ul class="list-unstyled" role="none">
+                                @foreach (var childPage in children)
+                                {
+                                    RenderNavigationItem(childPage, currentPage, depth + 1, ref itemIndex);
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                }
+            }
+            else
+            {
+                // Top level item without children
+                <li class="nav-item @(menuItemSelectedClass) w-100 text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                    <a href="@(page.Url())" id="@(pageId)" 
+                       class="nav-link text-uppercase align-content-center"
+                       role="menuitem"><b>@(page.Name)</b></a>
+                </li>
+            }
+        }
+        else
+        {
+            // Nested items (level 2+)
+            if (hasChildren)
+            {
+                // Nested item with children - render as nested dropdown
+                var pageInfo = (Link)page.Value("Link")! ?? new Link();
+                var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
+                var target = pageInfo.Target ?? "_self";
+                
+                <li class="dropdown-item text-uppercase my-lg-3 text-wrap" role="none">
+                    <div class="dropdown-submenu">
+                        <a href="@(page.Url())" target="@target"
+                           class="dropdown-link text-black"
+                           role="menuitem"
+                           @if(target != "_self"){<text>aria-label="@(page.Name) webpage opens in a new tab"</text>}
+                           >@linkTitle</a>
+                        <div class="dropdown-menu dropdown-submenu-content" role="menu">
+                            <ul class="list-unstyled" role="none">
+                                @foreach (var childPage in children)
+                                {
+                                    RenderNavigationItem(childPage, currentPage, depth + 1, ref itemIndex);
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            }
+            else
+            {
+                // Nested item without children - render as simple link
+                var pageInfo = (Link)page.Value("Link")! ?? new Link();
+                var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
+                var target = pageInfo.Target ?? "_self";
+                
+                <li class="dropdown-item text-uppercase my-lg-3 text-wrap" role="none">
+                    <a href="@(page.Url())" target="@target"
+                       class="dropdown-link text-black"
+                       role="menuitem"
+                       @if(target != "_self"){<text>aria-label="@(page.Name) webpage opens in a new tab"</text>}
+                       >@linkTitle</a>
+                </li>
+            }
+        }
+    }
+}
+
+@{
+    var siteRoot = Model.Root();
+    var currentPage = Umbraco.AssignedContentItem;
+    
+    // Determine the navigation root: if we're on a Subsite or under one, use that Subsite as root
+    // Otherwise, use the Site root
+    IPublishedContent? navRoot = null;
+    
+    // Check if current page is a Subsite
+    if (currentPage?.ContentType?.Alias == ContentTypeAlias.Subsite)
+    {
+        navRoot = currentPage;
+    }
+    else
+    {
+        // Check if any ancestor is a Subsite
+        var ancestor = currentPage?.Parent;
+        while (ancestor != null)
+        {
+            if (ancestor.ContentType?.Alias == ContentTypeAlias.Subsite)
+            {
+                navRoot = ancestor;
+                break;
+            }
+            ancestor = ancestor.Parent;
+        }
+    }
+    
+    // If no Subsite found, use the Site root
+    if (navRoot == null)
+    {
+        navRoot = siteRoot;
+    }
+    
+    // Get navigation items from the determined root
+    var level1Pages = navRoot?.Children()?
+        .Where(x => !x.IsVisible())
+        .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page 
+                 || x?.ContentType?.Alias == ContentTypeAlias.Link 
+                 || x?.ContentType?.Alias == ContentTypeAlias.PagesList
+                 || x?.ContentType?.Alias == ContentTypeAlias.Subsite).ToList()
+        ?? Enumerable.Empty<IPublishedContent>();
+    
+    // Get top bar items and social links from the navigation root (Subsite or Site)
+    var topBarNavItems = navRoot?.Value<IEnumerable<Link>>("topBarLinks");
+    var SocialLinks = navRoot?.Value<IEnumerable<SocialLink>>("socialMediaLinks");
+    
+    // Determine the navigation title
+    string navTitle = "Intranet"; // Default title
+    if (navRoot != null && navRoot.ContentType?.Alias == ContentTypeAlias.Subsite)
+    {
+        // Use pageTitle if available, otherwise use the page name
+        var subsiteTitle = navRoot.Value<string>("pageTitle");
+        navTitle = !string.IsNullOrWhiteSpace(subsiteTitle) ? subsiteTitle : navRoot.Name;
+    }
+    else if (navRoot != null)
+    {
+        // For Site root, use pageTitle if available, otherwise default to "Intranet"
+        var siteTitle = navRoot.Value<string>("pageTitle");
+        navTitle = !string.IsNullOrWhiteSpace(siteTitle) ? siteTitle : "Intranet";
+    }
+    
+    int i = -1;
+}
+
+<!-- TOP BAR -->
+<div id="top_bar" class="fs--15" role="navigation" aria-label="Top bar navigation">
+    <div class="container d-flex mw-100 justify-content-center" style="background-color:rgb(203, 160, 117);">
+        <div class="text-nowrap">
+            <div class="d-flex">
+                <div class="d-inline-block align-items-center">
+                    <ul class="m-0 p-0 justify-content-center list-unstyled" role="list">
+                        @if (SocialLinks != null)
+                        {
+                            @foreach (var link in SocialLinks!)
+                            {
+                                <li class="list-inline-item d-inline-flex">
+                                    <a role="link" target="_blank" href="@link.Url" 
+                                       class="btn btn-xs btn-facebookx transition-hover-top text-white"
+                                       rel="noopener"
+                                       aria-label="Follow us on @link.Network">
+                                        @if (link.Network == "twitter")
+                                        {
+                                            <img class="m-0 py-1" width="15" height="15" src="/twitter-X.png" alt="Twitter logo" />
+                                        }
+                                        else
+                                        {
+                                            <i class="m-0 py-1 fi fi-social-@link.Network" aria-hidden="true"></i>
+                                        }
+                                    </a>
+                                </li>
+                            }
+
+                            @foreach (var link in topBarNavItems!)
+                            {
+                                <li class="list-inline-item d-lg-inline-flex d-none">
+                                    @if (link.Name == "Nominate an Employee of the Month")
+                                    {
+                                        <a href="@link.Url" target="@link.Target"
+                                           class="p-2 px-3 d-inline-block text-orange font-weight-medium transition-hover-zoom"
+                                           aria-label="@link.Name">
+                                            @link.Name
+                                        </a>
+                                    }
+                                    else if (link.Name?.ToLower() == "translate")
+                                    {
+                                        <div class="dropdown">
+                                            <button class="btn dropdown-toggle translate-btn text-white font-weight-medium transition-hover-zoom"
+                                                    id="languageDropdown"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                    aria-haspopup="true"
+                                                    aria-label="Select language">
+                                                🌍 <span>Language</span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-hover dropdown-fadeinup" 
+                                                aria-labelledby="languageDropdown" role="menu">
+                                                <li role="none"><a class="dropdown-item" href="#" role="menuitem" onclick="translatePage('es')">🇪🇸 Spanish</a></li>
+                                                <li role="none"><a class="dropdown-item" href="#" role="menuitem" onclick="translatePage('vi')">🇻🇳 Vietnamese</a></li>
+                                                <li role="none"><a class="dropdown-item" href="#" role="menuitem" onclick="translatePage('ko')">🇰🇷 Korean</a></li>
+                                            </ul>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <a href="@link.Url" target="@link.Target"
+                                           class="p-2 px-3 d-inline-block text-white font-weight-medium transition-hover-zoom"
+                                           aria-label="@link.Name">
+                                            @link.Name
+                                        </a>
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /TOP BAR -->
+
+<!-- NAVBAR -->
+<div class="container-xxl position-relative shadow-sm"
+     role="navigation"
+     aria-label="Main navigation">
+
+    <nav class="navbar navbar-expand-lg navbar-light">
+
+        <div class="container-fluid p-0">
+            <div class="collapse navbar-collapse justify-content-center" id="navbarMainNav">
+                
+                <!-- NAVIGATION TITLE -->
+                <div class="w-100 text-center d-flex align-items-center justify-content-center justify-content-lg-start mb-3 mb-lg-0">
+                    <img src="/assets/images/ggusdLogo.svg" alt="Company Logo" class="m-2 ms-7 d-block" width="50" height="50" />
+                    <a href="@(navRoot?.Url() ?? "#")" 
+                       class="text-blue mb-0 text-decoration-none" 
+                       style="font-size: 1.5rem; font-weight: 500; display: inline-block;"
+                       role="link"
+                       aria-label="Go to @navTitle home page">
+                        @navTitle
+                    </a>
+                </div>
+                <!-- /NAVIGATION TITLE -->
+
+                <!-- NAVIGATION -->
+                <ul class="navbar-nav w-100 justify-content-lg-center" id="menuWidth" role="menubar">
+
+                    @foreach (var level1Page in level1Pages.Take(7))
+                    {
+                        RenderNavigationItem(level1Page, currentPage, 1, ref i);
+                    }
+
+                    @if (topBarNavItems?.Any() == true)
+                    {
+                        <h5 class="d-lg-none d-block w-100 m-2 ms-0">Top Bar Links</h5>
+                        <div class="align-items-center d-lg-none d-block">
+                            <ul class="m-0 p-0 justify-content-center list-unstyled" role="list">
+                                @foreach (var link in topBarNavItems!)
+                                {
+                                    <li class="nav-item ms-4" role="none">
+                                        <a href="@link.Url" target="@link.Target" 
+                                           class="nav-link dropdown-link"
+                                           role="menuitem">
+                                            @link.Name
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                </ul>
+                <!-- /NAVIGATION -->
+            </div>
+        </div>
+
+        <!-- OPTIONS -->
+        <ul class="list-inline list-unstyled mb-0 d-flex align-items-center px-1 me-xl-8" 
+            id="search-op" style="right: 0; position: absolute;">
+            <li class="list-inline-item mx-1">
+                <button class="navbar-toggler" type="button" 
+                        data-bs-toggle="collapse" data-bs-target="#navbarMainNav" 
+                        aria-controls="navbarMainNav" aria-expanded="false" 
+                        aria-label="Toggle navigation menu">
+                    <svg width="25" viewBox="0 0 20 20" fill="#fff" role="img" aria-hidden="true">
+                        <path d="M 19.9876 1.998 L -0.0108 1.998 L -0.0108 -0.0019 L 19.9876 -0.0019 L 19.9876 1.998 Z"></path>
+                        <path d="M 19.9876 7.9979 L -0.0108 7.9979 L -0.0108 5.9979 L 19.9876 5.9979 L 19.9876 7.9979 Z"></path>
+                        <path d="M 19.9876 13.9977 L -0.0108 13.9977 L -0.0108 11.9978 L 19.9876 11.9978 L 19.9876 13.9977 Z"></path>
+                        <path d="M 19.9876 19.9976 L -0.0108 19.9976 L -0.0108 17.9976 L 19.9876 17.9976 L 19.9876 19.9976 Z"></path>
+                    </svg>
+                </button>
+            </li>
+        </ul>
+        <!-- /OPTIONS -->
+    </nav>
+</div>
+<!-- /NAVBAR -->
+
+<script>
+function toggleDropdownClassesOnResize() {
+  function checkAndToggleClasses() {
+    const dropdownMenus = document.querySelectorAll('.dropdownMenu');
+    const menuWidth = document.getElementById('menuWidth');
+    if (!menuWidth) return;
+
+    if (window.innerWidth < 992) {
+      menuWidth.classList.remove('w-100');
+    } else {
+      menuWidth.classList.add('w-100');
+    }
+
+    dropdownMenus.forEach(menu => {
+      if (window.innerWidth < 992) {
+        menu.classList.remove('dropdown-menu', 'animate-slideup');
+      } else {
+        menu.classList.add('dropdown-menu', 'animate-slideup');
+      }
+    });
+  }
+  checkAndToggleClasses();
+  window.addEventListener('resize', checkAndToggleClasses);
+}
+toggleDropdownClassesOnResize();
+</script>

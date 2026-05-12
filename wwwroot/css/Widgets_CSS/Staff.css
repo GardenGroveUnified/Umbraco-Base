@@ -1,0 +1,29 @@
+@import '../styles.css';
+
+#staffListing{
+    padding-bottom: 0!important;
+    .pre-head{
+        font-size: 2rem;
+    }
+    .pre-head, .head, p{
+        color: #000;
+
+    }
+    .block__header{
+        background-color: var(--background-color);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .person{
+        text-align: center;
+        background-color: transparent;
+        background-image: url('/media/yylncsyk/pexels-pixabay-301378.jpg'); 
+        background-size: cover;
+        border-radius: 10px;
+        p, li, h5, a{
+            color: #fff;
+        }
+    }
+
+}

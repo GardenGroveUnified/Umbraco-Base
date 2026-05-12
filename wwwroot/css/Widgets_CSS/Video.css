@@ -1,0 +1,128 @@
+#healthyMealOptionsVideo{
+    color: #000;
+    text-align: center;
+    .shadow-primary-xs{
+        box-shadow: none !important;
+    }
+    .transition-hover-top{
+        transform: none !important;
+    }
+    div.p-3{
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 0px 0 10px 10px;
+    }
+}
+
+#specialEventsForms{
+    padding: 0% 0% 5% 0% !important;
+
+    .video-container {
+        display: flex;
+        width: 80%;
+        height: 50vh;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #000;
+        transition: all 0.3s ease-in-out;
+        margin: auto;
+    }
+
+    .video-section {
+      position: relative;
+      flex-grow: 1;
+      flex-basis: 0; /* allows equal distribution */
+      transition: flex-grow 0.4s ease;
+      overflow: hidden;
+    }
+
+    .video-section:hover {
+      flex: 1.2; /* grow hovered section */
+    }
+
+    .video-section video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+  .label-row {
+  position: absolute;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 5px 10px;
+  color: #000;
+  width: 80%;
+  border-radius: 0 5px 5px 0;
+}
+
+.label-row h6 {
+  margin: 0;
+  font-weight: 400;
+  color: #000;
+  text-align: center;
+}
+
+.label-row .btn {
+  background: transparent;
+  color: black;
+  padding: 0px 5px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  margin-left: 10px;
+}
+
+.label-row .btn svg{
+  width: 20px;
+  height: auto;
+}
+
+.video-section:hover .label-row .btn {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+    .video-container.hovered .video-section.blur {
+      filter: blur(4px);
+      opacity: 0.6;
+    }
+
+     @media (max-width: 768px) {
+      .label-row{
+        width: 100%;
+        border-radius: 0 0px 0px 0;
+      }
+      .video-container {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .video-section {
+        width: 100%;
+        flex: unset;
+        height: 30vh;
+      }
+
+      .video-section:hover {
+        flex: unset;
+        transform: scale(1.02);
+      }
+
+    .video-container.hovered .video-section.blur {
+        filter: none;
+        opacity: 1;
+      }
+    }
+}
+
+@media (max-width:576px){
+    #specialEventsForms{
+        top: -1px;
+    }
+}

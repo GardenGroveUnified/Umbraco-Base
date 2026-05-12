@@ -1,0 +1,94 @@
+@model UmbracoBase.Core.ViewModels.BackOfficeLoginViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "GGUSD - Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="/css/backoffice-login.css" />
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <img src="/ggusd-white-logo.svg" alt="GGUSD Logo" class="img-fluid h-100" />
+                </div>
+            </div>
+            
+            <div class="login-body">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        @Html.ValidationSummary(false, "", new { @class = "mb-0" })
+                    </div>
+                }
+                
+                <form id="loginForm" method="post" action="@Url.Action("Login", "CustomBackOfficeLogin")">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ReturnUrl" />
+                    
+                    <div class="form-floating">
+                        <input asp-for="Username" class="form-control" placeholder="Username" required autocomplete="username">
+                        <label asp-for="Username">
+                            <i class="fas fa-user me-2"></i>Username
+                        </label>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="form-floating">
+                        <input asp-for="Password" class="form-control" type="password" placeholder="Password" required autocomplete="current-password">
+                        <label asp-for="Password">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input asp-for="RememberMe" class="form-check-input" type="checkbox">
+                        <label asp-for="RememberMe" class="form-check-label">
+                            Remember me
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-login">
+                        <span class="loading-spinner spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        <span class="btn-text">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Loading animation -->
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+        });
+        
+        // Auto-focus first input
+        document.querySelector('input[type="text"], input[type="email"]')?.focus();
+    </script>
+</body>
+</html>

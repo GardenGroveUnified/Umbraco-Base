@@ -1,0 +1,215 @@
+﻿@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+	var content = (ContentModels.Slider)Model.Content;
+	var settings = (ContentModels.SliderSettings)Model.Settings;
+	if (settings?.BlockVisibility == false) { return; }
+	if (content.SliderItems == null || !content.SliderItems.Any()) return;
+
+	//Block Appearance
+	bool showArrow = true;
+	var delay = settings?.SliderTiming == 0 ? 10000 : settings?.SliderTiming * 1000;
+
+	var containerWidthClass = "container";
+	switch (settings?.ContainerWidth)
+	{
+		case "small":
+			containerWidthClass = "container-md container-small";
+			break;
+		case "standard":
+			containerWidthClass = "container";
+			break;
+		case "big":
+			containerWidthClass = "container-xlg";
+			break;
+		case "full width":
+			containerWidthClass = "container-fluid";
+			break;
+	}
+	var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-white" : settings?.BackgroundColor;
+	var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+	var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+	var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : string.Empty;
+
+	if (content.SliderItems.Any())
+	{
+		<section class="section block-slider @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" @if (!string.IsNullOrEmpty(settings?.AnchorId))
+		{
+			<text>id="@settings.AnchorId"</text>
+		}>
+			<div class="@(containerWidthClass)">
+				<div class="swiper-container swiper-btn-group swiper-btn-group-end text-white p-0 vh-75 overflow-hidden swiper-preloader"
+						data-swiper='{
+								"slidesPerView": 1,
+								"spaceBetween": 0,
+								"autoplay": { "delay" : @delay, "disableOnInteraction": false },
+								"loop": true,
+								"pagination": { "type": "bullets" }
+							}'>
+					<div class="swiper-wrapper h-100">
+						@foreach (var sliderItem in content.SliderItems)
+						{
+							var item = (SliderItem)sliderItem.Content;
+							if (item.BlockVisibility != true) continue;
+                            var styling = "";
+                            @if (item?.Preheading != "" || item.Heading != "" || item?.SliderText?.ToString() != ""){styling = "bg-dark p-3";}
+							var itemImage = item.Image != null ? item.Image.Url() : "";
+
+							<!-- slide -->
+							<div class="h-100 swiper-slide d-middle align-items-end bg-white overlay-dark overlay-opacity-1 d-middle bg-cover" style="background-image:url('@itemImage')">
+								<div class="container z-index-10 text-white text-center-xs @styling">
+									<div class="row">
+										<div class="col">
+											<div class="@(headerCenterTextClass)">
+												@if (item?.Preheading != "" || item.Heading != "" || item?.SliderText?.ToString() != "")
+												{
+													<div class="block__headerx mb-4">
+														@if (item?.Preheading != "")
+														{
+															<div class="pre-head">@item?.Preheading</div>
+														}
+														@if (item?.Heading != "")
+														{
+															<h2 data-swiper-parallax="-300">@item?.Heading</h2>
+														}
+													</div>
+
+													@if (item?.SliderText?.ToString() != "")
+													{
+														<p data-swiper-parallax="-100">@item?.SliderText</p>
+													}
+												}
+												@await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", item?.SliderLinksButtons)
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- /slide -->
+						}
+					</div>
+					@if (showArrow)
+					{
+						<!-- Add Arrows -->
+						<div class="swiper-button-next swiper-button-white"></div>
+						<div class="swiper-button-prev swiper-button-white"></div>
+					}
+				</div>
+			</div>
+		</section>
+	}
+
+}
+
+
+<!--
+<section class="swiper-container swiper-btn-group swiper-btn-group-end p-0 h-75vh overflow-hidden"
+		 data-swiper='{
+					"slidesPerView": 1,
+					"spaceBetween": 0,
+					"autoplay": { "delay" : 10000, "disableOnInteraction": true },
+					"loop": true,
+					"pagination": { "type": "bullets" }
+				}'>
+
+	<div class="swiper-wrapper h-100">
+		
+		<div class="h-100 swiper-slide d-middle bg-white overlay-dark overlay-opacity-2 d-middle bg-cover" style="background-image:url('/demo.files/images/various/sliders/slide-06_1920x.jpg')">
+			<div class="container z-index-10 text-white text-center-xs">
+
+				<h1 class="h2-xs fs--50 line-height-1" data-swiper-parallax="-300">
+					Get your music<br>
+					<span class="text-danger">everywhere</span>
+				</h1>
+
+				<p data-swiper-parallax="-100">
+					Smarty is lightweight, modular and <b>highly</b> scallable!
+				</p>
+
+				<p class="mt-5" data-swiper-parallax="-200">
+
+					<a href="#" class="btn btn-danger transition-hover-top">
+						<i class="fi fi-arrow-end"></i>
+						Check it out
+					</a>
+
+				</p>
+
+			</div>
+		</div>
+		
+		<div class="lazy h-100 swiper-slide d-middle bg-white overlay-dark overlay-opacity-1 bg-cover" style="background-image:url('/demo.files/images/various/sliders/slide-03_1920x.jpg')">
+			<div class="container z-index-10 text-white text-center-xs">
+
+				<h2 class="h2-xs fs--50 line-height-1" data-swiper-parallax="-300">
+					High technology<br>
+					<span class="text-secondary">in your pocket</span>
+				</h2>
+
+				<p data-swiper-parallax="-100">
+					Smarty is lightweight, modular and <b>highly</b> scallable!
+				</p>
+
+				<p class="mt-5" data-swiper-parallax="-200">
+
+					<a href="#" class="btn btn-secondary transition-hover-top">
+						<i class="fi fi-arrow-end"></i>
+						Check it out
+					</a>
+
+				</p>
+
+			</div>
+		</div>
+		
+		<div class="lazy h-100 swiper-slide d-middle bg-white overlay-dark overlay-opacity-1 bg-cover" style="background-image:url('/demo.files/images/various/sliders/slide-slice_1920x.jpg')">
+			<div class="container z-index-10 text-white text-center-xs">
+
+				<h2 class="h2-xs fs--50 line-height-1" data-swiper-parallax="-300">
+					Start running<br>
+					<span class="text-warning">with results</span>
+				</h2>
+
+				<p data-swiper-parallax="-100">
+					Smarty is lightweight, modular and <b>highly</b> scallable!
+				</p>
+
+				<p class="mt-5" data-swiper-parallax="-200">
+
+					<a href="#" class="btn btn-pill btn-warning transition-hover-top">
+						<i class="fi fi-arrow-end"></i>
+						Check it out
+					</a>
+
+				</p>
+
+			</div>
+		</div>
+		
+		<a href="#!" class="lazy h-100 swiper-slide d-middle bg-white overlay-dark overlay-opacity-5 bg-cover text-decoration-none" style="background-image:url('/demo.files/images/unsplash/covers/nicolas-ramirez-b-9fXiJOooY-unsplash.jpg')">
+			<div class="container z-index-10 text-white text-center-xs">
+
+				<h2 class="h2-xs fs--50 line-height-1" data-swiper-parallax="-300">
+					Full size <span class="text-warning">clickable</span>
+				</h2>
+
+				<p data-swiper-parallax="-100">
+					Smarty is lightweight, modular and <b>highly</b> scallable!
+				</p>
+
+			</div>
+		</a>
+		
+
+	</div>
+	
+	<div class="swiper-button-next swiper-button-white"></div>
+	<div class="swiper-button-prev swiper-button-white"></div>
+
+	<div class="swiper-pagination"></div>
+
+</section>
+-->
+

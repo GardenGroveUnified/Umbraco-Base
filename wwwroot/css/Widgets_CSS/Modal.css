@@ -1,0 +1,14 @@
+.modal-content{
+    background-image: url('/media/yylncsyk/pexels-pixabay-301378.jpg'); 
+    background-size: cover;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.modal-header, .modal-body{
+    background-color:#fff;
+}
+
+.modal-footer .button-1{
+    border-radius: 0 0 10px 10px;
+}

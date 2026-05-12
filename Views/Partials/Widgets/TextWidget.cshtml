@@ -1,0 +1,81 @@
+﻿@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Newtonsoft.Json;
+@using Umbraco.Cms.Core.Models.PublishedContent;
+@using Umbraco.Cms.Web.Common.Views;
+@using Umbraco.Cms.Core.Services;
+
+@{
+    var content = (ContentModels.TextWidget)Model.Content;
+    var settings = (ContentModels.TextSettings)Model.Settings!;
+    if (!settings?.BlockVisibility ?? false) { return; }
+
+    //var order = (int)ViewData["order"];
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+    var containerWidthClass = "container";
+    var parentPage = Umbraco.AssignedContentItem;
+    var fade = (string)null!;
+    switch (settings?.ContainerWidth)
+    {
+        case "small":
+            containerWidthClass = "container-md container-small w-md-25";
+            break;
+        case "standard":
+            containerWidthClass = "container w-md-50";
+            break;
+        case "big":
+            containerWidthClass = "container-xlg w-md-75";
+            break;
+        case "full width":
+            containerWidthClass = "container-fluid";
+            break;
+    }
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : string.Empty;
+    var classNames = settings.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+    ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+    : string.Empty;
+}
+
+
+<section class="section block-text aos-init aos-animate @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" @if (!string.IsNullOrEmpty(settings?.AnchorId))
+{
+    <text> id="@settings?.AnchorId" </text>
+}>
+    <div class="block-text @classNames">
+        <div class="@containerWidthClass">
+            <div class="row">
+                <div class="col">
+                    @if (content?.Preheading != "" || content.Heading != "" || content?.Text?.ToString() != "")
+                    {
+                        <div class="@verticalSpacingClass">
+                            @if (content?.Preheading != "")
+                            {
+                                <div class="pre-head @(headerCenterTextClass)">@content?.Preheading</div>
+                            }
+                            @if (content?.Heading != "" && order == 0)
+                            {
+                                <h1 class="head mb-4 display-4 @(headerCenterTextClass)">@content?.Heading</h1>
+                            }
+                            @if (content?.Heading != "" && order != 0)
+                            {
+                                <h2 class="head mb-4 display-4 @(headerCenterTextClass)">@content?.Heading</h2>
+                            }
+                            @if (content?.Text?.ToString() != "")
+                            {
+                                @content?.Text
+                            }
+                        </div>
+                    }
+                    @if(content?.Links?.Count() != 0)
+                    {
+                        @await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", content?.Links)
+                    }
+                </div>
+            </div>
+        </div>
+    </div> 
+</section>

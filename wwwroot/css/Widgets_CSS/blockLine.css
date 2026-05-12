@@ -1,0 +1,9 @@
+#onlineMealPlanAppInfo{
+    .section:first-child:not(.block-slider, .block-heading){
+        padding: 0px 0px !important;
+    }
+
+    .image-block img{
+        border-radius: 10px;
+    }
+}

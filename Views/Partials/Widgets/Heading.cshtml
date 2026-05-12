@@ -1,0 +1,84 @@
+﻿@inherits UmbracoViewPage<BlockListItem>
+
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.Heading)Model.Content;
+    var settings = (ContentModels.HeadingSettings)Model.Settings;
+	var currentPage = Umbraco.AssignedContentItem;
+    if (settings?.BlockVisibility == false) { return; }
+
+	int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var containerWidthClass = "container";
+	switch (settings?.ContainerWidth)
+	{
+		case "small":
+			containerWidthClass = "container-md container-small";
+			break;
+		case "standard":
+			containerWidthClass = "container";
+			break;
+		case "big":
+			containerWidthClass = "container-xlg";
+			break;
+		case "full width":
+			containerWidthClass = "container-fluid";
+			break;
+	}
+	var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "#ffffff00" : settings?.BackgroundColor;
+	var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+
+	var backgroundImage = content.BackgroundImage?.GetCropUrl("small");
+
+	var classNames = settings.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+    ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+    : string.Empty;
+
+	var centerHeading = settings.CenterHeading ? "text-center" : "text-left";
+
+	var heading = "";
+	@if (!string.IsNullOrWhiteSpace(content?.HeadingText))
+	{
+		heading = content?.HeadingText;
+	}
+	else
+	{
+		//Use fallback to pageTitle then pageName
+		heading = string.IsNullOrWhiteSpace(currentPage.Value<string>("PageTitle")) ? currentPage.Name : currentPage.Value<string>("PageTitle");
+	}
+}
+
+<section style="background-color: @(backgroundColorClass);" class="section block-heading text-center-xs bg-cover text-uppercase @(verticalSpacingClass) @(classNames)"
+@if (backgroundImage is not null)
+{
+	<text>style="background-image: url('@backgroundImage')" </text>
+}
+@if (!string.IsNullOrEmpty(settings?.AnchorId))
+{
+	<text>id="@settings.AnchorId"</text>
+}>
+	<div class="@(containerWidthClass) h-100">
+		<div>
+			<div class="row">
+				<div class="col-sm-12 col-md m-auto">
+				@if (order == 0)
+				{
+					<h1 class="@centerHeading">@heading</h1>
+				}
+				else
+				{
+					<h2 class="@centerHeading">@heading</h2>
+				}
+				</div>
+				@if (content!.ShowBreadcrumbs)
+				{
+					<div class="col-sm-12 col-md my-auto me-auto">
+						@await Html.CachedPartialAsync("~/Views/Partials/Shared/breadcrumb.cshtml", currentPage, TimeSpan.FromSeconds(60), true)
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</section>

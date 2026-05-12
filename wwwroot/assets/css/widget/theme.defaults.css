@@ -1,0 +1,85 @@
+:root {
+    --white: #fff;
+    --black: #000;
+    --theme: #003768;
+    --theme-rgb: 58, 165, 237;
+    --theme-darker: #148ee0;
+    --theme-contrast: #fff;
+    --theme-alt: #2ecc71;
+    --theme-alt-darker: #25a25a;
+    --theme-alt-contrast: #fff;
+    --heading-dark: #111;
+    --text-dark: #2e2e2e;
+    --background-dark: #111;
+    --background-dark-lighter: #1b1b1b;
+    --border-dark: rgba(0, 0, 0, 0.08);
+    --heading-light: #fff;
+    --text-light: #fff;
+    --background-light: #f9f9f9;
+    --border-light: rgba(255, 255, 255, 0.1);
+    --selected-nav-item: #3aa5ed;
+    --header-height: 70px;
+    --logo-padding: 24px;
+    --pre-top-height: 30px;
+    --top-combo-calc: calc(var(--header-height) + var(--pre-top-height));
+    --navigation-padding: 30px;
+    --navigation-font-size: 0.875rem;
+    --navigation-font-weight: bold;
+    --grid-width-small: 850px;
+    --grid-width: 1300px;
+    --grid-width-big: 1600px;
+    --grid-gutter: 30px;
+    --grid-gutter-half: calc(var(--grid-gutter) / 2);
+    --button-border-radius: 4px;
+    --body-font: "Roboto", sans-serif;
+    --heading-font: "Roboto", sans-serif;
+    --font-size: 1.1rem;
+    --font-size-big: 1.25rem;
+    --font-size-small: 0.75rem;
+    --body-line-height: 1.5;
+    --font-size-h1: 2.5rem;
+    --font-size-h2: 2.25rem;
+    --font-size-h3: 1.75rem;
+    --font-size-h4: 1.5rem;
+    --font-size-h5: 1.32rem;
+    --font-size-h6: 1rem;
+    --hero-heading: 3.75rem;
+    --heading-line-height: 1.2;
+    --font-weight-normal: normal;
+    --font-weight-light: 300;
+    --font-weight-bold: 500;
+    --font-weight-bolder: bolder;
+    --body-font-weight: normal;
+    --heading-font-weight: bold;
+    --text-big-font-weight: 300;
+    --success: #2ecc71;
+    --error: #e74c3c;
+    --bg-accent-1: #377dff0a;
+    --bg-accent-2: #fcfcfd;
+    --bg-accent-3: #0037681a;
+    --bg-accent-4: #0000001a;
+}
+@media only screen and (max-width: 1200px) {
+  :root {
+    --navigation-padding: 15px;
+  }
+}
+@media only screen and (max-width: 992px) {
+  :root {
+    --header-height: 50px;
+    --grid-gutter: 20px;
+    --logo-padding: 15px;
+    --navigation-font-size: 1rem;
+  }
+}
+@media only screen and (max-width: 768px) {
+  :root {
+    --grid-gutter: 15px;
+    --hero-heading: 2.5rem;
+  }
+}
+@media only screen and (max-width: 480px) {
+  :root {
+    --grid-gutter: 15px;
+  }
+}

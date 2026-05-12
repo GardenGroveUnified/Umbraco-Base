@@ -1,0 +1,16 @@
+﻿@using Umbraco.Cms.Core.Models;
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.LinkPage>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = null;
+
+    //This template is mainly use for when a content editor open this path directly. This link is being handled by the Menu item or Sidebar. It knows how to render link tag with href and target.
+    if (Model.LinkUrl != null)
+    {
+        if (Model?.LinkUrl?.Url is not null)
+        {
+            Context.Response.Redirect(Model?.LinkUrl?.Url!);
+        }
+    }
+}

@@ -1,0 +1,70 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Page>
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+
+@{
+    Layout = "Master.cshtml";
+
+    var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
+    ViewBag.Title = $"{title} | GGUSD Food Services";
+}
+
+@{
+    var parentPage = Model?.Parent;
+
+    if (Model?.ShowParent == true)
+    {
+        var parentHeaderBlocks = parentPage?.Value<IEnumerable<BlockListItem>>("headerBlocks");
+        var parentBlocks = parentPage?.Value<IEnumerable<BlockListItem>>("Blocks");
+
+        @if (parentHeaderBlocks != null && parentHeaderBlocks.Any())
+        {
+            <div class="parent-blocks">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", parentHeaderBlocks },
+                    { "ParentPage", parentPage }
+                })
+            </div>
+        }
+
+        @if (parentBlocks != null && parentBlocks.Any())
+        {
+            <div class="parent-blocks">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", parentBlocks },
+                    { "ParentPage", parentPage }
+                })
+            </div>
+        }
+    }
+
+    @if (Model!.HeaderBlocks!.Any())
+    {
+        <div class="container-xxl">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+            {
+                { "Blocks", Model.HeaderBlocks }
+            })
+        </div>
+    }
+
+    @if (Model?.PageTitle is not null && Model?.PageTitle != "")
+    {
+        <div class="container">
+            <h1 class="my-5 text-blue">@Model!.PageTitle</h1>
+        </div>
+    }
+
+    @if (Model!.Blocks!.Any())
+    {
+        <div class="container">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+            {
+                { "Blocks", Model.Blocks }
+            })
+        </div>
+    }
+}

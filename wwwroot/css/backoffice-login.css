@@ -1,0 +1,151 @@
+@import "./styles.css";
+
+body {
+background-color: linear-gradient(135deg, #003768 0%, #001870 100%);
+background: url("/img/login-background-image.jpg") no-repeat center center/cover;
+min-height: 100vh;
+font-family: var(--font-titles);
+}
+
+.login-container {
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+padding: 20px;
+}
+
+.login-card {
+background: white;
+border-radius: 15px;
+box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+max-width: 450px;
+width: 100%;
+overflow: hidden;
+}
+
+.login-header {
+background: linear-gradient(135deg, #003768 0%, #001870 100%);
+color: white;
+text-align: center;
+padding: 1rem;
+}
+
+.login-header h1 {
+font-size: 1.75rem;
+font-weight: 600;
+margin: 0;
+}
+
+.login-header p {
+margin: 0.5rem 0 0;
+opacity: 0.9;
+font-size: 0.95rem;
+}
+
+.login-body {
+padding: 2rem 1.5rem;
+}
+
+.form-floating {
+margin-bottom: 1rem;
+}
+
+.form-floating .form-control {
+border: 2px solid #e9ecef;
+border-radius: 8px;
+height: calc(3.5rem + 2px);
+transition: all 0.3s ease;
+}
+
+.form-floating .form-control:focus {
+border-color: #003768;
+box-shadow: 0 0 0 0.2rem rgba(0, 55, 104, 0.25);
+}
+
+.form-floating label {
+color: #6c757d;
+}
+
+.btn-login {
+background: linear-gradient(135deg, #003768 0%, #001870 100%);
+border: none;
+border-radius: 8px;
+padding: 0.75rem 2rem;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+transition: all 0.3s ease;
+width: 100%;
+}
+
+.btn-login:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(0, 55, 104, 0.4);
+}
+
+.btn-login:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
+
+.form-check {
+margin: 1.5rem 0;
+}
+
+.form-check-input:checked {
+background-color: #003768;
+border-color: #003768;
+}
+
+.alert {
+border-radius: 8px;
+display: flex;
+justify-content: center;
+align-items: center;
+} .alert ul{
+    margin-bottom: 0;
+}
+
+.logo {
+width: 200px;
+height: 160px;
+background: rgba(255, 255, 255, 0);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 0;
+}
+
+.logo i {
+font-size: 1.5rem;
+}
+
+.loading-spinner {
+display: none;
+}
+
+.loading .loading-spinner {
+display: inline-block;
+}
+
+.loading .btn-text {
+display: none;
+}
+
+@media (max-width: 576px) {
+.login-card {
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.login-header {
+    padding: 1.5rem 1rem 1rem;
+}
+
+.login-body {
+    padding: 1.5rem 1rem;
+}
+}

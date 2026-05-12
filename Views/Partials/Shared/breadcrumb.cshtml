@@ -1,0 +1,38 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Routing
+@using Umbraco.Cms.Web.Common.PublishedModels
+@using Umbraco.Extensions
+@using UmbracoBase.Core.Constants
+
+@inject IPublishedUrlProvider PublishedUrlProvider
+@{
+    var ancestors = Model.Ancestors();
+    var subsite = ancestors.Where(x => x?.ContentType?.Alias == Subsite.ModelTypeAlias);
+    var withSubsite = ancestors.Where(x => x?.ContentType?.Alias != Site.ModelTypeAlias);
+    var selection = subsite is null ? ancestors.ToArray() : withSubsite.ToArray();
+}
+
+@if (selection?.Length > 0)
+{
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb justify-content-md-end justify-content-center" style="font-size: 14px;">
+        @foreach (IPublishedContent item in selection.OrderBy(x => x.Level))
+        {
+            if (!item.IsVisible())
+            {
+            <li class="breadcrumb-item"><a href="@item.Url(PublishedUrlProvider)">@(string.IsNullOrWhiteSpace(item.Value<string>(PropertyAlias.PageTitle)) ? item.Name : item.Value<string>(PropertyAlias.PageTitle))</a></li>
+            }
+        }
+        <li class="breadcrumb-item active" aria-current="page">@(string.IsNullOrEmpty(Model.Value<string>(PropertyAlias.PageTitle)) ? Model.Name : Model.Value<string>(PropertyAlias.PageTitle))</li>
+	</ol>
+</nav>
+}
+else
+{
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb justify-content-md-end justify-content-center" style="font-size: 14px;">
+        <li class="breadcrumb-item active" aria-current="page">@(string.IsNullOrEmpty(Model.Value<string>(PropertyAlias.PageTitle)) ? Model.Name : Model.Value<string>(PropertyAlias.PageTitle))</li>
+	</ol>
+</nav>
+}

@@ -1,0 +1,133 @@
+@import '../styles.css';
+
+.overlay-dark::after{
+        background-color: transparent;
+    }
+
+#visionStatement{
+    background-color: var(--theme);
+}
+
+#mainHero{
+    top: -40px;
+}
+
+#communityHeader{
+    background-color: transparent !important;
+
+    .hero__inner h1{
+        color: black;
+        font-weight: 500;
+        font-size: 70px;
+    }
+
+    .overlay-dark::after{
+        background-color: rgb(255,255,255);
+    }
+
+    @media (max-width:576px) {
+        .hero__inner h1{
+            font-size: 50px;
+        }
+    }
+}
+
+
+#mealPaymentHeader{
+    background-color: transparent !important;
+    .overlay{
+        opacity: 0.7 !important;
+        border-radius: 10px;
+    }
+    .overlay-dark::after{
+        background-color: rgb(255,255,255);
+        border-radius: 10px;
+    }
+    .hero__inner h1{
+        color: black;
+        font-weight: 600;
+        font-size: 45px;
+    }
+}
+#contactHeader{
+    background-color: transparent !important;
+    .overlay{
+        opacity: 0 !important;
+        border-radius: 10px;
+    }
+    .overlay-dark::after{
+        background-color: rgb(255,255,255);
+        border-radius: 10px;
+    }
+    .hero__inner h1{
+        color: black;
+        font-weight: 600;
+        font-size: 70px;
+    }
+}
+
+#mealPaymentHero{
+    .head h1{
+        color: black;
+        font-size: 70px;
+    }
+
+    p{
+        color: black;
+    }
+
+    .cta{
+        justify-content: left;
+    }
+
+    .cta .btn{
+        transform: none;
+        background-color: #1E211C;
+        border-radius: 0;
+    }
+
+    .text-left{
+        left: -100px;
+        max-width: 35%;
+    }
+
+    @media (max-width:820px) {
+        .head h1{
+            font-size: 50px;
+        }
+    }
+    @media (max-width:576px) {
+        .head h1{
+            font-size: 40px;
+        }
+
+        .text-left{
+            left: 0px;
+            max-width: 65%;
+        }
+    }
+}
+
+#mnInfoHero{
+    
+    .head h1{
+        font-size: 80px;
+    }
+
+    @media (max-width:576px) {
+        .overlay{
+            opacity: 0.9 !important;
+        }
+
+        .head h1{
+            font-size: 50px;
+        }
+    }
+
+}
+
+#educatorHeaderHero{
+    .overlay-dark::after{
+        background-color: #1E211C;
+    }
+}

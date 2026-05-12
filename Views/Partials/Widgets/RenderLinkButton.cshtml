@@ -1,0 +1,14 @@
+@model IEnumerable<Umbraco.Cms.Core.Models.Link>
+
+@if (Model != null && Model.Any())
+{
+    <div class="cta p-1 mb-1 text-center">
+    @foreach (var link in Model)
+    {
+            <a href="@link.Url" class="btn btn-link bg-blue px-4 py-2 text-white text-decoration-none" target="@(link.Target)" @if (link.Target == "_blank")
+            {
+                <text>rel="noopener"</text>
+            }><span>@link.Name</span></a>
+    }
+</div>
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "../../umbraco-package-schema.json",
+  "name": "AccessibilityToolkit",
+  "version": "1.0.0",
+  "extensions": [
+    {
+      "type": "workspaceView",
+      "alias": "accessibilityToolkitWorkspaceView",
+      "name": "Accessibility",
+      "js": "/App_Plugins/AccessibilityToolkit/accessibility-toolkit.js?v=1.10.46",
+      "elementName": "accessibility-toolkit-view",
+      "weight": -10,
+      "meta": {
+        "label": "Accessibility",
+        "pathname": "accessibility",
+        "icon": "icon-check"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.WorkspaceAlias",
+          "match": "Umb.Workspace.Document"
+        }
+      ]
+    },
+    {
+      "type": "dashboard",
+      "alias": "accessibilityToolkitDashboard",
+      "name": "Accessibility Toolkit",
+      "js": "/App_Plugins/AccessibilityToolkit/accessibility-dashboard.js?v=1.10.46",
+      "elementName": "accessibility-toolkit-dashboard",
+      "weight": 10,
+      "meta": {
+        "label": "Accessibility Toolkit",
+        "pathname": "accessibility-toolkit"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ]
+    }
+  ]
+}
+

@@ -9,7 +9,7 @@
     var content = (ContentModels.ImageBoxes)Model.Content;
     var settings = (ContentModels.ImageBoxesSettings?)Model.Settings;
 
-    if (settings?.BlockVisibility ?? false) { return; }
+    if (!settings?.BlockVisibility ?? false) { return; }
 
     // --- Helpers ---
     static string Fallback(string? value, string fallback) =>
@@ -20,10 +20,9 @@
 
     // --- Block-level settings ---
     int order                        = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
-    var sectionPaddingClass   = Fallback(settings?.VerticalSpacing, "sp-xl");
-    var backgroundColorClass  = Fallback(settings?.BackgroundColor, "bg-transparent");
+    var sectionPaddingClass   = Fallback(settings?.VerticalSpacing, "py-3");
     var topBorderClass        = settings!.ShowTopBorder ? "border-top" : "";
-    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
     var blockItemStyle        = FallbackEmpty(settings?.BlockStyle, "Default");
     var anchorId              = settings?.AnchorId;
 
@@ -32,7 +31,6 @@
     var justifyContentClass = FallbackEmpty(settings?.HorizontalAlignment, "justify-content-center");
     var itemPerRow          = FallbackEmpty(settings?.ItemsPerRow.ToString(), "4");
     @* var itemPaddingClass    = FallbackEmpty(settings?.Padding, "p-2"); *@
-    var textAlignmentClass  = "text-" + Fallback(settings?.CenterHeading == true ? "center" : null, "left");
 
     // --- Container width ---
     var containerWidthMap = new Dictionary<string, string>
@@ -56,28 +54,15 @@
         ["1"]   = "col-12 col-md-12 col-lg-12",
     };
     var numberOfColumnClass = columnMap.GetValueOrDefault(itemPerRow, "col-6 col-md-3 col-lg-3");
-
-    // --- Gutter bottom spacing ---
-    var gutterBottomMap = new Dictionary<string, string>
-    {
-        ["no-gutters"]  = "mb-0",
-        ["gutters-xxs"] = "mb-1",
-        ["gutters-xs"]  = "mb-2",
-        ["gutters-sm"]  = "mb-3",
-        ["gutters-md"]  = "mb-4",
-        ["gutters-lg"]  = "mb-5",
-        ["gutters-xl"]  = "mb-6",
-    };
-    var bottomSpacingClass = gutterBottomMap.GetValueOrDefault(gutterSpacingClass, "mb-3 mt-3");
 }
 
 @if (content.ImageBoxList != null)
 {
-    <section class="@backgroundColorClass @sectionPaddingClass @topBorderClass"
+    <section class="@sectionPaddingClass @topBorderClass" style="background-color: @settings?.BackgroundColor;"
              @if (!string.IsNullOrEmpty(anchorId)) { <text>id="@anchorId"</text> }>
 
         <div class="@containerWidthClass">
-            <div class="row @gutterSpacingClass @justifyContentClass @textAlignmentClass">
+            <div class="row @gutterSpacingClass @justifyContentClass">
 
                 @* Section header *@
                 @if (!string.IsNullOrEmpty(content.Heading) || !string.IsNullOrEmpty(content.Preheading))
@@ -90,11 +75,17 @@
                             }
                             @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
                             {
-                                <h1 class="head py-2 text-white display-5 bold">@content.Heading</h1>
+                                <h1 class="head py-2 text-black display-5 bold">@content.Heading</h1>
                             }
                             else if (!string.IsNullOrEmpty(content.Heading) && order != 0)
                             {
-                                <h2 class="head py-2 text-white display-5 bold">@content.Heading</h2>
+                                <h2 class="head py-2 text-black display-5 bold">@content.Heading</h2>
+                            }
+                        </div>
+                        <div>
+                            @if (!string.IsNullOrEmpty(content.Text?.ToString()))
+                            {
+                                <p class="text-black">@content.Text</p>
                             }
                         </div>
                     </div>
@@ -108,7 +99,7 @@
                     var hasLink  = !string.IsNullOrEmpty(imageBox?.BoxLink?.Url);
                     var hasTitle = !string.IsNullOrEmpty(imageBox?.Title);
 
-                    <div class="@numberOfColumnClass @bottomSpacingClass">
+                    <div class="@numberOfColumnClass">
                         @if (blockItemStyle == "Style 2")
                         {
                             @* Style 2: card layout *@
@@ -143,16 +134,16 @@
                         else
                         {
                             @* Default style *@
-                            <div class="h-100 image-boxes rounded">
+                            <div class="h-100 image-boxes rounded bg-white p-2 shadow-primary-xs transition-hover-top transition-all-ease-250">
                                 @if (hasLink && imageBox?.BoxLink != null)
                                 {
                                     @Html.Raw($"<a href=\"{imageBox.BoxLink.Url}\" target=\"{imageBox.BoxLink.Target}\">")
                                 }
-                                <div class="d-block overflow-hidden text-decoration-none text-dark rounded">
+                                <div class="d-block overflow-hidden text-decoration-none text-dark rounded overlay-dark-hover overlay-opacity-2">
                                     <img src="@imageBox?.Image?.GetCropUrl(800, 450)" class="img-fluid lazyload rounded" />
-                                    @if (!hasTitle)
+                                    @if (hasTitle)
                                     {
-                                        <div class="p-3 p-sm-2 p-1-xs head">
+                                        <div class="p-3 p-sm-2 p-1-xs head text-center">
                                             <h5 class="m-0 mt-4">@imageBox?.Title</h5>
                                         </div>
                                     }

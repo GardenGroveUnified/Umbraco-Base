@@ -43,9 +43,9 @@
                 {
                     var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                     
-                    <li class="nav-item @(menuItemSelectedClass) w-100 text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                    <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
                         <a href="@(page.Url())" id="@(pageId)" 
-                           class="nav-link text-uppercase dropdown-menu-hover align-content-center"
+                           class="nav-link dropdown-menu-hover align-content-center"
                            aria-haspopup="true"
                            aria-expanded="false"
                            role="menuitem">
@@ -68,9 +68,9 @@
                 {
                     var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                     
-                    <li class="nav-item @(menuItemSelectedClass) w-100 text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                    <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
                         <button id="@(pageId)" 
-                                class="nav-link text-uppercase dropdown-menu-hover align-content-center h-100 w-100 cursor-default"
+                                class="nav-link dropdown-menu-hover align-content-center h-100 w-100 cursor-default"
                                 aria-haspopup="true"
                                 aria-expanded="false"
                                 role="menuitem">
@@ -93,9 +93,9 @@
             else
             {
                 // Top level item without children
-                <li class="nav-item @(menuItemSelectedClass) w-100 text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
                     <a href="@(page.Url())" id="@(pageId)" 
-                       class="nav-link text-uppercase align-content-center"
+                       class="nav-link align-content-center"
                        role="menuitem"><b>@(page.Name)</b></a>
                 </li>
             }
@@ -110,7 +110,7 @@
                 var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                 var target = pageInfo.Target ?? "_self";
                 
-                <li class="dropdown-item text-uppercase my-lg-3 text-wrap" role="none">
+                <li class="dropdown-item my-lg-3 text-wrap" role="none">
                     <div class="dropdown-submenu">
                         <a href="@(page.Url())" target="@target"
                            class="dropdown-link text-black"
@@ -135,7 +135,7 @@
                 var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                 var target = pageInfo.Target ?? "_self";
                 
-                <li class="dropdown-item text-uppercase my-lg-3 text-wrap" role="none">
+                <li class="dropdown-item my-lg-3 text-wrap" role="none">
                     <a href="@(page.Url())" target="@target"
                        class="dropdown-link text-black"
                        role="menuitem"
@@ -163,7 +163,7 @@
     else
     {
         // Check if any ancestor is a Subsite
-        var ancestor = currentPage?.Parent;
+        var ancestor = currentPage?.Parent<IPublishedContent>();
         while (ancestor != null)
         {
             if (ancestor.ContentType?.Alias == ContentTypeAlias.Subsite)
@@ -171,7 +171,7 @@
                 navRoot = ancestor;
                 break;
             }
-            ancestor = ancestor.Parent;
+            ancestor = ancestor?.Parent<IPublishedContent>();
         }
     }
     
@@ -290,13 +290,13 @@
 <!-- /TOP BAR -->
 
 <!-- NAVBAR -->
-<div class="container-xxl position-relative shadow-sm"
+<div class="position-relative shadow-sm"
      role="navigation"
      aria-label="Main navigation">
 
     <nav class="navbar navbar-expand-lg navbar-light">
 
-        <div class="container-fluid p-0">
+        <div class="container p-0">
             <div class="collapse navbar-collapse justify-content-center" id="navbarMainNav">
                 
                 <!-- NAVIGATION TITLE -->
@@ -313,11 +313,11 @@
                 <!-- /NAVIGATION TITLE -->
 
                 <!-- NAVIGATION -->
-                <ul class="navbar-nav w-100 justify-content-lg-center" id="menuWidth" role="menubar">
+                <ul class="navbar-nav w-100 justify-content-lg-end" id="menuWidth" role="menubar">
 
                     @foreach (var level1Page in level1Pages.Take(7))
                     {
-                        RenderNavigationItem(level1Page, currentPage, 1, ref i);
+                        RenderNavigationItem(level1Page, currentPage!, 1, ref i);
                     }
 
                     @if (topBarNavItems?.Any() == true)

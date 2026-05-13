@@ -7,9 +7,9 @@
 
 @{
     var content = (ContentModels.ImageBoxes)Model.Content;
-    var settings = (ContentModels.ImageBoxesSettings)Model.Settings;
+    var settings = (ContentModels.ImageBoxesSettings?)Model.Settings;
 
-    if (settings?.BlockVisibilty ?? false) { return; }
+    if (settings?.BlockVisibility ?? false) { return; }
 
     // --- Helpers ---
     static string Fallback(string? value, string fallback) =>
@@ -19,7 +19,7 @@
         string.IsNullOrEmpty(value) ? fallback : value;
 
     // --- Block-level settings ---
-    int order                 = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+    int order                        = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
     var sectionPaddingClass   = Fallback(settings?.VerticalSpacing, "sp-xl");
     var backgroundColorClass  = Fallback(settings?.BackgroundColor, "bg-transparent");
     var topBorderClass        = settings!.ShowTopBorder ? "border-top" : "";
@@ -30,9 +30,9 @@
     // --- Item-level settings ---
     var gutterSpacingClass  = FallbackEmpty(settings?.ColumnSpacing, "gutters-sm");
     var justifyContentClass = FallbackEmpty(settings?.HorizontalAlignment, "justify-content-center");
-    var itemPerRow          = FallbackEmpty(settings?.ItemPerRow, "4");
-    var itemPaddingClass    = FallbackEmpty(settings?.Padding, "p-2");
-    var textAlignmentClass  = "text-" + Fallback(settings?.TextAlignment, "left");
+    var itemPerRow          = FallbackEmpty(settings?.ItemsPerRow.ToString(), "4");
+    @* var itemPaddingClass    = FallbackEmpty(settings?.Padding, "p-2"); *@
+    var textAlignmentClass  = "text-" + Fallback(settings?.CenterHeading == true ? "center" : null, "left");
 
     // --- Container width ---
     var containerWidthMap = new Dictionary<string, string>
@@ -71,7 +71,7 @@
     var bottomSpacingClass = gutterBottomMap.GetValueOrDefault(gutterSpacingClass, "mb-3 mt-3");
 }
 
-@if (content.Items != null)
+@if (content.ImageBoxList != null)
 {
     <section class="@backgroundColorClass @sectionPaddingClass @topBorderClass"
              @if (!string.IsNullOrEmpty(anchorId)) { <text>id="@anchorId"</text> }>
@@ -80,24 +80,28 @@
             <div class="row @gutterSpacingClass @justifyContentClass @textAlignmentClass">
 
                 @* Section header *@
-                @if (!string.IsNullOrEmpty(content.Heading) || !string.IsNullOrEmpty(content.PreHeading))
+                @if (!string.IsNullOrEmpty(content.Heading) || !string.IsNullOrEmpty(content.Preheading))
                 {
                     <div class="col-12">
                         <div class="@headerCenterTextClass mb-4">
-                            @if (!string.IsNullOrEmpty(content.PreHeading))
+                            @if (!string.IsNullOrEmpty(content.Preheading))
                             {
-                                <div class="pre-head">@content.PreHeading</div>
+                                <div class="pre-head">@content.Preheading</div>
                             }
-                            @if (!string.IsNullOrEmpty(content.Heading))
+                            @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
                             {
                                 <h1 class="head py-2 text-white display-5 bold">@content.Heading</h1>
+                            }
+                            else if (!string.IsNullOrEmpty(content.Heading) && order != 0)
+                            {
+                                <h2 class="head py-2 text-white display-5 bold">@content.Heading</h2>
                             }
                         </div>
                     </div>
                 }
 
                 @* Image box items *@
-                @foreach (var item in content.Items)
+                @foreach (var item in content.ImageBoxList)
                 {
                     var imageBox = (ContentModels.ImageBox)item.Content;
                     var hasText  = !string.IsNullOrEmpty(imageBox?.BodyText?.ToString());
@@ -108,20 +112,20 @@
                         @if (blockItemStyle == "Style 2")
                         {
                             @* Style 2: card layout *@
-                            <div class="card widget-card h-100 img-thumbnail @itemPaddingClass shadow-primary-xs rounded-4">
-                                @if (hasLink)
+                            <div class="card widget-card h-100 img-thumbnail shadow-primary-xs rounded-4">
+                                @if (hasLink && imageBox?.BoxLink != null)
                                 {
-                                    @Html.Raw($"<a href=\"{imageBox.BoxLink?.Url}\" target=\"{imageBox.BoxLink?.Target}\" class=\"stretched-link\">")
+                                    @Html.Raw($"<a href=\"{imageBox.BoxLink.Url}\" target=\"{imageBox.BoxLink.Target}\" class=\"stretched-link\">")
                                 }
                                 <div class="card-body p-4 p-sm-2 p-1-xs">
                                     <div class="image-wrapper">
-                                        <img src="@imageBox.Image?.GetCropUrl()" class="card-img-top img-fluid m-auto" alt="@imageBox.Image?.Name" />
+                                        <img src="@imageBox?.Image?.GetCropUrl()" class="card-img-top img-fluid m-auto" alt="@imageBox?.Image?.Name" />
                                     </div>
                                     <div class="card-text mt-3">
                                         @if (hasTitle)
                                         {
                                             <div class="p-4 p-sm-2 p-1-xs box-header">
-                                                <h1 class="m-0">@imageBox.Title</h1>
+                                                <h1 class="m-0">@imageBox?.Title</h1>
                                             </div>
                                         }
                                         @if (hasText)
@@ -139,17 +143,17 @@
                         else
                         {
                             @* Default style *@
-                            <div class="h-100 @itemPaddingClass image-boxes rounded">
-                                @if (hasLink)
+                            <div class="h-100 image-boxes rounded">
+                                @if (hasLink && imageBox?.BoxLink != null)
                                 {
-                                    @Html.Raw($"<a href=\"{imageBox.BoxLink?.Url}\" target=\"{imageBox.BoxLink?.Target}\">")
+                                    @Html.Raw($"<a href=\"{imageBox.BoxLink.Url}\" target=\"{imageBox.BoxLink.Target}\">")
                                 }
                                 <div class="d-block overflow-hidden text-decoration-none text-dark rounded">
                                     <img src="@imageBox?.Image?.GetCropUrl(800, 450)" class="img-fluid lazyload rounded" />
-                                    @if (!settings!.HideHeading && hasTitle)
+                                    @if (!hasTitle)
                                     {
                                         <div class="p-3 p-sm-2 p-1-xs head">
-                                            <h5 class="m-0 mt-4">@imageBox.Title</h5>
+                                            <h5 class="m-0 mt-4">@imageBox?.Title</h5>
                                         </div>
                                     }
                                     @if (hasText)

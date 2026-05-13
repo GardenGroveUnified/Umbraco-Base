@@ -12,7 +12,7 @@
         ? ViewData["Blocks"] as IEnumerable<BlockListItem>
         : Model.Value<IEnumerable<BlockListItem>>("Widgets");
 
-    var startIndex = ViewData.ContainsKey("StartIndex") ? (int)ViewData["StartIndex"] : 0;
+    var startIndex = ViewData.ContainsKey("StartIndex") ? (int)(ViewData["StartIndex"] ?? 0) : 0;
     var parentPage = ViewData.ContainsKey("ParentPage") ? ViewData["ParentPage"] : null;
 }
 

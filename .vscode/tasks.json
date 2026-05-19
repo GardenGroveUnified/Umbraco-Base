@@ -4,6 +4,18 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "kill-and-build",
+            "dependsOn": ["kill-dotnet-and-port", "build"],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label":"kill-dotnet-and-port",
+            "type":"shell",
+            "command":"pkill -f dotnet; lsof -ti:44389 | xargs kill -9; exit 0",
+            "problemMatcher": []
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",

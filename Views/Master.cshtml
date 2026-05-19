@@ -64,7 +64,7 @@
 			<main class="main-content position-relative" role="main"> 
 				@RenderBody()
 			</main>
-			<!-- @await Html.PartialAsync("~/Views/Partials/Shared/footer.cshtml") -->
+			@await Html.PartialAsync("~/Views/Partials/Shared/footer.cshtml")
 		</div>
 		<!-- /#wrapper -->
 
@@ -75,24 +75,24 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/plugins/respimg/ls.respimg.min.js" integrity="sha512-wx6mQs3FAg3I/qwFLpdbFrUbI3bR5OjPFCg8MlszSokKIlh9Knwsj0TG3VzEOke2JDXpDfcvOdc7mACgRbnyow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/plugins/bgset/ls.bgset.min.js" integrity="sha512-H0f3dM0T89f58GnoRxtsltBJ2LB37QllwC/Gok/xTAxBskX/8kaqjQ1bt1A1UuvtsPdz+SteSO4tVlJ39ybC+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" integrity="sha512-q583ppKrCRc7N5O0n2nzUiJ+suUv7Et1JGels4bXOaMFQcamPk9HjdUknZuuFjBNs7tsMuadge5k9RzdmO+1GQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script src="/scripts/counter.js"></script>
+		@* <script src="/scripts/counter.js"></script>
 		<script src="/scripts/SocialMedia.js"></script>
-		<script async src="//www.instagram.com/embed.js"></script>
-		<script>
+		<script async src="//www.instagram.com/embed.js"></script> *@
+		@* <script>
 			function translatePage(lang) {
 				var url = window.location.href;
 				window.location = `https://translate.google.com/translate?hl=${lang}&sl=auto&u=${encodeURIComponent(url)}`;
 			}
-		</script>
+		</script> *@
 			<!-- AOS JS -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+		@* <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 		<script>
 			AOS.init();
 		</script>
 		<script type="module"
         	src="/App_Plugins/UmbracoCommunityAIChatbot/widget.js"
         	data-instance="internal-chatbot">
-		</script>
+		</script> *@
 		@* <script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];window.key='WY6B1Z8LT@PR9K3TLT';window.url='//www.k12insight.com/';if (d.getElementById(id))return;js = d.createElement(s);js.id = id;js.src = "//www.k12insight.com/Lets-Talk/LtTabJs.aspx";fjs.parentNode.insertBefore(js, fjs);}(document, 'script', 'Lets-Talk'));</script> *@
 	</body>
 </html>

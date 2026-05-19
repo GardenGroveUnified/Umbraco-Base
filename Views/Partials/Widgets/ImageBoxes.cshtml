@@ -35,8 +35,8 @@
     // --- Container width ---
     var containerWidthMap = new Dictionary<string, string>
     {
-        ["small"]      = "container-md container-small w-md-25",
-        ["standard"]   = "container w-md-50",
+        ["small"]      = "container-md container-small",
+        ["standard"]   = "container",
         ["big"]        = "container-xlg w-md-75",
         ["full width"] = "container-fluid",
     };
@@ -99,7 +99,7 @@
                     var hasLink  = !string.IsNullOrEmpty(imageBox?.BoxLink?.Url);
                     var hasTitle = !string.IsNullOrEmpty(imageBox?.Title);
 
-                    <div class="@numberOfColumnClass">
+                    <div class="@numberOfColumnClass mb-3">
                         @if (blockItemStyle == "Style 2")
                         {
                             @* Style 2: card layout *@
@@ -116,7 +116,7 @@
                                         @if (hasTitle)
                                         {
                                             <div class="p-4 p-sm-2 p-1-xs box-header">
-                                                <h1 class="m-0">@imageBox?.Title</h1>
+                                                <h3 class="m-0">@imageBox?.Title</h3>
                                             </div>
                                         }
                                         @if (hasText)
@@ -140,11 +140,11 @@
                                     @Html.Raw($"<a href=\"{imageBox.BoxLink.Url}\" target=\"{imageBox.BoxLink.Target}\">")
                                 }
                                 <div class="d-block overflow-hidden text-decoration-none text-dark rounded overlay-dark-hover overlay-opacity-2">
-                                    <img src="@imageBox?.Image?.GetCropUrl(800, 450)" class="img-fluid lazyload rounded" />
+                                    <img src="@imageBox?.Image?.GetCropUrl()" class="img-fluid lazyload rounded" alt="@imageBox?.Title" />
                                     @if (hasTitle)
                                     {
                                         <div class="p-3 p-sm-2 p-1-xs head text-center">
-                                            <h5 class="m-0 mt-4">@imageBox?.Title</h5>
+                                            <h3 class="m-0 mt-4 fs-5">@imageBox?.Title</h3>
                                         </div>
                                     }
                                     @if (hasText)

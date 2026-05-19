@@ -26,8 +26,15 @@
     --quote-font: "Playwrite AU NSW", cursive;
 }
 
+.breadcrumb-item.active {
+    color: #ec971f;
+}
+.breadcrumb-item+.breadcrumb-item:before {
+    color: #003768;
+}
+
 body{
-    background-image: url('/background.png');
+    /* background-image: url('/background.png'); */
     background-position: top;
     background-repeat: repeat;
     background-size: contain;

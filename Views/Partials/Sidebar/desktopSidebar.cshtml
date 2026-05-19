@@ -1,0 +1,17 @@
+@inherits UmbracoViewPage
+@using Umbraco.Cms.Core.Models.PublishedContent;
+@using Umbraco.Cms.Core.Models;
+@using Umbraco.Cms.Core.Models.Blocks;
+@{
+	var sidebarBlocks = Model.Value<IEnumerable<BlockListItem>>("sidebarBlocks");
+	ViewData["IsSidebarInSidebarBlocks"] = true;
+}           
+
+@if (sidebarBlocks != null && sidebarBlocks.Any())
+{
+	@foreach (BlockListItem block in sidebarBlocks)
+	{
+		var blockType = block.Content.ContentType.Alias;
+			@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/" + blockType + ".cshtml", block, new ViewDataDictionary(ViewData))
+	}
+}

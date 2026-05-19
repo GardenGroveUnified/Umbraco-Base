@@ -81,19 +81,19 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual bool ShowParent => this.Value<bool>(_publishedValueFallback, "showParent");
 
 		///<summary>
+		/// Sidebar Blocks
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("sidebarBlocks")]
+		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel SidebarBlocks => this.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(_publishedValueFallback, "sidebarBlocks");
+
+		///<summary>
 		/// Show/Hide Page from Sidebar: Prevent this page from being shown on the sidebar menu.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[ImplementPropertyType("sidebarNaviHide")]
 		public virtual bool SidebarNaviHide => this.Value<bool>(_publishedValueFallback, "sidebarNaviHide");
-
-		///<summary>
-		/// Sidebar Note
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
-		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("sidebarNote")]
-		public virtual global::Umbraco.Cms.Core.Strings.IHtmlEncodedString SidebarNote => this.Value<global::Umbraco.Cms.Core.Strings.IHtmlEncodedString>(_publishedValueFallback, "sidebarNote");
 
 		///<summary>
 		/// Show/Hide Page from Top Nav: Prevent this page from being displayed in any navigation menus.

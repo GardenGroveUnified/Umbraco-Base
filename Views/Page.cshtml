@@ -8,6 +8,7 @@
 
     var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
     ViewBag.Title = $"{title} | GGUSD Food Services";
+    var hasSidebar = Model?.SidebarBlocks?.Count > 0;
 }
 
 @{
@@ -58,13 +59,38 @@
         </div>
     }
 
-    @if (Model!.Blocks!.Any())
-    {
-        <div class="container">
-            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
-            {
-                { "Blocks", Model.Blocks }
-            })
-        </div>
+    @if (hasSidebar)
+	{
+		<div class="container">
+			<div class="row">
+                @if (Model!.Blocks!.Any())
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                        {
+                            { "Blocks", Model.Blocks }
+                        })
+                    </div>
+                }
+				<div class="col-md-3 my-5 d-md-block d-none">
+					@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/desktopSidebar.cshtml")
+				</div>
+				<div class="d-md-none d-block">
+					@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/mobileSidebar.cshtml")
+				</div>
+			</div>
+		</div>
+	} 
+	else
+	{
+        @if (Model!.Blocks!.Any())
+        {
+            <div class="container">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", Model.Blocks }
+                })
+            </div>
+        }
     }
 }

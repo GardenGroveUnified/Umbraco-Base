@@ -4,9 +4,10 @@
 @using Umbraco.Cms.Web.Common.Views
 @{
 	var content = (ContentModels.Slider)Model.Content;
-	var settings = (ContentModels.SliderSettings)Model.Settings;
+	var settings = (ContentModels.SliderSettings?)Model.Settings;
 	if (settings?.BlockVisibility == false) { return; }
 	if (content.SliderItems == null || !content.SliderItems.Any()) return;
+	int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
 
 	//Block Appearance
 	bool showArrow = true;
@@ -40,6 +41,14 @@
 			<text>id="@settings.AnchorId"</text>
 		}>
 			<div class="@(containerWidthClass)">
+				@if (order == 0)
+				{
+					<h1 class="d-none">@settings?.AnchorId</h1>
+				}
+				else if (order != 0)
+				{
+					<h2 class="d-none">@settings?.AnchorId</h2>
+				}
 				<div class="swiper-container swiper-btn-group swiper-btn-group-end text-white p-0 vh-75 overflow-hidden swiper-preloader"
 						data-swiper='{
 								"slidesPerView": 1,
@@ -55,7 +64,7 @@
 							if (item.BlockVisibility != true) continue;
                             var styling = "";
                             @if (item?.Preheading != "" || item.Heading != "" || item?.SliderText?.ToString() != ""){styling = "bg-dark p-3";}
-							var itemImage = item.Image != null ? item.Image.Url() : "";
+							var itemImage = item?.Image != null ? item.Image.Url() : "";
 
 							<!-- slide -->
 							<div class="h-100 swiper-slide d-middle align-items-end bg-white overlay-dark overlay-opacity-1 d-middle bg-cover" style="background-image:url('@itemImage')">

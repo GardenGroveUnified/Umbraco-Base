@@ -8,20 +8,20 @@
 
   <ItemGroup>
     <PackageReference Include="SeoToolkit.Umbraco" />
-    <PackageReference Include="Umbraco.AI" />
+    <!-- <PackageReference Include="Umbraco.AI" />
+    <PackageReference Include="Umbraco.AI.OpenAI" />
     <PackageReference Include="Umbraco.AI.Agent" />
     <PackageReference Include="Umbraco.AI.FireworksAI" />
     <PackageReference Include="Umbraco.AI.Search" />
+    <PackageReference Include="Umbraco.Cms.Search.Core" />
     <PackageReference Include="Umbraco.AI.Google" />
     <PackageReference Include="Umbraco.AI.HuggingFace" />
-    <PackageReference Include="Umbraco.Community.AI.Chatbot" />
+    <PackageReference Include="Umbraco.Community.AI.Chatbot" /> -->
     <!-- <PackageReference Include="Umbraco.AI.Anthropic" /> -->
-    <PackageReference Include="Umbraco.AI.OpenAI" />
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <PackageReference Include="Umbraco.Cms" />
     <PackageReference Include="Umbraco.Cms.DevelopmentMode.Backoffice" />
     <PackageReference Include="DigitalWonderlab.AccessibilityToolkit" />
-    <PackageReference Include="Umbraco.Cms.Search.Core" />
     <PackageReference Include="uSync" />
     <PackageReference Include="Umbraco.Community.Contentment" />
     <PackageReference Include="Our.Umbraco.ConditionalDisplayers" />

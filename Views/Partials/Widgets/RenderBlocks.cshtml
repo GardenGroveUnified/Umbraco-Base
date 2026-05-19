@@ -22,11 +22,10 @@
     foreach (var block in blocks)
     {
         var content = block.Content;
-        @await Html.PartialAsync(
-            "Widgets/" + content.ContentType.Alias,
-            block,
-            new ViewDataDictionary(ViewData) { { "Order", index }, { "ParentPage", parentPage } }
-        );
+        var blockViewData = new ViewDataDictionary(ViewData);
+        blockViewData["Order"] = index;
+        blockViewData["ParentPage"] = parentPage;
+        @await Html.PartialAsync("Widgets/" + content.ContentType.Alias, block, blockViewData);
         index++;
     }
 }

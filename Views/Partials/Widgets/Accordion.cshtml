@@ -5,7 +5,7 @@
 @using Umbraco.Cms.Web.Common.Views
 @{
     var content = (ContentModels.Accordion)Model.Content;
-    var settings = (ContentModels.AccordionSettings)Model.Settings;
+    var settings = (ContentModels.AccordionSettings?)Model.Settings;
     if (settings?.BlockVisibility == false) { return; }
 
     //var order = (int)ViewData["order"];
@@ -28,7 +28,7 @@
     var questionPrefix = settings?.ItemPrefix == true ? "Q: " : "";
     var showFirstItem = settings?.ShowFirstItem ?? false;
     var blockStyle = settings?.BlockStyle ?? "Default";
-    var classNames = settings.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
     ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
     : string.Empty;
 
@@ -42,7 +42,7 @@
 
     <section    class="section block-accordion @classNames @containerWidthClass @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" 
                 role="region"
-                aria-labelledby="@settings.AnchorId"
+                aria-labelledby="@settings!.AnchorId"
                 @if (!string.IsNullOrEmpty(settings?.AnchorId)){<text>id="@settings.AnchorId"</text>}
     >
             <div class="container">

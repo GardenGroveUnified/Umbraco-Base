@@ -1,0 +1,183 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using Umbraco.Cms.Core.Models.PublishedContent;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Extensions;
+@{
+    var content  = (ContentModels.SideTopBar)Model.Content;
+    var settings = (ContentModels.SideTopBarSettings?)Model.Settings;
+
+    if (settings?.BlockVisibility == false) { return; }
+
+    var displayOption = content?.DisplayOptions ?? "none";
+    if (displayOption == "none") { return; }
+
+    var currentPage = Umbraco.AssignedContentItem;
+    var currentUrl  = currentPage?.Url() ?? Context.Request.Path.Value ?? string.Empty;
+
+    // Settings-driven classes
+    var pillsClass      = settings?.DisplayAsPills == true ? "nav-pills" : "";
+    var verticalSpacing = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var alignClass = settings?.HorizontalAlignment switch
+    {
+        "center" => "text-center",
+        "left"   => "text-start",
+        _        => "text-end"
+    };
+    var extraClasses = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+    var anchorId = !string.IsNullOrWhiteSpace(settings?.AnchorId) ? settings.AnchorId : null;
+
+    // Build auto-nav items from the content tree based on displayOptions
+    IEnumerable<IPublishedContent> autoNavItems = Enumerable.Empty<IPublishedContent>();
+    IPublishedContent? parentNavItem = null;
+
+    if (currentPage != null)
+    {
+        switch (displayOption)
+        {
+            case "siblings":
+                // current page is already among parent's children
+                autoNavItems = currentPage.Parent<IPublishedContent>()?.Children() ?? Enumerable.Empty<IPublishedContent>();
+                break;
+
+            case "children":
+                autoNavItems = currentPage.Children() ?? Enumerable.Empty<IPublishedContent>();
+                break;
+
+            case "sibsChildren":
+                // current page is already among the siblings
+                var siblings = currentPage.Parent<IPublishedContent>()?.Children() ?? Enumerable.Empty<IPublishedContent>();
+                var children = currentPage.Children() ?? Enumerable.Empty<IPublishedContent>();
+                autoNavItems = siblings.Concat(children);
+                break;
+
+            case "parentSibs":
+                var parent = currentPage.Parent<IPublishedContent>();
+                if (parent != null)
+                {
+                    parentNavItem = parent;
+                    autoNavItems  = parent.Children() ?? Enumerable.Empty<IPublishedContent>();
+                }
+                break;
+        }
+    }
+
+    string? ActiveAttr(string? url) =>
+        !string.IsNullOrWhiteSpace(url) &&
+        currentUrl.TrimEnd('/').Equals(url.TrimEnd('/'), StringComparison.OrdinalIgnoreCase)
+            ? "page" : null;
+}
+
+<div class="sidebar-nav @verticalSpacing @extraClasses" id="@anchorId">
+
+    @if (!string.IsNullOrWhiteSpace(content?.Heading))
+    {
+        <p class="sidebar-nav__heading fw-bold text-uppercase text-decoration-underline link-offset-1 small mb-2 @alignClass">
+            @content.Heading
+        </p>
+    }
+
+    <nav aria-label="@(content?.Heading ?? "Section navigation")">
+        <ul class="nav flex-column @pillsClass gap-1">
+
+            @* SelfNameLink: manually defined top entry *@
+            @if (content?.SelfNameLink != null)
+            {
+                var selfUrl    = content.SelfNameLink.Url ?? "#";
+                var selfName   = string.IsNullOrWhiteSpace(content.SelfNameLink.Name) ? selfUrl : content.SelfNameLink.Name;
+                var selfTarget = content.SelfNameLink.Target ?? "_self";
+
+                <li class="nav-item">
+                    <a class="nav-link sidebar-nav__self fw-medium d-flex align-items-center justify-content-end gap-2 @(ActiveAttr(selfUrl) != null ? "active" : "")"
+                       href="@selfUrl"
+                       target="@selfTarget"
+                       aria-current="@ActiveAttr(selfUrl)">
+                        <span aria-hidden="true">›</span>
+                        <span>@selfName</span>
+                    </a>
+                </li>
+            }
+
+            @* parentSibs: parent page as a distinct entry before its siblings *@
+            @if (parentNavItem != null)
+            {
+                var pUrl = parentNavItem.Url();
+                <li class="nav-item">
+                    <a class="nav-link sidebar-nav__parent fw-medium d-flex align-items-center justify-content-end gap-2 @(ActiveAttr(pUrl) != null ? "active" : "")"
+                       href="@pUrl"
+                       aria-current="@ActiveAttr(pUrl)">
+                        <span aria-hidden="true">›</span>
+                        <span>@parentNavItem.Name</span>
+                    </a>
+                </li>
+            }
+
+            @* Auto-generated links from the content tree *@
+            @foreach (var navItem in autoNavItems)
+            {
+                var pageUrl    = navItem.Url();
+                var isCurrent  = navItem.Id == currentPage?.Id;
+                var pageActive = ActiveAttr(pageUrl) != null || isCurrent;
+
+                <li class="nav-item">
+                    <a class="nav-link sidebar-nav__auto-link d-flex align-items-center justify-content-end gap-2 @(pageActive ? "active" : "")"
+                       href="@pageUrl"
+                       aria-current="@(pageActive ? "page" : null)">
+                        <span aria-hidden="true">›</span>
+                        <span>@navItem.Name</span>
+                    </a>
+
+                    @* sibsChildren: indent children under the current page entry *@
+                    @if (displayOption == "sibsChildren" && isCurrent)
+                    {
+                        var pageChildren = navItem.Children()?.ToList();
+                        if (pageChildren != null && pageChildren.Any())
+                        {
+                            <ul class="nav flex-column @pillsClass ms-3 mt-1">
+                                @foreach (var child in pageChildren)
+                                {
+                                    var childUrl    = child.Url();
+                                    var childActive = ActiveAttr(childUrl);
+                                    <li class="nav-item">
+                                        <a class="nav-link sidebar-nav__child-link d-flex align-items-center justify-content-end gap-2 @(childActive != null ? "active" : "")"
+                                           href="@childUrl"
+                                           aria-current="@childActive">
+                                            <span aria-hidden="true">›</span>
+                                            <span>@child.Name</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    }
+                </li>
+            }
+
+            @* AdditionalSubLinks: manually added extra links, always appended *@
+            @if (content?.AdditionalSubLinks != null)
+            {
+                foreach (var link in content.AdditionalSubLinks.Where(l => l != null))
+                {
+                    var linkUrl    = link.Url ?? "#";
+                    var linkName   = string.IsNullOrWhiteSpace(link.Name) ? linkUrl : link.Name;
+                    var linkTarget = link.Target ?? "_self";
+                    var linkActive = ActiveAttr(linkUrl);
+
+                    <li class="nav-item">
+                        <a class="nav-link sidebar-nav__sub-link d-flex align-items-center justify-content-end gap-2 @(linkActive != null ? "active" : "")"
+                           href="@linkUrl"
+                           target="@linkTarget"
+                           aria-current="@linkActive">
+                            <span aria-hidden="true">›</span>
+                            <span>@linkName</span>
+                        </a>
+                    </li>
+                }
+            }
+
+        </ul>
+    </nav>
+
+</div>

@@ -79,7 +79,7 @@
                             }
                             else if (!string.IsNullOrEmpty(content.Heading) && order != 0)
                             {
-                                <h2 class="head py-2 text-black display-5 bold">@content.Heading</h2>
+                                <h2 class="head py-2 text-black display-6 bold">@content.Heading</h2>
                             }
                         </div>
                         <div>
@@ -140,7 +140,7 @@
                                     @Html.Raw($"<a href=\"{imageBox.BoxLink.Url}\" target=\"{imageBox.BoxLink.Target}\">")
                                 }
                                 <div class="d-block overflow-hidden text-decoration-none text-dark rounded overlay-dark-hover overlay-opacity-2">
-                                    <img src="@imageBox?.Image?.GetCropUrl()" class="img-fluid lazyload rounded" alt="@imageBox?.Title" />
+                                    <img src="@imageBox?.Image?.GetCropUrl(300,300)" class="img-fluid lazyload rounded" alt="@imageBox?.Title" />
                                     @if (hasTitle)
                                     {
                                         <div class="p-3 p-sm-2 p-1-xs head text-center">

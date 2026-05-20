@@ -12,7 +12,7 @@
 }
 
 @{
-    var parentPage = Model?.Parent;
+    var parentPage = Model != null ? Model.Parent<IPublishedContent>() : null;
 
     if (Model?.ShowParent == true)
     {
@@ -75,9 +75,9 @@
 				<div class="col-md-3 my-5 d-md-block d-none">
 					@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/desktopSidebar.cshtml")
 				</div>
-				<div class="d-md-none d-block">
+				@* <div class="d-md-none d-block">
 					@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/mobileSidebar.cshtml")
-				</div>
+				</div> *@
 			</div>
 		</div>
 	} 

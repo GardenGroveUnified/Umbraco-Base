@@ -1,8 +1,6 @@
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace UmbracoBase.Core.Configuration
 {
@@ -15,31 +13,12 @@ namespace UmbracoBase.Core.Configuration
             {
                 options.LowercaseUrls = true;
             });
-            
-            // Configure backoffice authentication cookie to redirect to custom login page
-            builder.Services.Configure<CookieAuthenticationOptions>(Umbraco.Cms.Core.Constants.Security.BackOfficeAuthenticationType, options =>
-            {
-                options.LoginPath = "/login";
-                options.AccessDeniedPath = "/login";
-                options.ReturnUrlParameter = "returnUrl";
-                
-                // Ensure redirects go to our custom login page
-                options.Events.OnRedirectToLogin = context =>
-                {
-                    var returnUrl = context.Request.Path + context.Request.QueryString;
-                    var loginUrl = $"/login?returnUrl={Uri.EscapeDataString(returnUrl)}";
-                    context.Response.Redirect(loginUrl);
-                    return Task.CompletedTask;
-                };
-                
-                options.Events.OnRedirectToAccessDenied = context =>
-                {
-                    var returnUrl = context.Request.Path + context.Request.QueryString;
-                    var loginUrl = $"/login?returnUrl={Uri.EscapeDataString(returnUrl)}";
-                    context.Response.Redirect(loginUrl);
-                    return Task.CompletedTask;
-                };
-            });
+
+            // Note: the backoffice cookie's LoginPath/OnRedirectToLogin used to be overridden here
+            // to point at a custom "/login" page. Umbraco 14+ authenticates the backoffice SPA via
+            // OpenIddict OAuth, not this cookie's redirect events, so overriding it caused an
+            // infinite redirect loop between the SPA and "/login". Removed in favor of Umbraco's
+            // built-in backoffice login.
         }
     }
 }

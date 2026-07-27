@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c ' *)",
+      "Bash(sleep 8 && cat /c/Users/CKOBAY~2/AppData/Local/Temp/claude/c--Temp-Umbraco-Base/32c5be62-fde6-4629-8326-d8e09cd4d344/scratchpad/run6.log)",
+      "Read(//c/Users/CKOBAY~2/AppData/Local/Temp/claude/c--Temp-Umbraco-Base/32c5be62-fde6-4629-8326-d8e09cd4d344/scratchpad/**)",
+      "Bash(grep -i -E \"datadirectory|mappath|data source|connectionstring|sqlite\\\\.db|umbraco/data|umbraco\\\\\\\\\\\\\\\\data\")",
+      "Bash(tasklist //FI \"IMAGENAME eq UmbracoBase.exe\")",
+      "Bash(curl -sk -o /dev/null -w \"HTTP %{http_code}\\\\n\" https://127.0.0.1:44389/ --max-time 15)"
+    ]
+  }
+}

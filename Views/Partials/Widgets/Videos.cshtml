@@ -1,0 +1,170 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using System.Text.RegularExpressions;
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.Videos)Model.Content;
+    var settings = (ContentModels.VideosSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var containerWidthClass = "container";
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+    var justifyContentClass = settings?.HorizontalAlignment switch
+    {
+        "left" => "justify-content-start",
+        "right" => "justify-content-end",
+        _ => "justify-content-center"
+    };
+
+    var columnMap = new Dictionary<string, string>
+    {
+        ["4"] = "col-12 col-sm-6 col-lg-3",
+        ["3"] = "col-12 col-sm-6 col-lg-4",
+        ["2"] = "col-12 col-sm-6 col-lg-6",
+        ["1"] = "col-12",
+    };
+    var itemsPerRowKey = settings?.ItemsPerRow > 0 ? settings.ItemsPerRow.ToString("0") : "3";
+    var numberOfColumnClass = columnMap.GetValueOrDefault(itemsPerRowKey, "col-12 col-sm-6 col-lg-4");
+
+    var videos = content?.VideosList;
+
+    string? GetYoutubeId(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) { return null; }
+        var match = Regex.Match(url, @"(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/))([\w-]{6,})");
+        return match.Success ? match.Groups[1].Value : url;
+    }
+
+    string? GetDriveFileId(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) { return null; }
+        var match = Regex.Match(url, @"/d/([\w-]{10,})");
+        return match.Success ? match.Groups[1].Value : url;
+    }
+}
+
+@if (videos != null && videos.Any())
+{
+    <section class="section block-videos @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        <div class="@containerWidthClass">
+            @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || !string.IsNullOrEmpty(content?.Text?.ToString()))
+            {
+                <div class="@headerCenterTextClass mb-4">
+                    @if (!string.IsNullOrEmpty(content?.Preheading))
+                    {
+                        <div class="pre-head">@content.Preheading</div>
+                    }
+                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                    {
+                        <h1 class="head display-5 bold">@content.Heading</h1>
+                    }
+                    else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                    {
+                        <h2 class="head display-6 bold">@content.Heading</h2>
+                    }
+                    @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
+                    {
+                        <p>@content.Text</p>
+                    }
+                </div>
+            }
+
+            <div class="row @justifyContentClass gutters-sm">
+                @foreach (var item in videos)
+                {
+                    var alias = item.Content.ContentType.Alias;
+
+                    <div class="@numberOfColumnClass mb-4">
+                        @if (alias == "youtubeVideo")
+                        {
+                            var video = (ContentModels.YoutubeVideo)item.Content;
+                            var videoId = GetYoutubeId(video?.VideoTitleAndUrl?.Url);
+                            var poster = video?.PosterImage?.GetCropUrl(480, 270) ?? (videoId != null ? $"https://img.youtube.com/vi/{videoId}/hqdefault.jpg" : null);
+
+                            <div class="ratio ratio-16x9 rounded overflow-hidden bg-dark video-embed" data-embed-src="https://www.youtube.com/embed/@(videoId)?autoplay=1">
+                                @if (!string.IsNullOrEmpty(poster))
+                                {
+                                    <button type="button" class="video-embed__poster border-0 p-0" style="background-image:url('@poster'); background-size:cover; background-position:center;" aria-label="Play video: @(video?.VideoTitleAndUrl?.Name ?? "Video")">
+                                        <span class="video-embed__play"><i class="fi fi-play"></i></span>
+                                    </button>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(video?.VideoTitleAndUrl?.Name))
+                            {
+                                <p class="mt-2 mb-0 text-center">@video.VideoTitleAndUrl.Name</p>
+                            }
+                            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", video?.AdditionalLinks)
+                        }
+                        else if (alias == "googleDriveVideo")
+                        {
+                            var video = (ContentModels.GoogleDriveVideo)item.Content;
+                            var fileId = GetDriveFileId(video?.VideoTitleAndUrl?.Url);
+                            var poster = video?.VideoThumbnailImage?.GetCropUrl(480, 270);
+
+                            <div class="ratio ratio-16x9 rounded overflow-hidden bg-dark video-embed" data-embed-src="https://drive.google.com/file/d/@(fileId)/preview">
+                                @if (!string.IsNullOrEmpty(poster))
+                                {
+                                    <button type="button" class="video-embed__poster border-0 p-0" style="background-image:url('@poster'); background-size:cover; background-position:center;" aria-label="Play video: @(video?.VideoTitleAndUrl?.Name ?? "Video")">
+                                        <span class="video-embed__play"><i class="fi fi-play"></i></span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <iframe src="https://drive.google.com/file/d/@(fileId)/preview" allow="autoplay" loading="lazy"></iframe>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(video?.VideoTitleAndUrl?.Name))
+                            {
+                                <p class="mt-2 mb-0 text-center">@video.VideoTitleAndUrl.Name</p>
+                            }
+                            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", video?.AdditionalLinks)
+                        }
+                        else if (alias == "localVideo")
+                        {
+                            var video = (ContentModels.LocalVideo)item.Content;
+                            <div class="ratio ratio-16x9 rounded overflow-hidden bg-dark">
+                                <video controls preload="metadata" src="@video?.VideoTitleAndUrl?.Url"></video>
+                            </div>
+                            @if (!string.IsNullOrEmpty(video?.VideoTitleAndUrl?.Name))
+                            {
+                                <p class="mt-2 mb-0 text-center">@video.VideoTitleAndUrl.Name</p>
+                            }
+                            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", video?.AdditionalLinks)
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <script>
+        (function () {
+            document.querySelectorAll('.video-embed__poster').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var wrapper = btn.closest('.video-embed');
+                    var src = wrapper?.getAttribute('data-embed-src');
+                    if (!src) { return; }
+                    var iframe = document.createElement('iframe');
+                    iframe.src = src;
+                    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+                    iframe.allowFullscreen = true;
+                    wrapper.innerHTML = '';
+                    wrapper.appendChild(iframe);
+                });
+            });
+        })();
+    </script>
+}

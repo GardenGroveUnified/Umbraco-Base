@@ -1,0 +1,117 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.Gallery)Model.Content;
+    var settings = (ContentModels.GallerySettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var containerWidthClass = settings?.ContainerWidth switch
+    {
+        "small" => "container-md container-small",
+        "standard" => "container",
+        "big" => "container-xlg",
+        "full width" => "container-fluid",
+        _ => "container"
+    };
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    var group = settings?.Group > 0 && settings?.Group <= 8 ? settings.Group.ToString("0") : "3";
+    var noGap = settings?.RemoveGutter == true;
+    var simpleGrid = settings?.SimpleGrid == true;
+    var allowZoom = settings?.DisableImageZoom != true;
+    var media = content?.Media?.Where(m => m != null).ToList();
+    var galleryGroupId = "gallery" + new Random().Next(100000);
+}
+
+@if (media != null && media.Any())
+{
+    <section class="section block-gallery @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        <div class="@containerWidthClass">
+            @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || !string.IsNullOrEmpty(content?.Text?.ToString()))
+            {
+                <div class="@headerCenterTextClass mb-4">
+                    @if (!string.IsNullOrEmpty(content?.Preheading))
+                    {
+                        <div class="pre-head">@content.Preheading</div>
+                    }
+                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                    {
+                        <h1 class="head display-5 bold">@content.Heading</h1>
+                    }
+                    else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                    {
+                        <h2 class="head display-6 bold">@content.Heading</h2>
+                    }
+                    @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
+                    {
+                        <p>@content.Text</p>
+                    }
+                </div>
+            }
+
+            @if (simpleGrid)
+            {
+                <div class="d-grid grid-@group @(noGap ? "gap-0" : "gap-3")">
+                    @foreach (var image in media)
+                    {
+                        var thumbUrl = image.GetCropUrl(600, 600);
+                        var fullUrl = image.Url();
+                        <div class="ratio ratio-1x1 overflow-hidden">
+                            @if (allowZoom)
+                            {
+                                <a href="@fullUrl" data-fancybox="@galleryGroupId" data-caption="@image.Name" target="_blank" rel="noopener">
+                                    <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                                </a>
+                            }
+                            else
+                            {
+                                <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                @foreach (var chunk in media.Chunk(int.Parse(group)))
+                {
+                    <div class="gallery__group gallery__group--@chunk.Length @(noGap ? "gallery__group--no-gap" : "")">
+                        @foreach (var image in chunk)
+                        {
+                            var thumbUrl = image.GetCropUrl(800, 800);
+                            var fullUrl = image.Url();
+                            <div class="gallery__item">
+                                <figure>
+                                    @if (allowZoom)
+                                    {
+                                        <a href="@fullUrl" data-fancybox="@galleryGroupId" data-caption="@image.Name" target="_blank" rel="noopener">
+                                            <img src="@thumbUrl" class="lazyload" alt="@image.Name" />
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <img src="@thumbUrl" class="lazyload" alt="@image.Name" />
+                                    }
+                                </figure>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </section>
+}

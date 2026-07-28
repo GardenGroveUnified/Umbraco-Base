@@ -1,0 +1,50 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.CustomCode)Model.Content;
+    if (content?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+    var classNames = content?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", content.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+}
+
+@* Note: "Razor Code" is intentionally NOT compiled/executed here - running editor-supplied
+   Razor markup server-side would let any backoffice user run arbitrary .NET code on the
+   server, which is a remote-code-execution risk regardless of how trusted editors are. *@
+
+<section class="section block-custom-code codeBlock @classNames"
+@if (!string.IsNullOrEmpty(content?.AnchorId))
+{
+    <text>id="@content.AnchorId"</text>
+}>
+    @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || !string.IsNullOrEmpty(content?.Text?.ToString()))
+    {
+        <div class="container">
+            @if (!string.IsNullOrEmpty(content?.Preheading))
+            {
+                <div class="pre-head">@content.Preheading</div>
+            }
+            @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+            {
+                <h1 class="head display-5 bold">@content.Heading</h1>
+            }
+            else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+            {
+                <h2 class="head display-6 bold">@content.Heading</h2>
+            }
+            @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
+            {
+                <div>@content.Text</div>
+            }
+        </div>
+    }
+</section>
+
+@if (!string.IsNullOrEmpty(content?.CustomJs))
+{
+    <script>@Html.Raw(content.CustomJs)</script>
+}

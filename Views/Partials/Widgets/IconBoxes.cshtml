@@ -1,0 +1,148 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.IconBoxes)Model.Content;
+    var settings = (ContentModels.IconBoxesSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var containerWidthClass = settings?.ContainerWidth switch
+    {
+        "small" => "container-md container-small",
+        "standard" => "container",
+        "big" => "container-xlg w-md-75",
+        "full width" => "container-fluid",
+        _ => "container"
+    };
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
+    var blockStyle = string.IsNullOrEmpty(settings?.BlockStyle) ? "Default" : settings.BlockStyle;
+
+    var gutterSpacingClass = string.IsNullOrEmpty(settings?.ColumnSpacing) ? "gutters-sm" : settings.ColumnSpacing;
+    var justifyContentClass = settings?.HorizontalAlignment switch
+    {
+        "left" => "justify-content-start",
+        "right" => "justify-content-end",
+        _ => "justify-content-center"
+    };
+
+    var columnMap = new Dictionary<string, string>
+    {
+        ["max"] = "col-12 col-sm-6 col-md-4 col-lg-3 col-xxxl",
+        ["6"] = "col-12 col-sm-6 col-md-2 col-lg-2",
+        ["5"] = "col-12 col-sm-6 col-md-4 col-lg-5th",
+        ["4"] = "col-12 col-sm-6 col-lg-4 col-xl-3",
+        ["3"] = "col-12 col-sm-6 col-md-4 col-lg-4",
+        ["2"] = "col-12 col-sm-6 col-md-6 col-lg-6",
+        ["1"] = "col-12 col-md-12 col-lg-12",
+    };
+    var itemsPerRowKey = settings?.ItemsPerRow > 0 ? settings.ItemsPerRow.ToString("0") : "4";
+    var numberOfColumnClass = columnMap.GetValueOrDefault(itemsPerRowKey, "col-6 col-md-3 col-lg-3");
+}
+
+@if (content?.IconBoxList != null)
+{
+    <section class="section block-icon-boxes @backgroundColorClass @verticalSpacingClass @topBorderClass"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        <div class="@containerWidthClass">
+            @if (!string.IsNullOrEmpty(content.Preheading) || !string.IsNullOrEmpty(content.Heading) || !string.IsNullOrEmpty(content.Text?.ToString()))
+            {
+                <div class="@headerCenterTextClass mb-4">
+                    @if (!string.IsNullOrEmpty(content.Preheading))
+                    {
+                        <div class="pre-head">@content.Preheading</div>
+                    }
+                    @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
+                    {
+                        <h1 class="head display-5 bold">@content.Heading</h1>
+                    }
+                    else if (!string.IsNullOrEmpty(content.Heading) && order != 0)
+                    {
+                        <h2 class="head display-6 bold">@content.Heading</h2>
+                    }
+                    @if (!string.IsNullOrEmpty(content.Text?.ToString()))
+                    {
+                        <p>@content.Text</p>
+                    }
+                </div>
+            }
+
+            <div class="row @gutterSpacingClass @justifyContentClass">
+                @foreach (var item in content.IconBoxList)
+                {
+                    var iconBox = (ContentModels.IconBox)item.Content;
+                    if (iconBox?.BlockVisibility == false) { continue; }
+
+                    var hasLink = !string.IsNullOrEmpty(iconBox?.Link?.Url);
+                    var itemClassNames = iconBox?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+                        ? string.Join(" ", iconBox.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+                        : string.Empty;
+                    var itemAlignClass = iconBox?.HorizontalAlignment switch
+                    {
+                        "left" => "text-start",
+                        "right" => "text-end",
+                        _ => "text-center"
+                    };
+
+                    <div class="@numberOfColumnClass mb-3">
+                        @if (blockStyle == "Style 2")
+                        {
+                            <div class="icon-style-2">
+                                <div class="card @itemClassNames">
+                                    <div class="card-body">
+                                        <div class="circle @(string.IsNullOrEmpty(itemClassNames) ? "default" : "")">
+                                            <div class="overlay"></div>
+                                            @if (!string.IsNullOrEmpty(iconBox?.Icon))
+                                            {
+                                                <i class="@iconBox.Icon"></i>
+                                            }
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(iconBox?.Title))
+                                        {
+                                            <p>@iconBox.Title</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="icon-boxes h-100 rounded bg-white p-4 shadow-primary-xs transition-hover-top transition-all-ease-250 @itemAlignClass @itemClassNames">
+                                @if (hasLink && iconBox?.Link != null)
+                                {
+                                    @Html.Raw($"<a href=\"{iconBox.Link.Url}\" target=\"{iconBox.Link.Target}\" class=\"stretched-link text-decoration-none\">")
+                                }
+                                <div class="my-icon d-flex justify-content-center mb-3">
+                                    @if (!string.IsNullOrEmpty(iconBox?.Icon))
+                                    {
+                                        <i class="@iconBox.Icon fs-1"></i>
+                                    }
+                                </div>
+                                @if (!string.IsNullOrEmpty(iconBox?.Title))
+                                {
+                                    <h3 class="fs-5">@iconBox.Title</h3>
+                                }
+                                @if (!string.IsNullOrEmpty(iconBox?.Text?.ToString()))
+                                {
+                                    <div class="box-text">@iconBox.Text</div>
+                                }
+                                @if (hasLink)
+                                {
+                                    @Html.Raw("</a>")
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

@@ -1,0 +1,76 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.Calendar)Model.Content;
+    var settings = (ContentModels.CalendarSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var containerWidthClass = settings?.ContainerWidth switch
+    {
+        "small" => "container-md container-small",
+        "standard" => "container",
+        "big" => "container-xlg",
+        "full width" => "container-fluid",
+        _ => "container"
+    };
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    // Google Calendar's public embed only exposes a coarse "mode" (agenda/week/month),
+    // not per-field toggles, so ShowEventDescription/Duration/Location/DayOfTheWeek/NumberOfEvents
+    // aren't representable here without calling the Calendar API directly.
+    var mode = settings?.ShowMonth == true ? "MONTH" : "AGENDA";
+    var showDate = settings?.ShowDayOfTheWeek == true ? "1" : "0";
+    var calendarId = content?.GoogleCalendarId;
+}
+
+<section class="section block-calendar @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+@if (!string.IsNullOrEmpty(settings?.AnchorId))
+{
+    <text>id="@settings.AnchorId"</text>
+}>
+    <div class="@containerWidthClass">
+        @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || !string.IsNullOrEmpty(content?.Text?.ToString()))
+        {
+            <div class="@headerCenterTextClass mb-4">
+                @if (!string.IsNullOrEmpty(content?.Preheading))
+                {
+                    <div class="pre-head">@content.Preheading</div>
+                }
+                @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                {
+                    <h1 class="head display-5 bold">@content.Heading</h1>
+                }
+                else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                {
+                    <h2 class="head display-6 bold">@content.Heading</h2>
+                }
+                @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
+                {
+                    <p>@content.Text</p>
+                }
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(calendarId))
+        {
+            <div class="ratio ratio-16x9" style="--bs-aspect-ratio: 75%;">
+                <iframe src="https://calendar.google.com/calendar/embed?src=@Uri.EscapeDataString(calendarId)&mode=@mode&showDate=@showDate&showPrint=0&showCalendars=0&showTz=0"
+                        style="border: 0" loading="lazy" title="@(content?.Heading ?? "Calendar")"></iframe>
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">No calendar has been configured for this widget yet.</p>
+        }
+    </div>
+</section>

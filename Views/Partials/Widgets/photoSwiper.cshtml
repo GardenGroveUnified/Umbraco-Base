@@ -1,0 +1,125 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.PhotoSwiper)Model.Content;
+    var settings = (ContentModels.PhotoSwiperSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var containerWidthClass = settings?.ContainerWidth switch
+    {
+        "small" => "container-md container-small",
+        "standard" => "container",
+        "big" => "container-xlg",
+        "full width" => "container-fluid",
+        _ => "container"
+    };
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    var group = settings?.Group > 0 && settings?.Group <= 8 ? settings.Group.ToString("0") : "3";
+    var noGap = settings?.RemoveGutter == true;
+    var gapPx = noGap ? 0 : (settings?.GutterSize > 0 ? settings.GutterSize : 8);
+    var allowZoom = settings?.DisableImageZoom != true;
+    var media = content?.Media?.Where(m => m != null).ToList();
+    var galleryId = "pswp" + new Random().Next(100000);
+}
+@if (media != null && media.Any())
+{
+    <section class="section block-photo-swiper @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        <div class="@containerWidthClass">
+            @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || !string.IsNullOrEmpty(content?.Text?.ToString()))
+            {
+                <div class="@headerCenterTextClass mb-4">
+                    @if (!string.IsNullOrEmpty(content?.Preheading))
+                    {
+                        <div class="pre-head">@content.Preheading</div>
+                    }
+                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                    {
+                        <h1 class="head display-5 bold">@content.Heading</h1>
+                    }
+                    else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                    {
+                        <h2 class="head display-6 bold">@content.Heading</h2>
+                    }
+                    @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
+                    {
+                        <p>@content.Text</p>
+                    }
+                </div>
+            }
+
+            <div class="d-grid grid-@group photo-swiper" id="@galleryId" style="gap: @(gapPx.ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
+                @{ var index = 0; }
+                @foreach (var image in media)
+                {
+                    var thumbUrl = image.GetCropUrl(600, 600);
+                    var fullUrl = image.Url();
+                    var width = image.Content.Value<int>("umbracoWidth");
+                    var height = image.Content.Value<int>("umbracoHeight");
+                    <div class="ratio ratio-1x1 overflow-hidden">
+                        @if (allowZoom)
+                        {
+                            <a href="@fullUrl" class="photo-swiper__item" data-index="@index"
+                               data-width="@(width > 0 ? width : 1600)" data-height="@(height > 0 ? height : 1200)"
+                               data-caption="@image.Name">
+                                <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                            </a>
+                        }
+                        else
+                        {
+                            <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                        }
+                    </div>
+                    index++;
+                }
+            </div>
+        </div>
+    </section>
+
+    @if (allowZoom)
+    {
+        <script>
+            (function () {
+                var gallery = document.getElementById('@galleryId');
+                if (!gallery || typeof PhotoSwipe === 'undefined') { return; }
+
+                var items = Array.prototype.map.call(gallery.querySelectorAll('.photo-swiper__item'), function (link) {
+                    return {
+                        src: link.getAttribute('href'),
+                        w: parseInt(link.getAttribute('data-width'), 10) || 1600,
+                        h: parseInt(link.getAttribute('data-height'), 10) || 1200,
+                        title: link.getAttribute('data-caption') || ''
+                    };
+                });
+
+                gallery.querySelectorAll('.photo-swiper__item').forEach(function (link) {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var index = parseInt(link.getAttribute('data-index'), 10) || 0;
+                        var pswpElement = document.querySelectorAll('.pswp')[0];
+                        var pswp = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                            index: index,
+                            history: false,
+                            shareEl: false
+                        });
+                        pswp.init();
+                    });
+                });
+            })();
+        </script>
+    }
+}

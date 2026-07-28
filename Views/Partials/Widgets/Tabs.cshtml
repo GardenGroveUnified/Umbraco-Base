@@ -1,0 +1,74 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.Tabs)Model.Content;
+    var settings = (ContentModels.SideTopBarSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var pillsClass = settings?.DisplayAsPills == true ? "nav-pills" : "nav-tabs";
+    var alignClass = settings?.HorizontalAlignment switch
+    {
+        "left" => "justify-content-start",
+        "right" => "justify-content-end",
+        _ => "justify-content-center"
+    };
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    var random = new Random();
+    var tabsId = "tabs" + random.Next(1000);
+}
+
+@if (content?.TabList != null && content.TabList.Any())
+{
+    <section class="section block-tabs @verticalSpacingClass @classNames"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        <div class="container">
+            <ul class="nav @pillsClass tabs__nav @alignClass mb-4" id="@tabsId" role="tablist">
+                @{ var navIndex = 0; }
+                @foreach (var item in content.TabList)
+                {
+                    var tab = (ContentModels.Tab)item.Content;
+                    var isFirst = navIndex == 0;
+                    var paneId = $"pane-{tabsId}-{navIndex}";
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link tab-btn @(isFirst ? "active" : "")"
+                                id="tab-@paneId" data-bs-toggle="tab" data-bs-target="#@paneId"
+                                type="button" role="tab" aria-controls="@paneId" aria-selected="@(isFirst ? "true" : "false")">
+                            @tab?.TabTitle
+                        </button>
+                    </li>
+                    navIndex++;
+                }
+            </ul>
+
+            <div class="tab-content">
+                @{ var paneIndex = 0; }
+                @foreach (var item in content.TabList)
+                {
+                    var tab = (ContentModels.Tab)item.Content;
+                    var isFirst = paneIndex == 0;
+                    var paneId = $"pane-{tabsId}-{paneIndex}";
+                    <div class="tab-pane fade @(isFirst ? "show active" : "")" id="@paneId" role="tabpanel" aria-labelledby="tab-@paneId">
+                        @if (tab?.TabData != null && tab.TabData.Any())
+                        {
+                            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                            {
+                                { "Blocks", tab.TabData.AsEnumerable() },
+                                { "StartIndex", 1 }
+                            })
+                        }
+                    </div>
+                    paneIndex++;
+                }
+            </div>
+        </div>
+    </section>
+}

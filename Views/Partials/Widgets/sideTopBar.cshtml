@@ -1,0 +1,6 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@* This widget is also usable from the dedicated "sidebarBlocks" list (see
+   Widgets/Sidebar/desktopSidebar.cshtml); the actual markup lives there so
+   both entry points render identically. *@
+@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/sideTopBar.cshtml", Model, ViewData)

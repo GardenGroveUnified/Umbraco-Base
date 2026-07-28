@@ -1,0 +1,99 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.Hero)Model.Content;
+    var settings = (ContentModels.HeroSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    static double Normalize01(decimal value) => value > 1 ? (double)value / 100.0 : (double)value;
+
+    var widthClass = settings?.Width switch
+    {
+        "small" => "container-md container-small",
+        "standard" => "container",
+        "big" => "container-xlg",
+        "full width" => "container-fluid",
+        _ => "container"
+    };
+    var heightStyle = settings?.Height > 0 ? $"height: {settings.Height}vh;" : "min-height: 60vh;";
+    var overlayOpacity = settings != null ? Normalize01(settings.ImageOverlayOpacity) : 0.4;
+    var textBoxOpacity = settings != null ? Normalize01(settings.TextBoxOpacity) : 0d;
+    var textWidthStyle = settings?.TextWidth > 0 ? $"max-width: {settings.TextWidth}%;" : "";
+
+    var horizontalAlignClass = settings?.HorizontalAlignment switch
+    {
+        "left" => "justify-content-start",
+        "right" => "justify-content-end",
+        _ => "justify-content-center"
+    };
+    var verticalAlignClass = settings?.VerticalAlignment switch
+    {
+        "top" => "align-items-start",
+        "bottom" => "align-items-end",
+        _ => "align-items-center"
+    };
+    var textAlignClass = settings?.TextAlignment switch
+    {
+        "left" => "text-start",
+        "right" => "text-end",
+        _ => "text-center"
+    };
+
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    var backgroundUrl = content?.Background?.GetCropUrl() ?? content?.Background?.Url();
+    var isVideoBackground = backgroundUrl?.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase) == true;
+    var animate = settings?.Animation == true;
+}
+
+<section class="hero position-relative overlay-dark d-flex @horizontalAlignClass @verticalAlignClass @classNames"
+          style="@heightStyle background-color:#1E211C;"
+@if (!string.IsNullOrEmpty(settings?.AnchorId))
+{
+    <text>id="@settings.AnchorId"</text>
+}>
+    @if (isVideoBackground)
+    {
+        <video class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: 0;" autoplay muted loop playsinline>
+            <source src="@backgroundUrl" type="video/mp4" />
+        </video>
+    }
+    else if (!string.IsNullOrEmpty(backgroundUrl))
+    {
+        <img src="@backgroundUrl" alt="@content?.Heading" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: 0;" />
+    }
+    <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background-color:#000; opacity:@(overlayOpacity.ToString(System.Globalization.CultureInfo.InvariantCulture)); z-index: 1;"></div>
+
+    <div class="@widthClass position-relative" style="z-index: 2;">
+        <div class="hero__inner @textAlignClass mx-auto text-white p-4"
+             style="@textWidthStyle @(textBoxOpacity > 0 ? $"background-color: rgba(0,0,0,{textBoxOpacity.ToString(System.Globalization.CultureInfo.InvariantCulture)}); border-radius: .5rem;" : "")"
+             @if (animate)
+             {
+                 <text>data-aos="fade-up"</text>
+             }>
+            @if (!string.IsNullOrEmpty(content?.Preheading))
+            {
+                <div class="pre-head">@content.Preheading</div>
+            }
+            @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+            {
+                <h1>@content.Heading</h1>
+            }
+            else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+            {
+                <h2>@content.Heading</h2>
+            }
+            @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
+            {
+                <p>@content.Text</p>
+            }
+            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", content?.Links)
+        </div>
+    </div>
+</section>

@@ -20,7 +20,7 @@
 	<link rel="preload" href="~/assets/fonts/fontawesome/fontawesome-webfont.woff2?v=4.7.0" as="font" type="font/woff2" crossorigin>
 	<!-- AOS CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+	<link rel="stylesheet" href="~/assets/css/vendor.swiper.css"/>
 
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
@@ -50,6 +50,10 @@
 	<link rel="stylesheet" href="/css/Widgets_CSS/Tab.css" />
 	<link rel="stylesheet" href="/css/Widgets_CSS/Notification.css" />
 	<link rel="stylesheet" href="/css/Widgets_CSS/Modal.css" />
+	<link rel="stylesheet" href="/css/Widgets_CSS/Home.css" />
+	<link rel="stylesheet" href="/css/Widgets_CSS/Athletics.css" />
+	<link rel="stylesheet" href="/css/Widgets_CSS/Guidance.css" />
+	<link rel="stylesheet" href="/css/Widgets_CSS/Students.css" />
 	
 	
 	<!-- favicon -->
@@ -104,10 +108,16 @@
 		</div>
 
 		<!-- Core javascripts -->
+		<!-- jQuery must load first: vendor_bundle.min.js is a chain of jQuery-plugin
+		     IIFEs invoked as `}(jQuery)` at parse time - if jQuery isn't defined yet,
+		     each of those throws immediately and none of its setup code (including
+		     the Swiper/Fancybox glue) ever runs. Swiper's own core library also has
+		     to load before core.min.js/vendor_bundle.min.js reference window.Swiper. -->
+		<script src="/assets/js/vendor.jquery.min.js"></script>
+		<script src="/assets/js/vendor.swiper.js"></script>
 		<script src="/assets/js/core.min.js"></script>
 		<script src="/assets/js/vendor_bundle.min.js"></script>
-		<!-- jQuery + Fancybox (image galleries) -->
-		<script src="/assets/js/vendor.jquery.min.js"></script>
+		<!-- Fancybox (image galleries) -->
 		<script src="/assets/js/vendor.fancybox.js"></script>
 		<!-- PhotoSwipe (Photo Swiper widget) -->
 		<script src="/assets/js/vendor.photoswipe.js"></script>

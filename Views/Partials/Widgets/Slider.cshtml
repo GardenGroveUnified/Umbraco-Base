@@ -12,6 +12,9 @@
 	//Block Appearance
 	bool showArrow = true;
 	var delay = settings?.SliderTiming == 0 ? 10000 : settings?.SliderTiming * 1000;
+	// Swiper's loop mode requires more than one real slide - with only one,
+	// it fails to initialize and the swiper-preloader spinner never clears.
+	var loopEnabled = content.SliderItems.Count() > 1;
 
 	var containerWidthClass = "container";
 	switch (settings?.ContainerWidth)
@@ -54,7 +57,7 @@
 								"slidesPerView": 1,
 								"spaceBetween": 0,
 								"autoplay": { "delay" : @delay, "disableOnInteraction": false },
-								"loop": true,
+								"loop": @loopEnabled.ToString().ToLowerInvariant(),
 								"pagination": { "type": "bullets" }
 							}'>
 					<div class="swiper-wrapper h-100">
@@ -71,26 +74,43 @@
 								<div class="container z-index-10 text-white text-center-xs @styling">
 									<div class="row">
 										<div class="col">
-											<div class="@(headerCenterTextClass)">
+											<div class="@(headerCenterTextClass) hero-slide">
 												@if (item?.Preheading != "" || item.Heading != "" || item?.SliderText?.ToString() != "")
 												{
-													<div class="block__headerx mb-4">
+													<div class="block__headerx mb-3">
 														@if (item?.Preheading != "")
 														{
-															<div class="pre-head">@item?.Preheading</div>
+															<div class="hero-slide__label">
+																<span class="hero-slide__label-bar"></span>
+																<span>@item?.Preheading</span>
+															</div>
 														}
 														@if (item?.Heading != "")
 														{
-															<h2 data-swiper-parallax="-300">@item?.Heading</h2>
+															<h2 class="hero-slide__heading" data-swiper-parallax="-300">@item?.Heading</h2>
 														}
 													</div>
 
 													@if (item?.SliderText?.ToString() != "")
 													{
-														<p data-swiper-parallax="-100">@item?.SliderText</p>
+														<p class="hero-slide__text" data-swiper-parallax="-100">@item?.SliderText</p>
 													}
 												}
-												@await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", item?.SliderLinksButtons)
+												@if (item?.SliderLinksButtons != null && item.SliderLinksButtons.Any())
+												{
+													<div class="hero-slide__actions">
+														@{ var linkIndex = 0; }
+														@foreach (var link in item.SliderLinksButtons)
+														{
+															<a href="@link.Url" target="@(link.Target)" class="hero-slide__btn @(linkIndex == 0 ? "hero-slide__btn--primary" : "hero-slide__btn--secondary")"
+															@if (link.Target == "_blank")
+															{
+																<text>rel="noopener"</text>
+															}>@link.Name</a>
+															linkIndex++;
+														}
+													</div>
+												}
 											</div>
 										</div>
 									</div>

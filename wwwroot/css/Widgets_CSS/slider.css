@@ -302,3 +302,82 @@
             height:100%;
         }
     }
+
+/* Hero slide text/actions - see Slider.cshtml */
+
+.hero-slide {
+    max-width: 480px;
+}
+
+.hero-slide__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--shs-gold, #c9a227);
+}
+
+.hero-slide__label-bar {
+    width: 32px;
+    height: 2px;
+    background: var(--shs-gold, #c9a227);
+    display: inline-block;
+}
+
+.hero-slide__heading {
+    font-weight: 700;
+    line-height: 1.15;
+    color: #fff;
+}
+
+.hero-slide__text {
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+}
+
+.hero-slide__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.hero-slide__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.hero-slide__btn:hover {
+    transform: translateY(-2px);
+}
+
+.hero-slide__btn--primary {
+    background: var(--shs-gold, #c9a227);
+    color: #2a1f00;
+}
+
+.hero-slide__btn--primary:hover {
+    color: #2a1f00;
+}
+
+.hero-slide__btn--secondary {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.hero-slide__btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}

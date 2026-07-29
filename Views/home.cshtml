@@ -1,4 +1,5 @@
-﻿@using Umbraco.Cms.Web.Common.Views
+@using Umbraco.Cms.Web.Common.Views
+@using Umbraco.Cms.Core.Models.PublishedContent
 @inherits UmbracoViewPage
 @{
 	Layout = "Master.cshtml";
@@ -7,6 +8,124 @@
 
     // Set the ViewBag title with the fallback and the appended string
     ViewBag.Title = $"{title}";
+
+    var socialLinks = Model.Value<IEnumerable<SocialLink>>("socialLinks");
 }
 
 @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml")
+
+@* --- Quick links bar --- *@
+<div class="home-quicklinks">
+    <div class="container-fluid">
+        <div class="home-quicklinks__grid">
+            @{
+                var quickLinks = new (string Icon, string Label, string Url)[]
+                {
+                    ("📅", "Calendar", "#"),
+                    ("🔔", "Bell Sched.", "#"),
+                    ("👤", "Staff Dir.", "#"),
+                    ("🎓", "Aeries", "#"),
+                    ("⚽", "Athletics", "/athletics"),
+                    ("🎭", "Clubs", "/students"),
+                };
+            }
+            @foreach (var link in quickLinks)
+            {
+                <a href="@link.Url" class="home-quicklinks__item">
+                    <span class="home-quicklinks__icon">@link.Icon</span>
+                    <span class="home-quicklinks__label">@link.Label</span>
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+@* --- Distinguished School spotlight --- *@
+<div class="home-spotlight">
+    <div class="home-spotlight__icon">🏅</div>
+    <div>
+        <div class="home-spotlight__title">🏅 Santiago Named a 2025 California Distinguished School</div>
+        <div class="home-spotlight__text">Recognized for closing achievement gaps &amp; accelerating academic progress for all students.</div>
+    </div>
+    <div class="flex-grow-1"></div>
+    <a href="#" class="btn btn-sm" style="background:var(--shs-purple); color:#fff;">Read more &rarr;</a>
+</div>
+
+@* --- News + Events ---
+     Placeholder content until a real News/Event content type exists; edit the
+     arrays below directly, or replace with real CMS data once that's built. *@
+<div class="home-news-events">
+    <div class="home-news-events__col home-news-events__col--news">
+        <div class="home-section-title">
+            <div class="home-section-title__label">
+                <span class="home-section-title__bar"></span>
+                Recent News
+            </div>
+            <a href="#" class="home-section-title__action">All news &rarr;</a>
+        </div>
+        @{
+            var newsItems = new (string Tag, string Title, string Date)[]
+            {
+                ("Events", "Grad Nite 2026 — Knott's Berry Farm", "May 28, 2026 · 7:00 PM"),
+                ("Students", "OCTA Youth Ride Free Bus Pass Program Returns", "Apr 15, 2026 · District News"),
+                ("Community", "Online Voter Pre-Registration Now Open for 16 & 17-Year-Olds", "Apr 2, 2026 · Community"),
+            };
+        }
+        @foreach (var item in newsItems)
+        {
+            <div class="home-news-item">
+                <div class="home-news-item__thumb"></div>
+                <div>
+                    <span class="badge" style="background:var(--shs-purple-pale); color:var(--shs-purple); font-size:0.7rem;">@item.Tag</span>
+                    <div class="home-news-item__title mt-1">@item.Title</div>
+                    <div class="home-news-item__date">@item.Date</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="home-news-events__col home-news-events__col--events">
+        <div class="home-section-title">
+            <div class="home-section-title__label">
+                <span class="home-section-title__bar"></span>
+                Upcoming Events
+            </div>
+            <a href="#" class="home-section-title__action">Full calendar &rarr;</a>
+        </div>
+        @{
+            var eventItems = new (string Month, string Day, string Title, string Sub, bool Featured)[]
+            {
+                ("MAY", "2", "AP Exam — English Language", "8:00 AM · Main Gymnasium", true),
+                ("MAY", "5", "Cinco de Mayo Spirit Day", "All Day · School-wide", false),
+                ("MAY", "8", "Parent-Teacher Conferences", "4:00–7:00 PM · Classrooms", false),
+                ("MAY", "14", "Senior Awards Night", "6:30 PM · Auditorium", false),
+                ("MAY", "22", "Grad Nite 2026 — Knott's Berry Farm", "6:00 PM · Depart from SHS", false),
+            };
+        }
+        @foreach (var ev in eventItems)
+        {
+            <div class="home-event-item">
+                <div class="home-event-item__date @(ev.Featured ? "home-event-item__date--featured" : "")">
+                    <span class="home-event-item__month">@ev.Month</span>
+                    <span class="home-event-item__day">@ev.Day</span>
+                </div>
+                <div>
+                    <div class="home-event-item__title">@ev.Title</div>
+                    <div class="home-event-item__sub">@ev.Sub</div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@* --- Social strip --- *@
+@if (socialLinks != null && socialLinks.Any())
+{
+    <div class="home-social">
+        <span class="home-social__label">Follow Santiago HS:</span>
+        @foreach (var link in socialLinks)
+        {
+            <a href="@link.Url" target="_blank" rel="noopener" class="home-social__link">@link.Network</a>
+        }
+    </div>
+}

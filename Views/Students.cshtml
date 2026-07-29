@@ -1,0 +1,235 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Page>
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+
+@{
+    Layout = "Master.cshtml";
+
+    var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
+    ViewBag.Title = $"{title} | GGUSD Students Hub";
+    var hasSidebar = Model?.SidebarBlocks?.Count > 0;
+}
+
+@{
+    var parentPage = Model != null ? Model.Parent<IPublishedContent>() : null;
+
+    if (Model?.ShowParent == true)
+    {
+        var parentHeaderBlocks = parentPage?.Value<IEnumerable<BlockListItem>>("headerBlocks");
+        var parentBlocks = parentPage?.Value<IEnumerable<BlockListItem>>("Blocks");
+
+        @if (parentHeaderBlocks != null && parentHeaderBlocks.Any())
+        {
+            <div class="parent-blocks">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", parentHeaderBlocks },
+                    { "ParentPage", parentPage }
+                })
+            </div>
+        }
+
+        @if (parentBlocks != null && parentBlocks.Any())
+        {
+            <div class="parent-blocks">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", parentBlocks },
+                    { "ParentPage", parentPage }
+                })
+            </div>
+        }
+    }
+
+    @if (Model!.HeaderBlocks!.Any())
+    {
+        <div class="container-xxl">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+            {
+                { "Blocks", Model.HeaderBlocks }
+            })
+        </div>
+    }
+
+    @if (Model?.PageTitle is not null && Model?.PageTitle != "")
+    {
+        <div class="container">
+            <h1 class="my-5 text-blue">@Model!.PageTitle</h1>
+        </div>
+    }
+
+    @* --- Announcement ticker --- *@
+    <div class="students-ticker">
+        <span class="students-ticker__badge">NOTICE</span>
+        <span class="students-ticker__text">&#128226; Student/Parent Handbook 2025&ndash;26 is now available for download &mdash; <u>click here</u></span>
+        <div class="flex-grow-1"></div>
+        <span class="students-ticker__more">More &rarr;</span>
+    </div>
+
+    @if (hasSidebar)
+    {
+        <div class="container">
+            <div class="row">
+                @if (Model!.Blocks!.Any())
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                        {
+                            { "Blocks", Model.Blocks }
+                        })
+                    </div>
+                }
+                <div class="col-md-3 my-5 d-md-block d-none">
+                    @await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/desktopSidebar.cshtml")
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        @if (Model!.Blocks!.Any())
+        {
+            <div class="container">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", Model.Blocks }
+                })
+            </div>
+        }
+    }
+
+    @* --- Tabbed quick links ---
+         Placeholder content; edit the link sets below directly. *@
+    <div class="students-quicklinks">
+        <div class="home-section-title">
+            <div class="home-section-title__label">
+                <span class="home-section-title__bar"></span>
+                Student Quick Links
+            </div>
+        </div>
+        @{
+            var linkSets = new (string Label, (string Label, string Icon)[] Links)[]
+            {
+                ("All Links", new[] {
+                    ("Aeries Portal", "&#127891;"), ("Classes & HW", "&#128218;"), ("Bell Schedule", "&#128276;"),
+                    ("Clubs & ASB", "&#127917;"), ("Attendance", "&#128203;"), ("Health Office", "&#10084;&#65039;"),
+                    ("Dress Code", "&#128085;"), ("Cav Time", "&#9200;"), ("Handbook", "&#128214;"),
+                    ("Yearbook", "&#128248;"), ("Voter Reg.", "&#128499;&#65039;"), ("Work Permit", "&#128188;"),
+                }),
+                ("Academics", new[] {
+                    ("Aeries Portal", "&#127891;"), ("Classes & HW", "&#128218;"), ("Bell Schedule", "&#128276;"),
+                    ("Library", "&#128218;"), ("AVID", "&#9999;&#65039;"), ("JROTC", "&#127894;"),
+                }),
+                ("Student Life", new[] {
+                    ("Clubs & ASB", "&#127917;"), ("Athletics", "&#9917;"), ("School Events", "&#127881;"),
+                    ("Yearbook", "&#128248;"), ("Cav Time", "&#9200;"), ("Purple Press", "&#128240;"),
+                }),
+                ("Support", new[] {
+                    ("Health Office", "&#10084;&#65039;"), ("Counselors", "&#128483;&#65039;"), ("STOPit", "&#128683;"),
+                    ("Attendance", "&#128203;"), ("Handbook", "&#128214;"), ("Wellness Wed.", "&#127807;"),
+                }),
+            };
+        }
+        <ul class="nav nav-tabs" id="studentQuickLinkTabs" role="tablist">
+            @for (var i = 0; i < linkSets.Length; i++)
+            {
+                var isFirst = i == 0;
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link @(isFirst ? "active" : "")" id="sql-tab-@i" data-bs-toggle="tab" data-bs-target="#sql-pane-@i"
+                            type="button" role="tab" aria-controls="sql-pane-@i" aria-selected="@(isFirst ? "true" : "false")">
+                        @linkSets[i].Label
+                    </button>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            @for (var i = 0; i < linkSets.Length; i++)
+            {
+                var isFirst = i == 0;
+                <div class="tab-pane fade @(isFirst ? "show active" : "")" id="sql-pane-@i" role="tabpanel" aria-labelledby="sql-tab-@i">
+                    <div class="students-linkgrid">
+                        @foreach (var link in linkSets[i].Links)
+                        {
+                            <a href="#" class="students-linkgrid__item">
+                                <span class="students-linkgrid__icon">@Html.Raw(link.Icon)</span>
+                                <span class="students-linkgrid__label">@link.Label</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* --- Events + Clubs ---
+         Placeholder content; edit directly or wire up to real CMS data later. *@
+    <div class="students-events-clubs">
+        <div class="students-events-clubs__col students-events-clubs__col--events">
+            <div class="home-section-title">
+                <div class="home-section-title__label">
+                    <span class="home-section-title__bar"></span>
+                    Upcoming Events
+                </div>
+                <a href="#" class="home-section-title__action">Full calendar &rarr;</a>
+            </div>
+            @{
+                var studentEvents = new (string Month, string Day, string Title, string Sub)[]
+                {
+                    ("MAY", "3", "Grad Nite 2026 — Knott's Berry Farm", "6:00 PM · Permission slip required"),
+                    ("MAY", "8", "Club Rush — Spring Edition", "Lunch · Main Quad"),
+                    ("MAY", "13", "Spirit Week Begins", "Mon–Fri · Dress up daily!"),
+                    ("MAY", "20", "Senior Sunrise Celebration", "6:00 AM · Football Field"),
+                };
+            }
+            @for (var i = 0; i < studentEvents.Length; i++)
+            {
+                var ev = studentEvents[i];
+                <div class="students-event @(i == 0 ? "students-event--next" : "")">
+                    <div class="students-event__date">
+                        <span class="students-event__month">@ev.Month</span>
+                        <span class="students-event__day">@ev.Day</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="students-event__title">@ev.Title</div>
+                        <div class="students-event__sub">@ev.Sub</div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="students-events-clubs__col">
+            <div class="home-section-title">
+                <div class="home-section-title__label">
+                    <span class="home-section-title__bar"></span>
+                    Clubs &amp; Activities
+                </div>
+                <a href="#" class="home-section-title__action">All 50+ clubs &rarr;</a>
+            </div>
+            <div class="students-clubs__grid">
+                @{
+                    var clubs = new[] { "ASB / Leadership", "AVID", "JROTC", "Purple Press" };
+                }
+                @foreach (var club in clubs)
+                {
+                    <div class="students-club">
+                        <span class="students-club__badge">@club.Substring(0, 1)</span>
+                        <span class="students-club__name">@club</span>
+                    </div>
+                }
+            </div>
+            <a href="#" class="btn" style="background:var(--shs-purple); color:#fff;">Browse All Clubs &rarr;</a>
+        </div>
+    </div>
+
+    @* --- STOPit / wellness CTA --- *@
+    <div class="students-wellness-cta">
+        <span style="font-size:20px;">&#128683;</span>
+        <div>
+            <div class="students-wellness-cta__title">See Something? Say Something. Use STOPit.</div>
+            <div class="students-wellness-cta__text">Anonymous reporting for bullying, harassment, or safety concerns. Available 24/7.</div>
+        </div>
+        <div class="flex-grow-1"></div>
+        <a href="#" class="btn" style="background:var(--shs-gold); color:#2a1040;">Report Anonymously</a>
+    </div>
+}

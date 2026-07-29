@@ -1,0 +1,191 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Page>
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Core.Models.Blocks;
+
+@{
+    Layout = "Master.cshtml";
+
+    var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
+    ViewBag.Title = $"{title} | GGUSD Athletics";
+    var hasSidebar = Model?.SidebarBlocks?.Count > 0;
+}
+
+@{
+    var parentPage = Model != null ? Model.Parent<IPublishedContent>() : null;
+
+    if (Model?.ShowParent == true)
+    {
+        var parentHeaderBlocks = parentPage?.Value<IEnumerable<BlockListItem>>("headerBlocks");
+        var parentBlocks = parentPage?.Value<IEnumerable<BlockListItem>>("Blocks");
+
+        @if (parentHeaderBlocks != null && parentHeaderBlocks.Any())
+        {
+            <div class="parent-blocks">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", parentHeaderBlocks },
+                    { "ParentPage", parentPage }
+                })
+            </div>
+        }
+
+        @if (parentBlocks != null && parentBlocks.Any())
+        {
+            <div class="parent-blocks">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", parentBlocks },
+                    { "ParentPage", parentPage }
+                })
+            </div>
+        }
+    }
+
+    @if (Model!.HeaderBlocks!.Any())
+    {
+        <div class="container-xxl">
+            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+            {
+                { "Blocks", Model.HeaderBlocks }
+            })
+        </div>
+    }
+
+    @if (Model?.PageTitle is not null && Model?.PageTitle != "")
+    {
+        <div class="container">
+            <h1 class="my-5 text-blue">@Model!.PageTitle</h1>
+        </div>
+    }
+
+    @* --- Quick actions bar --- *@
+    <div class="athletics-quickactions">
+        @{
+            var quickActions = new (string Label, string Url)[]
+            {
+                ("Athletic Clearance", "#"),
+                ("Schedules", "#"),
+                ("Sports Demographics", "#"),
+                ("Summer Sports", "#"),
+                ("Athletic Staff", "#"),
+            };
+        }
+        @for (var i = 0; i < quickActions.Length; i++)
+        {
+            <a href="@quickActions[i].Url" class="athletics-quickactions__item @(i == 0 ? "athletics-quickactions__item--active" : "")">@quickActions[i].Label</a>
+        }
+    </div>
+
+    @if (hasSidebar)
+    {
+        <div class="container">
+            <div class="row">
+                @if (Model!.Blocks!.Any())
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                        {
+                            { "Blocks", Model.Blocks }
+                        })
+                    </div>
+                }
+                <div class="col-md-3 my-5 d-md-block d-none">
+                    @await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/desktopSidebar.cshtml")
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        @if (Model!.Blocks!.Any())
+        {
+            <div class="container">
+                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+                {
+                    { "Blocks", Model.Blocks }
+                })
+            </div>
+        }
+    }
+
+    @* --- Featured Sport + Upcoming Games ---
+         Placeholder content until real team/game content types exist; edit
+         the values below directly, or replace with real CMS data later. *@
+    <div class="athletics-featured-games">
+        <div class="athletics-featured-games__col athletics-featured-games__col--featured">
+            <div class="home-section-title">
+                <div class="home-section-title__label">
+                    <span class="home-section-title__bar"></span>
+                    Featured Sport
+                </div>
+                <a href="#" class="home-section-title__action">View roster &rarr;</a>
+            </div>
+            <div class="athletics-featured">
+                <div class="athletics-featured__photo"></div>
+                <div>
+                    <div class="athletics-featured__title">Boys Varsity Soccer</div>
+                    <div class="athletics-featured__meta">Coach: Mr. Rodriguez &middot; Spring 2026</div>
+                    <div class="athletics-featured__meta">Empire League &middot; Home: Santiago Stadium</div>
+                </div>
+            </div>
+            <div class="athletics-featured__stats">
+                @{
+                    var stats = new (string Label, string Value)[] { ("Wins", "8"), ("Losses", "3"), ("Ties", "1") };
+                }
+                @foreach (var stat in stats)
+                {
+                    <div class="athletics-featured__stat">
+                        <div class="athletics-featured__stat-value">@stat.Value</div>
+                        <div class="athletics-featured__stat-label">@stat.Label</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="athletics-featured-games__col athletics-featured-games__col--games">
+            <div class="home-section-title">
+                <div class="home-section-title__label">
+                    <span class="home-section-title__bar"></span>
+                    Upcoming Games
+                </div>
+                <a href="#" class="home-section-title__action">Full schedule &rarr;</a>
+            </div>
+            @{
+                var games = new (string Month, string Day, string Opponent, string Time, string Location)[]
+                {
+                    ("MAY", "2", "vs. Garden Grove HS", "3:30 PM", "HOME"),
+                    ("MAY", "6", "vs. Rancho Alamitos HS", "4:00 PM", "AWAY"),
+                    ("MAY", "9", "vs. Bolsa Grande HS", "3:30 PM", "HOME"),
+                    ("MAY", "13", "vs. Pacifica HS", "4:00 PM", "AWAY"),
+                };
+            }
+            @for (var i = 0; i < games.Length; i++)
+            {
+                var g = games[i];
+                <div class="athletics-game @(i == 0 ? "athletics-game--next" : "")">
+                    <div class="athletics-game__date">
+                        <span class="athletics-game__month">@g.Month</span>
+                        <span class="athletics-game__day">@g.Day</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="athletics-game__opponent">@g.Opponent</div>
+                        <div class="athletics-game__time">@g.Time</div>
+                    </div>
+                    <span class="athletics-game__loc">@g.Location</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    @* --- Athletic Clearance CTA band --- *@
+    <div class="athletics-clearance-cta">
+        <span style="font-size:20px;">&#128203;</span>
+        <div>
+            <div class="athletics-clearance-cta__title">Ready to play? Get your Athletic Clearance first.</div>
+            <div class="athletics-clearance-cta__text">All student athletes must complete clearance before tryouts. Deadline: Aug 1, 2026.</div>
+        </div>
+        <div class="flex-grow-1"></div>
+        <a href="#" class="btn" style="background:var(--shs-purple); color:#fff;">Get Cleared &rarr;</a>
+    </div>
+}

@@ -19,7 +19,9 @@
       "Bash(dotnet dev-certs *)",
       "Bash(curl -sk -D - -o /dev/null \"https://127.0.0.1:44389/umbraco\" --max-time 10)",
       "Bash(curl -sk -D - -o /dev/null \"https://127.0.0.1:44389/login\" --max-time 10)",
-      "Bash(rm -f /c/Users/CKOBAY~2/AppData/Local/Temp/claude/c--Temp-Umbraco-Base/32c5be62-fde6-4629-8326-d8e09cd4d344/scratchpad/run10.log *)"
+      "Bash(rm -f /c/Users/CKOBAY~2/AppData/Local/Temp/claude/c--Temp-Umbraco-Base/32c5be62-fde6-4629-8326-d8e09cd4d344/scratchpad/run10.log *)",
+      "Bash(dotnet build *)",
+      "Bash(git restore *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\CKOBAY~2\\AppData\\Local\\Temp\\claude\\c--Temp-Umbraco-Base\\32c5be62-fde6-4629-8326-d8e09cd4d344\\scratchpad"

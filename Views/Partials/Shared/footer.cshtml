@@ -2,13 +2,86 @@
 @inherits UmbracoViewPage
 
 @{
-	var date = DateTime.Now.Year;
+    var date = DateTime.Now.Year;
 }
 
-<footer id="footer" class="footer-dark pt-4 mt-4" style="background:#ffffff">
-	<div class="container-fluid">
-		<div class="text-right border-top border-light pt-4">
-			<p class="text-black mb-0">Copyright © Garden Grove Unified School District @date. All Rights Reserved.</p>
-		</div>
-	</div>
+<footer id="footer" class="santiago-footer">
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- LEFT SIDE -->
+            <div class="col-12 col-lg-5 footer-left">
+                <div class="footer-brand">SANTIAGO</div>
+                <div class="footer-brand footer-brand-second">HIGH SCHOOL</div>
+
+                <div class="footer-contact">
+                    <a href="https://maps.google.com/?q=12342+Trask+Ave.,+Garden+Grove,+CA+92843"
+                       target="_blank"
+                       rel="noopener">
+                        12342 Trask Ave., Garden Grove, CA 92843
+                    </a>
+
+                    <div class="footer-phone">
+                        Phone:
+                        <a href="tel:+17146636215">(714) 663-6215</a>
+                        <span class="footer-divider">|</span>
+                        Fax: (714) 663-6290
+                    </div>
+                </div>
+
+                <div class="footer-powered">
+                    <span>Powered by <strong class="edlio-text">edlio</strong></span>
+
+                    <span class="footer-login">
+                        <span class="login-icon">e</span>
+                        <span class="login-divider">|</span>
+                        Login
+                    </span>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div class="col-12 col-lg-7 footer-right">
+
+                <div class="footer-heading">
+                    NON-DISCRIMINATION STATEMENT
+                </div>
+
+                <p>
+                    Garden Grove Unified School District prohibits discrimination,
+                    harassment, intimidation and bullying in educational programs,
+                    activities, or employment on the basis of actual or perceived
+                    ancestry, age, color, mental or physical disability, medical
+                    condition, genetic information, gender, gender identity, gender
+                    expression, nationality, race or ethnicity, religion, sex, sexual
+                    orientation, parental, pregnancy, family or marital status,
+                    immigration and citizenship status, military status or association
+                    with a person or a group with one or more of these actual or
+                    perceived characteristics.
+                </p>
+
+                <div class="footer-heading">
+                    CONTACT INFORMATION
+                </div>
+
+                <p>
+                    Questions or complaints of alleged discrimination, harassment,
+                    intimidation, bullying, and equity should be directed to the
+                    Assistant Superintendent of K-12 Educational Services Dr. Lorena
+                    Sanchez at
+                    <a href="mailto:llsanche@ggusd.us">llsanche@ggusd.us</a>
+                    or
+                    <a href="tel:+17146636143">(714) 663-6143</a>.
+                    Title IX equity and compliance concerns should be directed to the
+                    Assistant Superintendent of Personnel Services Jason Bevacqua at
+                    <a href="mailto:jbevacqu@ggusd.us">jbevacqu@ggusd.us</a>
+                    or
+                    <a href="tel:+17146636464">(714) 663-6464</a>.
+                    Complaints may be mailed to 10331 Stanford Avenue, Garden Grove,
+                    CA 92840.
+                </p>
+            </div>
+
+        </div>
+    </div>
 </footer>

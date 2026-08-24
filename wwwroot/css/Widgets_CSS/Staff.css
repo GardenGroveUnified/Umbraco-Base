@@ -18,7 +18,7 @@
     .person{
         text-align: center;
         background-color: transparent;
-        background-image: url('/media/yylncsyk/pexels-pixabay-301378.jpg'); 
+        background-image: url('/media/yylncsyk/pexels-pixabay-301378.jpg');
         background-size: cover;
         border-radius: 10px;
         p, li, h5, a{
@@ -26,4 +26,97 @@
         }
     }
 
+}
+
+/* Staff Grid - Cavaliers (purple/gold) style */
+
+.block-staff-grid--cavaliers{
+    background: var(--shs-purple, #4a1f7a);
+}
+
+.staff-grid-cavaliers__header{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.staff-grid-cavaliers__logo{
+    height: 64px;
+    width: auto;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.staff-grid-cavaliers__pre{
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+    margin-bottom: 2px;
+}
+
+.staff-grid-cavaliers__heading{
+    color: #fff;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin: 0;
+}
+
+.staff-grid-cavaliers__divider{
+    height: 4px;
+    background: var(--shs-gold, #c9a227);
+    border-radius: 2px;
+    margin: 0 0 32px;
+}
+
+.staff-grid-cavaliers__text{
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 24px;
+}
+
+.staff-grid-cavaliers__photo{
+    width: 140px;
+    height: 140px;
+    max-width: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid var(--shs-gold, #c9a227);
+}
+
+.staff-grid-cavaliers__photo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.staff-grid-cavaliers__photo-fallback{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: var(--shs-purple, #4a1f7a);
+    font-size: 2.5rem;
+    font-weight: 800;
+}
+
+.staff-grid-cavaliers__name{
+    color: #fff;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    line-height: 1.3;
+}
+
+.staff-grid-cavaliers__title{
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    line-height: 1.4;
 }

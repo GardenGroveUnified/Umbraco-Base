@@ -46,6 +46,11 @@ body{
     min-height: 100vh;
 }
 
+header {
+    position: relative;
+    z-index: 1051;
+}
+
 .main-content {
     flex: 1;
 }
@@ -91,6 +96,16 @@ p{
     transition: all 0.5s ease;
 }.text-blue{
     color: #003768 !important;
+}
+.text-gold{
+    color: var(--shs-gold, #c9a227) !important;
+}
+.text-purple{
+    color: var(--shs-purple, #4a1f7a) !important;
+}
+.nav-brand-title{
+    color: var(--shs-purple, #4a1f7a);
+    font-family: var(--font-nav-and-texts);
 }
 .text-green{
     color: #5CA043;
@@ -143,7 +158,7 @@ p{
 
 
 #navbarMainNav .dropdown-link:hover{
-    color: black !important;
+    color: var(--shs-purple, #4a1f7a) !important;
 }
 #navbarMainNav .nav-item:first-child{
     margin-left: 0 !important;
@@ -152,10 +167,10 @@ p{
     margin-right: 0 !important;
 }
 #navbarMainNav .nav-item:hover .nav-link{
-    background-color: #aaa;
+    background-color: var(--shs-purple, #4a1f7a);
 }
 #navbarMainNav .active>.nav-link{
-    background-color: #003768;
+    background-color: var(--shs-purple, #4a1f7a);
     color: #fff !important;
 }
 
@@ -164,7 +179,7 @@ p{
 }
 #navbarMainNav .dropdown-item:hover .drop{
     background-color: #fff;
-    color: #003768 !important;
+    color: var(--shs-purple, #4a1f7a) !important;
 }
 #navbarMainNav .nav-item .nav-link{
     font-size: 15px;
@@ -173,16 +188,16 @@ p{
     font-family: var(--font-nav-and-texts);
 }
 #navbarMainNav .dropdown-item{
-    background-color: #CABA9c;
+    background-color: #fff;
 }
 #navbarMainNav .dropdown-item .dropdown-link{
     font-size: 14px;
     font-weight: 400;
-    background-color: #CABA9c;
+    background-color: #fff;
     font-family: var(--font-nav-and-texts);
 }
 #navbarMainNav .dropdown-menu{
-    background-color: #CABA9c;
+    background-color: #fff;
 }
 /* #navbarMainNav .dropdown-item{
     border-bottom: #65676B 1px solid;
@@ -290,6 +305,37 @@ h1.head span{
 
 #footer .fs-7{
     font-size: 0.8rem !important;
+}
+
+#footer .footer-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--shs-purple, #4a1f7a);
+    text-transform: uppercase;
+}
+
+#footer .footer-heading {
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--shs-purple, #4a1f7a);
+    margin-bottom: 8px;
+}
+
+#footer .footer-text {
+    color: rgba(74, 31, 122, 0.75);
+    line-height: 1.6;
+}
+
+#footer .footer-link {
+    color: var(--shs-purple, #4a1f7a);
+    text-decoration: underline;
+}
+
+#footer .footer-link:hover {
+    color: var(--shs-gold, #c9a227);
 }
 
 /* Icon Boxes CSS */
@@ -593,7 +639,7 @@ section#personnel-comms .split__text-inner{
 
 .animate-slideup{
     transform-origin: top;
-    z-index: -1;
+    z-index: 1050;
     animation: slideDown 0.2s ease-out forwards;
 }
 
@@ -623,10 +669,10 @@ section#personnel-comms .split__text-inner{
         color: #fff;
     }
     #navbarMainNav .nav-item:hover{
-    background-color: #2E6F40;
+    background-color: var(--shs-purple, #4a1f7a);
     }
     #navbarMainNav .nav-item:hover .dropdownMenu{
-    background-color: #CABA9c;
+    background-color: #fff;
     }
     #navbarMainNav .dropdown-item{
     background-color: transparent;
@@ -634,4 +680,8 @@ section#personnel-comms .split__text-inner{
     #navbarMainNav .dropdown-item .dropdown-link{
         background-color: transparent;
     }
+    .santiago-vision-mission {
+    font-size: 17px;
+    line-height: 1.15;
+}
 }

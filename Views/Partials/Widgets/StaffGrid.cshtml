@@ -1,0 +1,203 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.StaffGrid)Model.Content;
+    var settings = (ContentModels.StaffGridSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+    var isCavaliersStyle = settings?.BlockStyle == "Style 2";
+
+    var containerWidthClass = settings?.ContainerWidth switch
+    {
+        "small" => "container-md container-small",
+        "standard" => "container",
+        "big" => "container-xlg",
+        "full width" => "container-fluid",
+        _ => "container"
+    };
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    var gutterSpacingClass = string.IsNullOrEmpty(settings?.ColumnSpacing) ? "gutters-sm" : settings.ColumnSpacing;
+    var justifyContentClass = settings?.HorizontalAlignment switch
+    {
+        "left" => "justify-content-start",
+        "right" => "justify-content-end",
+        _ => "justify-content-center"
+    };
+
+    var columnMap = new Dictionary<string, string>
+    {
+        ["max"] = "col-12 col-sm-6 col-md-4 col-lg-3 col-xxxl",
+        ["6"] = "col-12 col-sm-6 col-md-2 col-lg-2",
+        ["5"] = "col-12 col-sm-6 col-md-4 col-lg-5th",
+        ["4"] = "col-12 col-sm-6 col-lg-4 col-xl-3",
+        ["3"] = "col-12 col-sm-6 col-md-4 col-lg-4",
+        ["2"] = "col-12 col-sm-6 col-md-6 col-lg-6",
+        ["1"] = "col-12 col-md-12 col-lg-12",
+    };
+    var itemsPerRowKey = settings?.ItemsPerRow > 0 ? settings.ItemsPerRow.ToString("0") : "4";
+    var numberOfColumnClass = columnMap.GetValueOrDefault(itemsPerRowKey, "col-6 col-md-3 col-lg-3");
+}
+
+@if (content?.StaffList != null && content.StaffList.Any())
+{
+    @if (isCavaliersStyle)
+    {
+        <section class="section block-staff-grid block-staff-grid--cavaliers @verticalSpacingClass @topBorderClass @classNames"
+        @if (!string.IsNullOrEmpty(settings?.AnchorId))
+        {
+            <text>id="@settings.AnchorId"</text>
+        }>
+            <div class="@containerWidthClass">
+                @if (!string.IsNullOrEmpty(content.Preheading) || !string.IsNullOrEmpty(content.Heading))
+                {
+                    <div class="staff-grid-cavaliers__header">
+                        <img src="/media/upqfqrvj/shslogo.jpg" class="staff-grid-cavaliers__logo" alt="Santiago High School logo" />
+                        <div>
+                            @if (!string.IsNullOrEmpty(content.Preheading))
+                            {
+                                <div class="staff-grid-cavaliers__pre">@content.Preheading</div>
+                            }
+                            @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
+                            {
+                                <h1 class="staff-grid-cavaliers__heading">@content.Heading</h1>
+                            }
+                            else if (!string.IsNullOrEmpty(content.Heading))
+                            {
+                                <h2 class="staff-grid-cavaliers__heading">@content.Heading</h2>
+                            }
+                        </div>
+                    </div>
+                    <div class="staff-grid-cavaliers__divider"></div>
+                }
+                @if (!string.IsNullOrEmpty(content.Text?.ToString()))
+                {
+                    <p class="staff-grid-cavaliers__text">@content.Text</p>
+                }
+
+                <div class="row @gutterSpacingClass @justifyContentClass">
+                    @foreach (var item in content.StaffList)
+                    {
+                        var staff = (ContentModels.StaffMember)item.Content;
+                        if (staff?.BlockVisibility == false) { continue; }
+
+                        var photoUrl = staff?.Photo?.GetCropUrl(300, 300);
+
+                        <div class="@numberOfColumnClass mb-4 text-center">
+                            <div class="staff-grid-cavaliers__photo mx-auto mb-3">
+                                @if (!string.IsNullOrEmpty(photoUrl))
+                                {
+                                    <img src="@photoUrl" class="lazyload" alt="@staff?.Name" />
+                                }
+                                else
+                                {
+                                    <div class="staff-grid-cavaliers__photo-fallback">
+                                        @(string.IsNullOrEmpty(staff?.Name) ? "?" : staff.Name.Substring(0, 1))
+                                    </div>
+                                }
+                            </div>
+                            @if (!string.IsNullOrEmpty(staff?.Name))
+                            {
+                                <div class="staff-grid-cavaliers__name">@staff.Name</div>
+                            }
+                            @if (!string.IsNullOrEmpty(staff?.Title))
+                            {
+                                <div class="staff-grid-cavaliers__title">@staff.Title</div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+        <section class="section block-staff-grid @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+        @if (!string.IsNullOrEmpty(settings?.AnchorId))
+        {
+            <text>id="@settings.AnchorId"</text>
+        }>
+            <div class="@containerWidthClass">
+                @if (!string.IsNullOrEmpty(content.Preheading) || !string.IsNullOrEmpty(content.Heading) || !string.IsNullOrEmpty(content.Text?.ToString()))
+                {
+                    <div class="@headerCenterTextClass mb-4">
+                        @if (!string.IsNullOrEmpty(content.Preheading))
+                        {
+                            <div class="pre-head">@content.Preheading</div>
+                        }
+                        @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
+                        {
+                            <h1 class="head display-5 bold">@content.Heading</h1>
+                        }
+                        else if (!string.IsNullOrEmpty(content.Heading) && order != 0)
+                        {
+                            <h2 class="head display-6 bold">@content.Heading</h2>
+                        }
+                        @if (!string.IsNullOrEmpty(content.Text?.ToString()))
+                        {
+                            <p>@content.Text</p>
+                        }
+                    </div>
+                }
+
+                <div class="row @gutterSpacingClass @justifyContentClass">
+                    @foreach (var item in content.StaffList)
+                    {
+                        var staff = (ContentModels.StaffMember)item.Content;
+                        if (staff?.BlockVisibility == false) { continue; }
+
+                        var photoUrl = staff?.Photo?.GetCropUrl(300, 300);
+                        var hasEmail = !string.IsNullOrEmpty(staff?.Email);
+                        var hasPhone = !string.IsNullOrEmpty(staff?.Phone);
+
+                        <div class="@numberOfColumnClass mb-3">
+                            <div class="h-100 rounded bg-white p-2 shadow-primary-xs text-center">
+                                @if (!string.IsNullOrEmpty(photoUrl))
+                                {
+                                    <img src="@photoUrl" class="img-fluid lazyload rounded mb-2" alt="@staff?.Name" />
+                                }
+                                else
+                                {
+                                    <div class="rounded mb-2" style="background:var(--shs-purple-pale,#f3edfa); aspect-ratio:1; display:flex; align-items:center; justify-content:center; color:var(--shs-purple,#4a1f7a); font-size:2rem; font-weight:700;">
+                                        @(string.IsNullOrEmpty(staff?.Name) ? "?" : staff.Name.Substring(0, 1))
+                                    </div>
+                                }
+                                <div class="p-2">
+                                    @if (!string.IsNullOrEmpty(staff?.Name))
+                                    {
+                                        <h3 class="fs-5 mb-1">@staff.Name</h3>
+                                    }
+                                    @if (!string.IsNullOrEmpty(staff?.Title))
+                                    {
+                                        <div class="text-muted small mb-2">@staff.Title</div>
+                                    }
+                                    @if (hasEmail)
+                                    {
+                                        <div><a href="mailto:@staff!.Email" class="small text-decoration-none">@staff.Email</a></div>
+                                    }
+                                    @if (hasPhone)
+                                    {
+                                        <div><a href="tel:@staff!.Phone" class="small text-decoration-none">@staff.Phone</a></div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(staff?.Bio?.ToString()))
+                                    {
+                                        <div class="small mt-2">@staff.Bio</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+}

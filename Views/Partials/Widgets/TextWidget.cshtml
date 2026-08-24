@@ -38,6 +38,9 @@
     var classNames = settings.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
     ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
     : string.Empty;
+    var photoUrl = content?.Photo?.GetCropUrl(700, 700);
+    var hasPhoto = !string.IsNullOrEmpty(photoUrl);
+    var textColClass = hasPhoto ? "col-12 col-md-7" : "col";
 }
 
 
@@ -47,8 +50,14 @@
 }>
     <div class="block-text @classNames">
         <div class="@containerWidthClass">
-            <div class="row">
-                <div class="col">
+            <div class="row align-items-center gutters-sm">
+                @if (hasPhoto)
+                {
+                    <div class="col-12 col-md-5 mb-3 mb-md-0">
+                        <img src="@photoUrl" class="img-fluid lazyload rounded" alt="@content?.Heading" />
+                    </div>
+                }
+                <div class="@textColClass">
                     @if (content?.Preheading != "" || content.Heading != "" || content?.Text?.ToString() != "")
                     {
                         <div class="@verticalSpacingClass">

@@ -215,7 +215,7 @@
 <!-- TOP BAR -->
 <header>
 <div id="top_bar" class="fs--15" role="navigation" aria-label="Top bar navigation">
-    <div class="container d-flex mw-100 justify-content-center" style="background-color:rgb(203, 160, 117);">
+    <div class="container d-flex mw-100 justify-content-center" style="background-color:var(--shs-purple, #4a1f7a);">
         <div class="text-nowrap">
             <div class="d-flex">
                 <div class="d-inline-block align-items-center">
@@ -247,7 +247,7 @@
                                     @if (link.Name == "Nominate an Employee of the Month")
                                     {
                                         <a href="@link.Url" target="@link.Target"
-                                           class="p-2 px-3 d-inline-block text-orange font-weight-medium transition-hover-zoom"
+                                           class="p-2 px-3 d-inline-block text-gold font-weight-medium transition-hover-zoom"
                                            aria-label="@link.Name">
                                             @link.Name
                                         </a>
@@ -302,10 +302,10 @@
                 
                 <!-- NAVIGATION TITLE -->
                 <div class="w-100 text-center d-flex align-items-center justify-content-center justify-content-lg-start mb-3 mb-lg-0">
-                    <img src="/assets/images/ggusdLogo.svg" alt="Company Logo" class="m-2 d-block" width="50" height="50" />
-                    <a href="@(navRoot?.Url() ?? "#")" 
-                       class="text-blue mb-0 text-decoration-none" 
-                       style="font-size: 1.5rem; font-weight: 500; display: inline-block;"
+                    <img src="/media/upqfqrvj/shslogo.jpg" alt="Santiago High School logo" class="m-2 d-block" style="height: 44px; width: auto;" />
+                    <a href="@(navRoot?.Url() ?? "#")"
+                       class="nav-brand-title mb-0 text-decoration-none"
+                       style="font-size: 1.5rem; font-weight: 700; display: inline-block;"
                        role="link"
                        aria-label="Go to @navTitle home page">
                         @navTitle

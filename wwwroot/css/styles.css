@@ -338,6 +338,23 @@ h1.head span{
     color: var(--shs-gold, #c9a227);
 }
 
+#footer {
+    color: #333;
+}
+
+#footer p {
+    color: #333;
+    line-height: 1.6;
+}
+
+#footer a {
+    color: var(--shs-purple, #4a1f7a);
+}
+
+#footer a:hover {
+    color: var(--shs-gold, #c9a227);
+}
+
 /* Icon Boxes CSS */
 
 /* Board Webpage and Children */

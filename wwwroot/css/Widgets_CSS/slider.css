@@ -332,6 +332,7 @@
     font-weight: 700;
     line-height: 1.15;
     color: #fff;
+    font-family: var(--font-nav-and-texts);
 }
 
 .hero-slide__text {

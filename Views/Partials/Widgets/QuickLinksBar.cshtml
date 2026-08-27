@@ -1,0 +1,47 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.QuickLinksBar)Model.Content;
+    var settings = (ContentModels.QuickLinksBarSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    var links = content?.Links?
+        .Select(item => (ContentModels.QuickLinkItem)item.Content)
+        .Where(li => li?.BlockVisibility != false)
+        .ToList() ?? new List<ContentModels.QuickLinkItem>();
+}
+
+@if (links.Any())
+{
+    <div class="home-quicklinks"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        <div class="container-fluid">
+            <div class="home-quicklinks__grid">
+                @foreach (var link in links)
+                {
+                    var url = link?.Link?.Url ?? "#";
+                    var target = link?.Link?.Target ?? "_self";
+
+                    <a href="@url" target="@target" class="home-quicklinks__item"
+                    @if (target != "_self")
+                    {
+                        <text>rel="noopener"</text>
+                    }>
+                        <span class="home-quicklinks__icon">
+                            @if (!string.IsNullOrEmpty(link?.Icon))
+                            {
+                                <i class="@link.Icon"></i>
+                            }
+                        </span>
+                        <span class="home-quicklinks__label">@link?.Label</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+}

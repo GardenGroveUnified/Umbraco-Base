@@ -19,25 +19,42 @@
     --heading-font: "Yeseva One", serif;
     --font-nav-and-texts: "Nunito", serif;
     --body-font: "Montserrat", sans-serif;
-    --mdc-theme-primary: #003768;
-    --mdc-theme-secondary: #ec971f;
+    --mdc-theme-primary: #4a1f7a;
+    --mdc-theme-secondary: #c9a227;
     --background-color: rgba(255,255,255,0.7);
     --swiper-pagination-color: #fff;
     --quote-font: "Playwrite AU NSW", cursive;
 }
 
 .breadcrumb-item.active {
-    color: #ec971f;
+    color: var(--shs-gold, #c9a227);
 }
 .breadcrumb-item+.breadcrumb-item:before {
-    color: #003768;
+    color: var(--shs-purple, #4a1f7a);
 }
 
 body{
-    /* background-image: url('/background.png'); */
     background-position: top;
     background-repeat: repeat;
     background-size: contain;
+    position: relative;
+}
+
+/* Sitewide watermark: a faint, tiled Cavaliers seal behind all content.
+   Uses a fixed pseudo-element (not a plain body background-image) so its
+   opacity fades only the logo, never the actual page text/content, and
+   z-index:-1 keeps it behind everything. Adjust the two variables below
+   to make it bigger/smaller or more/less visible. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url('/media/jpujoraz/imglogo2.png');
+    background-repeat: repeat;
+    background-size: 220px 220px;
+    opacity: 0.05;
+    z-index: -1;
+    pointer-events: none;
 }
 
 #wrapper {
@@ -90,12 +107,13 @@ p{
     transition: all 0.5s ease;
 }
 .bg-blue{
-    background-color: #003768 !important;
+    background-color: var(--shs-purple, #4a1f7a) !important;
 }.bg-blue-hover:hover{
-    background-color: #003768;
+    background-color: var(--shs-purple, #4a1f7a);
     transition: all 0.5s ease;
 }.text-blue{
-    color: #003768 !important;
+    color: var(--shs-purple, #4a1f7a) !important;
+    font-family: var(--font-nav-and-texts);
 }
 .text-gold{
     color: var(--shs-gold, #c9a227) !important;
@@ -104,7 +122,7 @@ p{
     color: var(--shs-purple, #4a1f7a) !important;
 }
 .nav-brand-title{
-    color: var(--shs-purple, #4a1f7a);
+    color: #fff;
     font-family: var(--font-nav-and-texts);
 }
 .text-green{
@@ -152,6 +170,10 @@ p{
     z-index: 20 !important;
 }
 
+header .navbar{
+    background: var(--shs-purple, #4a1f7a);
+}
+
     .navbar-expand-lg {
         flex-wrap: wrap;
     }
@@ -167,11 +189,11 @@ p{
     margin-right: 0 !important;
 }
 #navbarMainNav .nav-item:hover .nav-link{
-    background-color: var(--shs-purple, #4a1f7a);
+    background-color: var(--shs-purple-light, #6b3fa0);
 }
 #navbarMainNav .active>.nav-link{
-    background-color: var(--shs-purple, #4a1f7a);
-    color: #fff !important;
+    background-color: var(--shs-gold, #c9a227);
+    color: var(--shs-purple, #4a1f7a) !important;
 }
 
 #navbarMainNav .nav-item:hover .nav-link{
@@ -183,7 +205,7 @@ p{
 }
 #navbarMainNav .nav-item .nav-link{
     font-size: 15px;
-    color: #000;
+    color: #fff;
     padding: 0px 20px;
     font-family: var(--font-nav-and-texts);
 }
@@ -242,12 +264,21 @@ p{
 }
 
 
-/* h1.head{
-    color:#003768 !important;
+.head{
+    color: #000;
+    font-family: var(--font-nav-and-texts);
 }
-h1.head span{
-    color:#fdb820;
-} */
+.head span{
+    color: var(--shs-gold, #c9a227);
+}
+
+/* Rich text pasted from Word/Google Docs often carries inline
+   font-family styling (e.g. "Times New Roman"), which normally beats
+   any CSS class. !important is the only way to force the site's font
+   to win for Text widget content regardless of what got pasted in. */
+.block-text, .block-text * {
+    font-family: var(--font-nav-and-texts) !important;
+}
 
 
 /* Latest From Feed CSS */
@@ -307,12 +338,18 @@ h1.head span{
     font-size: 0.8rem !important;
 }
 
+#footer {
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+}
+
 #footer .footer-brand {
     font-weight: 800;
     font-size: 1.5rem;
     line-height: 1.2;
-    color: var(--shs-purple, #4a1f7a);
+    color: #fff;
     text-transform: uppercase;
+    font-family: var(--font-nav-and-texts);
 }
 
 #footer .footer-heading {
@@ -320,17 +357,18 @@ h1.head span{
     font-size: 0.8rem;
     letter-spacing: 0.02em;
     text-transform: uppercase;
-    color: var(--shs-purple, #4a1f7a);
+    color: #fff;
     margin-bottom: 8px;
+    font-family: var(--font-nav-and-texts);
 }
 
 #footer .footer-text {
-    color: rgba(74, 31, 122, 0.75);
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.6;
 }
 
 #footer .footer-link {
-    color: var(--shs-purple, #4a1f7a);
+    color: #fff;
     text-decoration: underline;
 }
 
@@ -338,17 +376,14 @@ h1.head span{
     color: var(--shs-gold, #c9a227);
 }
 
-#footer {
-    color: #333;
-}
-
 #footer p {
-    color: #333;
+    color: rgba(255, 255, 255, 0.85);
     line-height: 1.6;
 }
 
 #footer a {
-    color: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    text-decoration: underline;
 }
 
 #footer a:hover {

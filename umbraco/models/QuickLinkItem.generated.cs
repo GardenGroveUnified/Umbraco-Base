@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Web.Common.PublishedModels
 {
-	/// <summary>Upcoming Events</summary>
-	[PublishedModel("eventsWidget")]
-	public partial class EventsWidget : PublishedElementModel, IBaseContent
+	/// <summary>Quick Link Item</summary>
+	[PublishedModel("quickLinkItem")]
+	public partial class QuickLinkItem : PublishedElementModel, IBaseAdvancedSettings
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
-		public new const string ModelTypeAlias = "eventsWidget";
+		public new const string ModelTypeAlias = "quickLinkItem";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
@@ -34,14 +34,14 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 			=> PublishedModelUtility.GetModelContentType(contentTypeCache, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedContentTypeCache contentTypeCache, Expression<Func<EventsWidget, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedContentTypeCache contentTypeCache, Expression<Func<QuickLinkItem, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(contentTypeCache), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public EventsWidget(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public QuickLinkItem(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,43 +50,50 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		// properties
 
 		///<summary>
-		/// Action Link: Optional link shown top-right of the heading, e.g. "Full calendar"
+		/// Pick Icon
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("actionLink")]
-		public virtual global::Umbraco.Cms.Core.Models.Link ActionLink => this.Value<global::Umbraco.Cms.Core.Models.Link>(_publishedValueFallback, "actionLink");
+		[ImplementPropertyType("icon")]
+		public virtual string Icon => this.Value<string>(_publishedValueFallback, "icon");
 
 		///<summary>
-		/// Events List
+		/// Label: e.g. "Calendar", "Bell Schedule"
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("eventsList")]
-		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel EventsList => this.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(_publishedValueFallback, "eventsList");
+		[ImplementPropertyType("label")]
+		public virtual string Label => this.Value<string>(_publishedValueFallback, "label");
 
 		///<summary>
-		/// Heading
+		/// Link: Internal page or external URL (e.g. the Aeries portal).
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("heading")]
-		public virtual string Heading => global::Umbraco.Cms.Web.Common.PublishedModels.BaseContent.GetHeading(this, _publishedValueFallback);
+		[ImplementPropertyType("link")]
+		public virtual global::Umbraco.Cms.Core.Models.Link Link => this.Value<global::Umbraco.Cms.Core.Models.Link>(_publishedValueFallback, "link");
 
 		///<summary>
-		/// Preheading
+		/// Anchor ID
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("preheading")]
-		public virtual string Preheading => global::Umbraco.Cms.Web.Common.PublishedModels.BaseContent.GetPreheading(this, _publishedValueFallback);
+		[ImplementPropertyType("anchorId")]
+		public virtual string AnchorId => global::Umbraco.Cms.Web.Common.PublishedModels.BaseAdvancedSettings.GetAnchorId(this, _publishedValueFallback);
 
 		///<summary>
-		/// Text
+		/// Block Visibility: Prevent this block to from showing up on a webpage.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[ImplementPropertyType("blockVisibility")]
+		public virtual bool BlockVisibility => global::Umbraco.Cms.Web.Common.PublishedModels.BaseAdvancedSettings.GetBlockVisibility(this, _publishedValueFallback);
+
+		///<summary>
+		/// Classnames
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		[ImplementPropertyType("text")]
-		public virtual global::Umbraco.Cms.Core.Strings.IHtmlEncodedString Text => global::Umbraco.Cms.Web.Common.PublishedModels.BaseContent.GetText(this, _publishedValueFallback);
+		[ImplementPropertyType("classnames")]
+		public virtual global::System.Collections.Generic.IEnumerable<string> Classnames => global::Umbraco.Cms.Web.Common.PublishedModels.BaseAdvancedSettings.GetClassnames(this, _publishedValueFallback);
 	}
 }

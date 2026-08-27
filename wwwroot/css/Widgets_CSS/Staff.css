@@ -63,6 +63,7 @@
     text-transform: uppercase;
     letter-spacing: 0.02em;
     margin: 0;
+    font-family: var(--font-nav-and-texts);
 }
 
 .staff-grid-cavaliers__divider{

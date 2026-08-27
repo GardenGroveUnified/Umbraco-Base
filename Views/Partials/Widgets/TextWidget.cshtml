@@ -31,7 +31,8 @@
             containerWidthClass = "container-fluid";
             break;
     }
-    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
     var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : string.Empty;
@@ -41,10 +42,15 @@
     var photoUrl = content?.Photo?.GetCropUrl(700, 700);
     var hasPhoto = !string.IsNullOrEmpty(photoUrl);
     var textColClass = hasPhoto ? "col-12 col-md-7" : "col";
+    // Block Style "Style 2" flips the photo to the right of the text
+    // instead of the default left; same toggle other widgets reuse.
+    var imageOnRight = settings?.BlockStyle == "Style 2";
+    var photoOrderClass = imageOnRight ? "order-2" : "order-1";
+    var textOrderClass = imageOnRight ? "order-1" : "order-2";
 }
 
 
-<section class="section block-text aos-init aos-animate @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" @if (!string.IsNullOrEmpty(settings?.AnchorId))
+<section class="section block-text aos-init aos-animate @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" style="@backgroundColorStyle" @if (!string.IsNullOrEmpty(settings?.AnchorId))
 {
     <text> id="@settings?.AnchorId" </text>
 }>
@@ -53,14 +59,14 @@
             <div class="row align-items-center gutters-sm">
                 @if (hasPhoto)
                 {
-                    <div class="col-12 col-md-5 mb-3 mb-md-0">
+                    <div class="col-12 col-md-5 mb-3 mb-md-0 @photoOrderClass">
                         <img src="@photoUrl" class="img-fluid lazyload rounded" alt="@content?.Heading" />
                     </div>
                 }
-                <div class="@textColClass">
+                <div class="@textColClass @(hasPhoto ? textOrderClass : "")">
                     @if (content?.Preheading != "" || content.Heading != "" || content?.Text?.ToString() != "")
                     {
-                        <div class="@verticalSpacingClass">
+                        <div>
                             @if (content?.Preheading != "")
                             {
                                 <div class="pre-head @(headerCenterTextClass)">@content?.Preheading</div>

@@ -8,9 +8,9 @@
     Layout = null;
 
     // Accept an explicit block collection from ViewData, or fall back to Model's "Widgets"
-    var blocks = ViewData.ContainsKey("Blocks")
+    var blocks = (ViewData.ContainsKey("Blocks")
         ? ViewData["Blocks"] as IEnumerable<BlockListItem>
-        : Model.Value<IEnumerable<BlockListItem>>("Widgets");
+        : Model.Value<IEnumerable<BlockListItem>>("Widgets"))?.ToList();
 
     var startIndex = ViewData.ContainsKey("StartIndex") ? (int)(ViewData["StartIndex"] ?? 0) : 0;
     var parentPage = ViewData.ContainsKey("ParentPage") ? ViewData["ParentPage"] : null;
@@ -19,12 +19,38 @@
 @if (blocks != null && blocks.Any())
 {
     int index = startIndex;
-    foreach (var block in blocks)
+    for (var i = 0; i < blocks.Count; i++)
     {
+        var block = blocks[i];
         var content = block.Content;
         var blockViewData = new ViewDataDictionary(ViewData);
         blockViewData["Order"] = index;
         blockViewData["ParentPage"] = parentPage;
+
+        // Upcoming Events (Home style) immediately followed by Recent News
+        // is a special-cased pairing: wrap both in a flex row so they sit
+        // side-by-side with matching heights, instead of two independent
+        // full-width sections. See .widget-pair-row in Events.css.
+        var isHomeStyleEvents = content.ContentType.Alias == "eventsWidget"
+            && block.Settings?.Value<string>("blockStyle") == "Style 2";
+        var nextIsNews = i + 1 < blocks.Count && blocks[i + 1].Content.ContentType.Alias == "newsWidget";
+
+        if (isHomeStyleEvents && nextIsNews)
+        {
+            var newsBlock = blocks[i + 1];
+            var newsViewData = new ViewDataDictionary(ViewData);
+            newsViewData["Order"] = index + 1;
+            newsViewData["ParentPage"] = parentPage;
+
+            <div class="widget-pair-row">
+                @await Html.PartialAsync("Widgets/" + content.ContentType.Alias, block, blockViewData)
+                @await Html.PartialAsync("Widgets/" + newsBlock.Content.ContentType.Alias, newsBlock, newsViewData)
+            </div>
+            index += 2;
+            i++;
+            continue;
+        }
+
         @await Html.PartialAsync("Widgets/" + content.ContentType.Alias, block, blockViewData);
         index++;
     }

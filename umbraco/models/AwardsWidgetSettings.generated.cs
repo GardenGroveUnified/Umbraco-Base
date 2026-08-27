@@ -18,14 +18,14 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Web.Common.PublishedModels
 {
-	/// <summary>Slider Settings</summary>
-	[PublishedModel("sliderSettings")]
-	public partial class SliderSettings : PublishedElementModel, IBaseAdvancedSettings, IBaseAppearanceSettings
+	/// <summary>Awards Banner Settings</summary>
+	[PublishedModel("awardsWidgetSettings")]
+	public partial class AwardsWidgetSettings : PublishedElementModel, IBaseAdvancedSettings, IBaseAppearanceSettings
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
-		public new const string ModelTypeAlias = "sliderSettings";
+		public new const string ModelTypeAlias = "awardsWidgetSettings";
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		public new const PublishedItemType ModelItemType = PublishedItemType.Content;
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
@@ -34,14 +34,14 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 			=> PublishedModelUtility.GetModelContentType(contentTypeCache, ModelItemType, ModelTypeAlias);
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[return: global::System.Diagnostics.CodeAnalysis.MaybeNull]
-		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedContentTypeCache contentTypeCache, Expression<Func<SliderSettings, TValue>> selector)
+		public static IPublishedPropertyType GetModelPropertyType<TValue>(IPublishedContentTypeCache contentTypeCache, Expression<Func<AwardsWidgetSettings, TValue>> selector)
 			=> PublishedModelUtility.GetModelPropertyType(GetModelContentType(contentTypeCache), selector);
 #pragma warning restore 0109
 
 		private IPublishedValueFallback _publishedValueFallback;
 
 		// ctor
-		public SliderSettings(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
+		public AwardsWidgetSettings(IPublishedElement content, IPublishedValueFallback publishedValueFallback)
 			: base(content, publishedValueFallback)
 		{
 			_publishedValueFallback = publishedValueFallback;
@@ -50,25 +50,18 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		// properties
 
 		///<summary>
-		/// Disable Autoplay: Turn off automatic slide advancing. Visitors can still change slides using the arrows or dots.
+		/// Cycle Through Awards: When on and there's more than one award, they auto-rotate like a slideshow instead of stacking.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
-		[ImplementPropertyType("disableAutoplay")]
-		public virtual bool DisableAutoplay => this.Value<bool>(_publishedValueFallback, "disableAutoplay");
+		[ImplementPropertyType("enableSlideshow")]
+		public virtual bool EnableSlideshow => this.Value<bool>(_publishedValueFallback, "enableSlideshow");
 
 		///<summary>
-		/// Full-Width Banner: Stretch this banner edge-to-edge across the full browser width. Recommended for homepage hero banners.
+		/// Slideshow Speed (seconds): Only used when "Cycle Through Awards" is on.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
-		[ImplementPropertyType("fullWidthBanner")]
-		public virtual bool FullWidthBanner => this.Value<bool>(_publishedValueFallback, "fullWidthBanner");
-
-		///<summary>
-		/// Autoplay Delay (Seconds): How long each slide stays on screen before automatically advancing to the next one. Has no effect if Autoplay is disabled below.
-		///</summary>
-		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
-		[ImplementPropertyType("sliderTiming")]
-		public virtual decimal SliderTiming => this.Value<decimal>(_publishedValueFallback, "sliderTiming");
+		[ImplementPropertyType("slideshowSpeed")]
+		public virtual decimal SlideshowSpeed => this.Value<decimal>(_publishedValueFallback, "slideshowSpeed");
 
 		///<summary>
 		/// Anchor ID

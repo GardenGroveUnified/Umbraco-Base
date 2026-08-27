@@ -1,0 +1,35 @@
+@inherits UmbracoViewPage<ContentModels.AwardItem>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    var award = Model;
+    var photoUrl = award?.Photo?.GetCropUrl(72, 72);
+    var hasLink = award?.Link != null && !string.IsNullOrEmpty(award.Link.Url);
+}
+
+<div class="home-spotlight">
+    <div class="home-spotlight__icon">
+        @if (!string.IsNullOrEmpty(photoUrl))
+        {
+            <img src="@photoUrl" alt="@award?.Title" />
+        }
+        else
+        {
+            <span>&#127942;</span>
+        }
+    </div>
+    <div>
+        @if (!string.IsNullOrEmpty(award?.Title))
+        {
+            <div class="home-spotlight__title">@award.Title</div>
+        }
+        @if (!string.IsNullOrEmpty(award?.Text?.ToString()))
+        {
+            <div class="home-spotlight__text">@award.Text</div>
+        }
+    </div>
+    <div class="flex-grow-1"></div>
+    @if (hasLink)
+    {
+        <a href="@award!.Link!.Url" target="@(award.Link.Target ?? "_self")" class="home-spotlight__action">@(string.IsNullOrEmpty(award.Link.Name) ? "Read more" : award.Link.Name) &rarr;</a>
+    }
+</div>

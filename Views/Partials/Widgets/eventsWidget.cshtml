@@ -8,6 +8,7 @@
     if (settings?.BlockVisibility == false) { return; }
 
     int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+    var isHomeStyle = settings?.BlockStyle == "Style 2";
 
     var containerWidthClass = settings?.ContainerWidth switch
     {
@@ -17,13 +18,16 @@
         "full width" => "container-fluid",
         _ => "container"
     };
-    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
-    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? (isHomeStyle ? "py-4" : "py-3") : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
     var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
         ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
         : string.Empty;
+
+    var hasActionLink = content?.ActionLink != null && !string.IsNullOrEmpty(content.ActionLink.Url);
 
     // Only show events that are today or in the future, always sorted chronologically
     // regardless of the order they were entered in - editors don't have to keep the
@@ -37,70 +41,148 @@
 
 @if (events.Any())
 {
-    <section class="section block-events @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
-    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    @if (isHomeStyle)
     {
-        <text>id="@settings.AnchorId"</text>
-    }>
-        <div class="@containerWidthClass">
-            @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || !string.IsNullOrEmpty(content?.Text?.ToString()))
-            {
-                <div class="@headerCenterTextClass mb-4">
-                    @if (!string.IsNullOrEmpty(content?.Preheading))
-                    {
-                        <div class="pre-head">@content.Preheading</div>
-                    }
-                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
-                    {
-                        <h1 class="head display-5 bold">@content.Heading</h1>
-                    }
-                    else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
-                    {
-                        <h2 class="head display-6 bold">@content.Heading</h2>
-                    }
-                    @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
-                    {
-                        <p>@content.Text</p>
-                    }
-                </div>
-            }
+        <section class="section block-events block-events-home @verticalSpacingClass @classNames"
+        @if (!string.IsNullOrEmpty(settings?.AnchorId))
+        {
+            <text>id="@settings.AnchorId"</text>
+        }>
+            <div class="container-fluid px-4">
+                @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || hasActionLink)
+                {
+                    <div class="news-widget__header">
+                        <div class="news-widget__label">
+                            @if (!string.IsNullOrEmpty(content?.Preheading))
+                            {
+                                <span>@content.Preheading</span>
+                            }
+                            @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                            {
+                                <h1 class="news-widget__heading">@content.Heading</h1>
+                            }
+                            else if (!string.IsNullOrEmpty(content?.Heading))
+                            {
+                                <h2 class="news-widget__heading">@content.Heading</h2>
+                            }
+                        </div>
+                        @if (hasActionLink)
+                        {
+                            <a href="@content!.ActionLink!.Url" target="@(content.ActionLink.Target ?? "_self")" class="news-widget__action">@(string.IsNullOrEmpty(content.ActionLink.Name) ? "Full calendar" : content.ActionLink.Name) &rarr;</a>
+                        }
+                    </div>
+                }
 
-            <div class="row gutters-sm">
                 @foreach (var ev in events)
                 {
                     var isFeatured = ev.Featured;
-                    <div class="col-12 col-md-6 col-lg-4 mb-3">
-                        <div class="d-flex gap-2 p-2 rounded bg-white shadow-primary-xs h-100 @(isFeatured ? "border border-2" : "")" style="@(isFeatured ? "border-color:var(--shs-gold,#c9a227) !important;" : "")">
-                            <div class="flex-shrink-0 rounded text-center d-flex flex-column align-items-center justify-content-center"
-                                 style="width:44px; height:48px; background:@(isFeatured ? "var(--shs-purple,#4a1f7a)" : "#f1f1f1");">
-                                <span class="d-block" style="font-size:9px; font-weight:700; color:@(isFeatured ? "var(--shs-gold,#c9a227)" : "#888");">@ev.EventDate.ToString("MMM").ToUpper()</span>
-                                <span class="d-block" style="font-size:16px; font-weight:700; color:@(isFeatured ? "#fff" : "#333"); line-height:1;">@ev.EventDate.Day</span>
-                            </div>
-                            <div class="flex-grow-1">
-                                @if (!string.IsNullOrEmpty(ev.Title))
+                    var photoUrl = ev.Photo?.GetCropUrl(80, 80);
+
+                    <div class="event-home-row">
+                        <div class="event-home-row__date @(isFeatured ? "event-home-row__date--featured" : "")">
+                            <span class="event-home-row__month">@ev.EventDate.ToString("MMM").ToUpper()</span>
+                            <span class="event-home-row__day">@ev.EventDate.Day</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(photoUrl))
+                        {
+                            <div class="event-home-row__photo"><img src="@photoUrl" alt="@ev.Title" /></div>
+                        }
+                        <div class="event-home-row__body">
+                            @if (!string.IsNullOrEmpty(ev.Title))
+                            {
+                                <div class="event-home-row__title">@ev.Title</div>
+                            }
+                            <div class="event-home-row__sub">
+                                @ev.EventDate.ToString("h:mm tt")
+                                @if (!string.IsNullOrEmpty(ev.Location))
                                 {
-                                    <div class="fw-bold" style="font-size:0.9rem;">@ev.Title</div>
-                                }
-                                <div class="text-muted small">
-                                    @ev.EventDate.ToString("h:mm tt")
-                                    @if (!string.IsNullOrEmpty(ev.Location))
-                                    {
-                                        <text> &middot; @ev.Location</text>
-                                    }
-                                </div>
-                                @if (!string.IsNullOrEmpty(ev.Description?.ToString()))
-                                {
-                                    <div class="small mt-1">@ev.Description</div>
-                                }
-                                @if (ev.Link != null && !string.IsNullOrEmpty(ev.Link.Url))
-                                {
-                                    <a href="@ev.Link.Url" target="@(ev.Link.Target ?? "_self")" class="small">@(string.IsNullOrEmpty(ev.Link.Name) ? "More info" : ev.Link.Name) &rarr;</a>
+                                    <text> &middot; @ev.Location</text>
                                 }
                             </div>
                         </div>
                     </div>
                 }
             </div>
-        </div>
-    </section>
+        </section>
+    }
+    else
+    {
+        <section class="section block-events @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames" style="@backgroundColorStyle"
+        @if (!string.IsNullOrEmpty(settings?.AnchorId))
+        {
+            <text>id="@settings.AnchorId"</text>
+        }>
+            <div class="@containerWidthClass">
+                @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || !string.IsNullOrEmpty(content?.Text?.ToString()))
+                {
+                    <div class="@headerCenterTextClass mb-4">
+                        @if (!string.IsNullOrEmpty(content?.Preheading))
+                        {
+                            <div class="pre-head">@content.Preheading</div>
+                        }
+                        @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                        {
+                            <h1 class="head display-5 bold">@content.Heading</h1>
+                        }
+                        else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                        {
+                            <h2 class="head display-6 bold">@content.Heading</h2>
+                        }
+                        @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
+                        {
+                            <p>@content.Text</p>
+                        }
+                    </div>
+                }
+
+                <div class="row gutters-sm">
+                    @foreach (var ev in events)
+                    {
+                        var isFeatured = ev.Featured;
+                        var photoUrl = ev.Photo?.GetCropUrl(300, 200);
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                            <div class="d-flex gap-2 p-2 rounded bg-white shadow-primary-xs h-100 @(isFeatured ? "border border-2" : "")" style="@(isFeatured ? "border-color:var(--shs-gold,#c9a227) !important;" : "")">
+                                @if (!string.IsNullOrEmpty(photoUrl))
+                                {
+                                    <div class="flex-shrink-0 rounded overflow-hidden" style="width:64px; height:64px;">
+                                        <img src="@photoUrl" alt="@ev.Title" style="width:100%; height:100%; object-fit:cover; display:block;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="flex-shrink-0 rounded text-center d-flex flex-column align-items-center justify-content-center"
+                                         style="width:44px; height:48px; background:@(isFeatured ? "var(--shs-purple,#4a1f7a)" : "#f1f1f1");">
+                                        <span class="d-block" style="font-size:9px; font-weight:700; color:@(isFeatured ? "var(--shs-gold,#c9a227)" : "#888");">@ev.EventDate.ToString("MMM").ToUpper()</span>
+                                        <span class="d-block" style="font-size:16px; font-weight:700; color:@(isFeatured ? "#fff" : "#333"); line-height:1;">@ev.EventDate.Day</span>
+                                    </div>
+                                }
+                                <div class="flex-grow-1">
+                                    @if (!string.IsNullOrEmpty(ev.Title))
+                                    {
+                                        <div class="fw-bold" style="font-size:0.9rem;">@ev.Title</div>
+                                    }
+                                    <div class="text-muted small">
+                                        @ev.EventDate.ToString("h:mm tt")
+                                        @if (!string.IsNullOrEmpty(ev.Location))
+                                        {
+                                            <text> &middot; @ev.Location</text>
+                                        }
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(ev.Description?.ToString()))
+                                    {
+                                        <div class="small mt-1">@ev.Description</div>
+                                    }
+                                    @if (ev.Link != null && !string.IsNullOrEmpty(ev.Link.Url))
+                                    {
+                                        <a href="@ev.Link.Url" target="@(ev.Link.Target ?? "_self")" class="small">@(string.IsNullOrEmpty(ev.Link.Name) ? "More info" : ev.Link.Name) &rarr;</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
 }

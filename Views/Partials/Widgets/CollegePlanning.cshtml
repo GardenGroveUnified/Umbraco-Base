@@ -17,7 +17,8 @@
         "full width" => "container-fluid",
         _ => "container"
     };
-    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
     var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
@@ -34,7 +35,7 @@
 
 @if (milestones.Any())
 {
-    <section class="section block-college-planning @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+    <section class="section block-college-planning @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames" style="@backgroundColorStyle"
     @if (!string.IsNullOrEmpty(settings?.AnchorId))
     {
         <text>id="@settings.AnchorId"</text>

@@ -301,20 +301,18 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarMainNav">
                 
                 <!-- NAVIGATION TITLE -->
-                <div class="w-100 text-center d-flex align-items-center justify-content-center justify-content-lg-start mb-3 mb-lg-0">
-                    <img src="/media/upqfqrvj/shslogo.jpg" alt="Santiago High School logo" class="m-2 d-block" style="height: 44px; width: auto;" />
+                <div class="text-center d-flex align-items-center justify-content-center mb-3 mb-lg-0 me-lg-4">
                     <a href="@(navRoot?.Url() ?? "#")"
-                       class="nav-brand-title mb-0 text-decoration-none"
-                       style="font-size: 1.5rem; font-weight: 700; display: inline-block;"
+                       class="mb-0 text-decoration-none d-block"
                        role="link"
                        aria-label="Go to @navTitle home page">
-                        @navTitle
+                        <img src="/media/narjhtfg/newlogo.png" alt="@navTitle logo" class="m-2 d-block" style="height: 64px; width: auto;" />
                     </a>
                 </div>
                 <!-- /NAVIGATION TITLE -->
 
                 <!-- NAVIGATION -->
-                <ul class="navbar-nav w-100 justify-content-lg-end" id="menuWidth" role="menubar">
+                <ul class="navbar-nav justify-content-center" id="menuWidth" role="menubar">
 
                     @foreach (var level1Page in level1Pages.Take(7))
                     {

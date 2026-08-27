@@ -15,6 +15,8 @@
 	// Swiper's loop mode requires more than one real slide - with only one,
 	// it fails to initialize and the swiper-preloader spinner never clears.
 	var loopEnabled = content.SliderItems.Count() > 1;
+	var autoplayEnabled = settings?.DisableAutoplay != true;
+	var autoplayJson = autoplayEnabled ? $"{{ \"delay\": {delay}, \"disableOnInteraction\": false }}" : "false";
 
 	var containerWidthClass = "container";
 	switch (settings?.ContainerWidth)
@@ -32,14 +34,22 @@
 			containerWidthClass = "container-fluid";
 			break;
 	}
-	var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-white" : settings?.BackgroundColor;
+	// The dedicated "Full-Width Banner" toggle is the intuitive, front-and-center
+	// way to get an edge-to-edge hero; it overrides the generic Container Width
+	// setting (still available for anyone who wants small/standard/big instead).
+	if (settings?.FullWidthBanner == true)
+	{
+		containerWidthClass = "container-fluid";
+	}
+	var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-white" : "";
+	var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
 	var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
 	var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
 	var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : string.Empty;
 
 	if (content.SliderItems.Any())
 	{
-		<section class="section block-slider @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" @if (!string.IsNullOrEmpty(settings?.AnchorId))
+		<section class="section block-slider @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" style="@backgroundColorStyle" @if (!string.IsNullOrEmpty(settings?.AnchorId))
 		{
 			<text>id="@settings.AnchorId"</text>
 		}>
@@ -56,7 +66,7 @@
 						data-swiper='{
 								"slidesPerView": 1,
 								"spaceBetween": 0,
-								"autoplay": { "delay" : @delay, "disableOnInteraction": false },
+								"autoplay": @autoplayJson,
 								"loop": @loopEnabled.ToString().ToLowerInvariant(),
 								"pagination": { "type": "bullets" }
 							}'>

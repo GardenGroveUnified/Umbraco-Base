@@ -11,7 +11,8 @@
     int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
 
     var containerWidthClass = "container";
-    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
     var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
@@ -54,7 +55,7 @@
 
 @if (videos != null && videos.Any())
 {
-    <section class="section block-videos @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+    <section class="section block-videos @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames" style="@backgroundColorStyle"
     @if (!string.IsNullOrEmpty(settings?.AnchorId))
     {
         <text>id="@settings.AnchorId"</text>

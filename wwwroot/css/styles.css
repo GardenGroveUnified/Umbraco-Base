@@ -70,6 +70,8 @@ header {
 
 .main-content {
     flex: 1;
+    padding-top: 24px;
+    padding-bottom: 24px;
 }
 
 .clipart-top-left{
@@ -341,6 +343,7 @@ header .navbar{
 #footer {
     background: var(--shs-purple, #4a1f7a);
     color: #fff;
+    padding: 20px 0;
 }
 
 #footer .footer-brand {

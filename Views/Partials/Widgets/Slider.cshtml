@@ -76,7 +76,7 @@
 							var item = (SliderItem)sliderItem.Content;
 							if (item.BlockVisibility != true) continue;
                             var styling = "";
-                            @if (item?.Preheading != "" || item.Heading != "" || item?.SliderText?.ToString() != ""){styling = "bg-dark p-3";}
+                            @if (item?.Preheading != "" || item.Heading != "" || item?.SliderText?.ToString() != ""){styling = "hero-slide__panel p-3";}
 							var itemImage = item?.Image != null ? item.Image.Url() : "";
 
 							<!-- slide -->

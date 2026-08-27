@@ -309,6 +309,13 @@
     max-width: 480px;
 }
 
+/* Lighter transparent purple panel behind the slide text, replacing the
+   default dark/greyish bg-dark block for better on-brand contrast. */
+.hero-slide__panel {
+    background: rgba(74, 31, 122, 0.35);
+    border-radius: 8px;
+}
+
 .hero-slide__label {
     display: flex;
     align-items: center;
@@ -367,6 +374,7 @@
 .hero-slide__btn--primary {
     background: var(--shs-gold, #c9a227);
     color: #2a1f00;
+    border: 2px solid var(--shs-gold, #c9a227);
 }
 
 .hero-slide__btn--primary:hover {
@@ -374,11 +382,12 @@
 }
 
 .hero-slide__btn--secondary {
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: transparent;
+    color: var(--shs-gold, #c9a227);
+    border: 2px solid var(--shs-gold, #c9a227);
 }
 
 .hero-slide__btn--secondary:hover {
-    background: rgba(255, 255, 255, 0.25);
-    color: #fff;
+    background: var(--shs-gold, #c9a227);
+    color: #2a1f00;
 }

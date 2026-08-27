@@ -218,6 +218,12 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
+.event-home-row__empty {
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 8px 0;
+}
+
 
 .d,.h,.m,.s{
     font-size: 50px;

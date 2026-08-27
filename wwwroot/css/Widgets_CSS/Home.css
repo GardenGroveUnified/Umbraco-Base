@@ -72,6 +72,10 @@
     object-fit: cover;
 }
 
+.awards-widget {
+    padding: 24px 0;
+}
+
 .awards-widget__swiper .swiper-slide {
     height: auto;
 }

@@ -110,7 +110,7 @@
                 var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                 var target = pageInfo.Target ?? "_self";
                 
-                <li class="dropdown-item my-lg-3 text-wrap" role="none">
+                <li class="dropdown-item my-lg-2 text-wrap" role="none">
                     <div class="dropdown-submenu">
                         <a href="@(page.Url())" target="@target"
                            class="dropdown-link text-black"
@@ -135,7 +135,7 @@
                 var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                 var target = pageInfo.Target ?? "_self";
                 
-                <li class="dropdown-item my-lg-3 text-wrap" role="none">
+                <li class="dropdown-item my-lg-2 text-wrap" role="none">
                     <a href="@(page.Url())" target="@target"
                        class="dropdown-link text-black"
                        role="menuitem"

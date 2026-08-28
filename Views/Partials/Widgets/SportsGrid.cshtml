@@ -1,0 +1,97 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.SportsGrid)Model.Content;
+    var settings = (ContentModels.SportsGridSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-4" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    var sports = content?.SportsList?
+        .Select(item => (ContentModels.SportItem)item.Content)
+        .Where(s => s?.BlockVisibility != false)
+        .ToList() ?? new List<ContentModels.SportItem>();
+}
+
+@if (sports.Any())
+{
+    <section class="section block-sports-grid @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames" style="@backgroundColorStyle"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        <div class="container">
+            @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading))
+            {
+                <div class="home-section-title">
+                    <div class="home-section-title__label">
+                        <span class="home-section-title__bar"></span>
+                        @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                        {
+                            <h1 class="head display-6 bold mb-0">@content.Heading</h1>
+                        }
+                        else if (!string.IsNullOrEmpty(content?.Heading))
+                        {
+                            <h2 class="head display-6 bold mb-0">@content.Heading</h2>
+                        }
+                        else if (!string.IsNullOrEmpty(content?.Preheading))
+                        {
+                            @content.Preheading
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="sports-grid">
+                @foreach (var sport in sports)
+                {
+                    var photoUrl = sport.Photo?.GetCropUrl(160, 160);
+                    var hasLink = sport.Link != null && !string.IsNullOrEmpty(sport.Link.Url);
+
+                    if (hasLink)
+                    {
+                        <a href="@sport.Link!.Url" target="@(sport.Link.Target ?? "_self")" class="sports-grid__card">
+                            <div class="sports-grid__icon">
+                                @if (!string.IsNullOrEmpty(photoUrl))
+                                {
+                                    <img src="@photoUrl" alt="@sport.Name" />
+                                }
+                                else
+                                {
+                                    <span>&#127942;</span>
+                                }
+                            </div>
+                            <div class="sports-grid__name">@sport.Name</div>
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="sports-grid__card sports-grid__card--nolink">
+                            <div class="sports-grid__icon">
+                                @if (!string.IsNullOrEmpty(photoUrl))
+                                {
+                                    <img src="@photoUrl" alt="@sport.Name" />
+                                }
+                                else
+                                {
+                                    <span>&#127942;</span>
+                                }
+                            </div>
+                            <div class="sports-grid__name">@sport.Name</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </section>
+}

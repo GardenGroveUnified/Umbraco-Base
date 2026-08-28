@@ -7,7 +7,7 @@
     Layout = "Master.cshtml";
 
     var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
-    ViewBag.Title = $"{title} | GGUSD Food Services";
+    ViewBag.Title = $"{title} | Santiago High School";
     var hasSidebar = Model?.SidebarBlocks?.Count > 0;
 }
 

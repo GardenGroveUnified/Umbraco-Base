@@ -1,0 +1,89 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.AthleticsSchedule)Model.Content;
+    var settings = (ContentModels.AthleticsScheduleSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-4" : settings.VerticalSpacing;
+    var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
+
+    var hasActionLink = content?.ActionLink != null && !string.IsNullOrEmpty(content.ActionLink.Url);
+
+    // Only show games that are today or in the future, always sorted chronologically,
+    // same convention as the Upcoming Events widget.
+    var games = content?.GamesList?
+        .Select(item => (ContentModels.AthleticsGameItem)item.Content)
+        .Where(g => g?.BlockVisibility != false && g?.GameDate.Date >= DateTime.Today)
+        .OrderBy(g => g!.GameDate)
+        .ToList() ?? new List<ContentModels.AthleticsGameItem>();
+}
+
+<section class="section block-athletics-schedule @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames" style="@backgroundColorStyle"
+@if (!string.IsNullOrEmpty(settings?.AnchorId))
+{
+    <text>id="@settings.AnchorId"</text>
+}>
+    <div class="container">
+        @if (!string.IsNullOrEmpty(content?.Preheading) || !string.IsNullOrEmpty(content?.Heading) || hasActionLink)
+        {
+            <div class="home-section-title">
+                <div class="home-section-title__label">
+                    <span class="home-section-title__bar"></span>
+                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
+                    {
+                        <h1 class="head display-6 bold mb-0">@content.Heading</h1>
+                    }
+                    else if (!string.IsNullOrEmpty(content?.Heading))
+                    {
+                        <h2 class="head display-6 bold mb-0">@content.Heading</h2>
+                    }
+                    else if (!string.IsNullOrEmpty(content?.Preheading))
+                    {
+                        @content.Preheading
+                    }
+                </div>
+                @if (hasActionLink)
+                {
+                    <a href="@content!.ActionLink!.Url" target="@(content.ActionLink.Target ?? "_self")" class="home-section-title__action">@(string.IsNullOrEmpty(content.ActionLink.Name) ? "Full schedule" : content.ActionLink.Name) &rarr;</a>
+                }
+            </div>
+        }
+
+        <div class="athletics-schedule-list">
+            @if (games.Any())
+            {
+                @foreach (var g in games)
+                {
+                    <div class="athletics-game @(g.Featured ? "athletics-game--next" : "")">
+                        <div class="athletics-game__date">
+                            <span class="athletics-game__month">@g.GameDate.ToString("MMM").ToUpper()</span>
+                            <span class="athletics-game__day">@g.GameDate.Day</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="athletics-game__opponent">@g.Opponent</div>
+                            <div class="athletics-game__time">@g.GameDate.ToString("h:mm tt")</div>
+                        </div>
+                        @if (!string.IsNullOrEmpty(g.Location))
+                        {
+                            <span class="athletics-game__loc">@g.Location</span>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted mb-0">No upcoming games scheduled.</p>
+            }
+        </div>
+    </div>
+</section>

@@ -24,6 +24,14 @@
     --background-color: rgba(255,255,255,0.7);
     --swiper-pagination-color: #fff;
     --quote-font: "Playwrite AU NSW", cursive;
+
+    /* Santiago HS brand palette - single source of truth.
+       styles.css loads before every widget stylesheet, so use var(--shs-*)
+       anywhere with no hex fallback needed. */
+    --shs-purple: #4a1f7a;
+    --shs-purple-light: #6b3fa0;
+    --shs-purple-pale: #f3edfa;
+    --shs-gold: #c9a227;
 }
 
 .breadcrumb-item.active {

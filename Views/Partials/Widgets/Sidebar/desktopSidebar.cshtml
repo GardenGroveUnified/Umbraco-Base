@@ -3,9 +3,15 @@
 @using Umbraco.Cms.Core.Models;
 @using Umbraco.Cms.Core.Models.Blocks;
 @{
-	var sidebarBlocks = Model.Value<IEnumerable<BlockListItem>>("sidebarBlocks");
+	// Use this page's own Sidebar Blocks; if it has none, inherit the nearest
+	// ancestor's - so a section sidebar configured once (e.g. on JROTC) cascades
+	// to every descendant page. The sideTopBar widget still resolves
+	// siblings/children relative to the *current* page.
+	var sidebarSource = Model.AncestorsOrSelf()
+		.FirstOrDefault(p => p.Value<IEnumerable<BlockListItem>>("sidebarBlocks")?.Any() == true);
+	var sidebarBlocks = sidebarSource?.Value<IEnumerable<BlockListItem>>("sidebarBlocks");
 	ViewData["IsSidebarInSidebarBlocks"] = true;
-}           
+}
 
 @if (sidebarBlocks != null && sidebarBlocks.Any())
 {

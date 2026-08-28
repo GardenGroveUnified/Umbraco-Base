@@ -1,9 +1,4 @@
-:root {
-    --shs-purple: #4a1f7a;
-    --shs-purple-light: #6b3fa0;
-    --shs-purple-pale: #f3edfa;
-    --shs-gold: #c9a227;
-}
+/* Brand palette (--shs-purple, --shs-gold, ...) now lives in styles.css :root */
 
 .home-quicklinks {
     background: var(--shs-purple);

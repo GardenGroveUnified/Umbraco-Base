@@ -68,6 +68,19 @@
         !string.IsNullOrWhiteSpace(url) &&
         currentUrl.TrimEnd('/').Equals(url.TrimEnd('/'), StringComparison.OrdinalIgnoreCase)
             ? "page" : null;
+
+    // Track every URL we render so a manually-added "Additional Sub Link" that
+    // points at a page already shown by the auto-nav doesn't appear twice.
+    var renderedUrls = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    string NormUrl(string? u) => (u ?? string.Empty).TrimEnd('/');
+
+    foreach (var n in autoNavItems)
+    {
+        var u = n.Url();
+        if (!string.IsNullOrWhiteSpace(u)) { renderedUrls.Add(NormUrl(u)); }
+    }
+    if (parentNavItem?.Url() is { Length: > 0 } parentUrl) { renderedUrls.Add(NormUrl(parentUrl)); }
+    if (!string.IsNullOrWhiteSpace(content?.SelfNameLink?.Url)) { renderedUrls.Add(NormUrl(content.SelfNameLink.Url)); }
 }
 
 <div class="sidebar-nav @verticalSpacing @extraClasses" id="@anchorId">
@@ -161,6 +174,11 @@
                 foreach (var link in content.AdditionalSubLinks.Where(l => l != null))
                 {
                     var linkUrl    = link.Url ?? "#";
+
+                    // Skip a link that duplicates a page already shown above (or an
+                    // earlier sub-link with the same URL).
+                    if (linkUrl != "#" && !renderedUrls.Add(NormUrl(linkUrl))) { continue; }
+
                     var linkName   = string.IsNullOrWhiteSpace(link.Name) ? linkUrl : link.Name;
                     var linkTarget = link.Target ?? "_self";
                     var linkActive = ActiveAttr(linkUrl);

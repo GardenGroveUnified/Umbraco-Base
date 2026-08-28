@@ -8,7 +8,8 @@
 
     var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
     ViewBag.Title = $"{title} | GGUSD Students Hub";
-    var hasSidebar = Model?.SidebarBlocks?.Count > 0;
+    var hasSidebar = Model is not null && Model.AncestorsOrSelf()
+        .Any(p => p.Value<IEnumerable<BlockListItem>>("sidebarBlocks")?.Any() == true);
 }
 
 @{

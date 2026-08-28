@@ -57,12 +57,20 @@
     color: var(--sidebar-fg);
 }
 
-/* Current page */
-.sidebar-nav .nav-link.active,
-.sidebar-nav .nav-link[aria-current="page"] {
+/* Current page - brand gold on the dark bar.
+   `!important` overrides the global `a.nav-link.active { color:#ec971f }`
+   (orange) rule in styles.css. */
+.sidebar-nav a.nav-link.active,
+.sidebar-nav a.nav-link[aria-current="page"] {
     background: var(--sidebar-active-bg);
-    color: #fff;
+    color: var(--shs-gold) !important;
     font-weight: 700;
+}
+
+.sidebar-nav .nav-link.active > span[aria-hidden="true"],
+.sidebar-nav .nav-link[aria-current="page"] > span[aria-hidden="true"] {
+    color: var(--shs-gold);
+    opacity: 1;
 }
 
 /* Parent / self entry acts as the section header */

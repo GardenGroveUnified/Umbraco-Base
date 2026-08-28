@@ -47,6 +47,10 @@
     };
     var itemsPerRowKey = settings?.ItemsPerRow > 0 ? settings.ItemsPerRow.ToString("0") : "4";
     var numberOfColumnClass = columnMap.GetValueOrDefault(itemsPerRowKey, "col-6 col-md-3 col-lg-3");
+
+    // The Cavaliers style uses much larger portrait photos, so when the editor
+    // hasn't picked an items-per-row, default it to 2 across so the photos have room.
+    var cavaliersColumnClass = settings?.ItemsPerRow > 0 ? numberOfColumnClass : "col-12 col-sm-10 col-md-6";
 }
 
 @if (content?.StaffList != null && content.StaffList.Any())
@@ -62,7 +66,6 @@
                 @if (!string.IsNullOrEmpty(content.Preheading) || !string.IsNullOrEmpty(content.Heading))
                 {
                     <div class="staff-grid-cavaliers__header">
-                        <img src="/media/upqfqrvj/shslogo.jpg" class="staff-grid-cavaliers__logo" alt="Santiago High School logo" />
                         <div>
                             @if (!string.IsNullOrEmpty(content.Preheading))
                             {
@@ -91,9 +94,9 @@
                         var staff = (ContentModels.StaffMember)item.Content;
                         if (staff?.BlockVisibility == false) { continue; }
 
-                        var photoUrl = staff?.Photo?.GetCropUrl(300, 300);
+                        var photoUrl = staff?.Photo?.GetCropUrl(600, 600);
 
-                        <div class="@numberOfColumnClass mb-4 text-center">
+                        <div class="@cavaliersColumnClass mb-4 text-center">
                             <div class="staff-grid-cavaliers__photo mx-auto mb-3">
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
@@ -175,7 +178,7 @@
                                 <div class="p-2">
                                     @if (!string.IsNullOrEmpty(staff?.Name))
                                     {
-                                        <h3 class="fs-5 mb-1">@staff.Name</h3>
+                                        <h3 class="staff-grid__name fs-5 mb-1">@staff.Name</h3>
                                     }
                                     @if (!string.IsNullOrEmpty(staff?.Title))
                                     {

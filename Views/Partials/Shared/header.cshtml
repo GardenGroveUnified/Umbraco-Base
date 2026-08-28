@@ -21,6 +21,15 @@
             .ToList() ?? new List<IPublishedContent>();
     }
     
+    // True when a section's own landing page has something worth linking to
+    // (used to add an "Overview" entry at the top of that section's dropdown).
+    private bool HasLandingContent(IPublishedContent page)
+    {
+        var blocks = page.Value<IEnumerable<BlockListItem>>("blocks");
+        var headerBlocks = page.Value<IEnumerable<BlockListItem>>("headerBlocks");
+        return (blocks?.Any() ?? false) || (headerBlocks?.Any() ?? false);
+    }
+
     // Recursive helper function to render navigation items at any depth
     private void RenderNavigationItem(IPublishedContent page, IPublishedContent currentPage, int depth, ref int itemIndex)
     {
@@ -39,56 +48,38 @@
             // Top level navigation items
             if (hasChildren && page.ContentType.Alias != ContentTypeAlias.Subsite)
             {
-                if (page.ContentType.Alias != ContentTypeAlias.PagesList)
-                {
-                    var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
-                    
-                    <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
-                        <a href="@(page.Url())" id="@(pageId)" 
-                           class="nav-link dropdown-menu-hover align-content-center"
-                           aria-haspopup="true"
-                           aria-expanded="false"
-                           role="menuitem">
-                            <b>@(linkTitle)</b>
-                        </a>
-                        
-                        <div aria-labelledby="@(pageId)" 
-                             class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0"
-                             role="menu">
-                            <ul class="list-unstyled" role="none">
-                                @foreach (var childPage in children)
-                                {
-                                    RenderNavigationItem(childPage, currentPage, depth + 1, ref itemIndex);
-                                }
-                            </ul>
-                        </div>
-                    </li>
-                }
-                else
-                {
-                    var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
-                    
-                    <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
-                        <button id="@(pageId)" 
-                                class="nav-link dropdown-menu-hover align-content-center h-100 w-100 cursor-default"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                                role="menuitem">
-                            <b>@(linkTitle)</b>
-                        </button>
-                        
-                        <div aria-labelledby="@(pageId)" 
-                             class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0"
-                             role="menu">
-                            <ul class="list-unstyled" role="none">
-                                @foreach (var childPage in children)
-                                {
-                                    RenderNavigationItem(childPage, currentPage, depth + 1, ref itemIndex);
-                                }
-                            </ul>
-                        </div>
-                    </li>
-                }
+                var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
+
+                // Top-level items that have a dropdown don't navigate anywhere - the
+                // label is just a toggle that reveals the submenu (matches the public
+                // site). Where a section has its own landing page, link it from inside
+                // the menu rather than from this label.
+                <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                    <button id="@(pageId)"
+                            class="nav-link dropdown-menu-hover align-content-center h-100 w-100 cursor-default"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                            role="menuitem">
+                        <b>@(linkTitle)</b>
+                    </button>
+
+                    <div aria-labelledby="@(pageId)"
+                         class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0"
+                         role="menu">
+                        <ul class="list-unstyled" role="none">
+                            @if (HasLandingContent(page))
+                            {
+                                <li class="dropdown-item my-lg-2 text-wrap" role="none">
+                                    <a href="@(page.Url())" class="dropdown-link text-black" role="menuitem">@(linkTitle) Overview</a>
+                                </li>
+                            }
+                            @foreach (var childPage in children)
+                            {
+                                RenderNavigationItem(childPage, currentPage, depth + 1, ref itemIndex);
+                            }
+                        </ul>
+                    </div>
+                </li>
             }
             else
             {
@@ -298,15 +289,15 @@
     <nav class="navbar navbar-expand-lg navbar-light">
 
         <div class="container p-0">
-            <div class="collapse navbar-collapse justify-content-center" id="navbarMainNav">
+            <div class="collapse navbar-collapse justify-content-center align-items-lg-center" id="navbarMainNav">
                 
                 <!-- NAVIGATION TITLE -->
-                <div class="text-center d-flex align-items-center justify-content-center mb-3 mb-lg-0 me-lg-4">
+                <div class="navbar-logo-wrap text-center d-flex align-items-center justify-content-center mb-3 mb-lg-0 me-lg-4">
                     <a href="@(navRoot?.Url() ?? "#")"
                        class="mb-0 text-decoration-none d-block"
                        role="link"
                        aria-label="Go to @navTitle home page">
-                        <img src="/media/narjhtfg/newlogo.png" alt="@navTitle logo" class="m-2 d-block" style="height: 64px; width: auto;" />
+                        <img src="/media/1nffde4w/svglogo.svg" alt="@navTitle logo" class="m-2 d-block navbar-logo" />
                     </a>
                 </div>
                 <!-- /NAVIGATION TITLE -->

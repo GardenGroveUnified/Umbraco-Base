@@ -176,6 +176,39 @@ header .navbar{
     background: var(--shs-purple, #4a1f7a);
 }
 
+/* Oversized brand logo - overhangs the nav row so it stands out */
+.navbar-logo-wrap{
+    flex: 0 0 auto;   /* never let the flex row squeeze the brand (e.g. when a dropdown opens) */
+}
+.navbar-logo{
+    height: 96px;
+    width: auto;
+    max-width: none;
+    flex-shrink: 0;
+}
+/* tablet-landscape / small laptop: horizontal menu is still on - trim the
+   logo and link padding so the wide wordmark + 7 items don't wrap. */
+@media (min-width: 992px) and (max-width: 1299.98px){
+    .navbar-logo{
+        height: 68px;
+    }
+    #navbarMainNav .nav-item .nav-link{
+        padding: 0 11px;
+    }
+}
+/* below lg the menu collapses to the hamburger; logo sits next to the toggler */
+@media (max-width: 991.98px){
+    .navbar-logo{
+        height: 60px;
+        max-width: 62vw;   /* never crowd the hamburger on narrow phones */
+    }
+}
+@media (max-width: 400px){
+    .navbar-logo{
+        height: 48px;
+    }
+}
+
     .navbar-expand-lg {
         flex-wrap: wrap;
     }
@@ -235,6 +268,23 @@ header .navbar{
 #navbarMainNav .dropdown-menu, #navbarMainNav .dropdown-menu .dropdown-item{
     top: -1px;
     position: relative;
+}
+
+/* Desktop: the section dropdown overlays the page instead of sitting in the
+   layout flow. Opening it on hover no longer reflows/resizes the top-level
+   nav links, so they stay a consistent size. */
+@media (min-width: 992px){
+    #navbarMainNav .navbar-nav > .nav-item{
+        position: relative;
+        flex: 0 0 auto;
+    }
+    #navbarMainNav .dropdownMenu{
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1050;
+        min-width: 15rem;
+    }
 }
 .navbar-nav:not(.navbar-sm) {
         height: 66px;

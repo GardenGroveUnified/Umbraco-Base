@@ -50,6 +50,14 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		// properties
 
 		///<summary>
+		/// Custom HTML: Paste raw embed markup here (e.g. an {iframe} calendar). Output exactly as entered - only paste from sources you trust.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("customHtml")]
+		public virtual string CustomHtml => this.Value<string>(_publishedValueFallback, "customHtml");
+
+		///<summary>
 		/// Custom JS
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
@@ -58,7 +66,7 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual string CustomJs => this.Value<string>(_publishedValueFallback, "customJs");
 
 		///<summary>
-		/// Razor Code
+		/// Razor Code: NOT rendered - disabled for security. To embed an {iframe} / third-party widget, use the "Custom HTML" field instead.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]

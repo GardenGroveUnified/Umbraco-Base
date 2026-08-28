@@ -1,0 +1,103 @@
+/* ==========================================================================
+   Side/Top Bar widget  -  section navigation sidebar
+   Markup: Views/Partials/Widgets/Sidebar/sideTopBar.cshtml
+   ========================================================================== */
+
+.sidebar-nav {
+    --sidebar-bg: var(--shs-purple, #4a1f7a);
+    --sidebar-header-bg: rgba(0, 0, 0, 0.22);
+    --sidebar-active-bg: #111;
+    --sidebar-fg: #fff;
+
+    padding: 0 !important;               /* override the widget's py-* spacing class */
+    background: var(--sidebar-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Optional manual heading (content.Heading) */
+.sidebar-nav__heading {
+    margin: 0;
+    padding: 14px 20px;
+    background: var(--sidebar-header-bg);
+    color: var(--sidebar-fg);
+    text-decoration: none !important;
+    letter-spacing: .03em;
+}
+
+.sidebar-nav .nav {
+    gap: 0 !important;
+}
+
+.sidebar-nav .nav-item + .nav-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    justify-content: flex-start !important;  /* widget defaults to justify-content-end */
+    align-items: flex-start;
+    gap: 8px;
+    padding: 13px 20px;
+    color: var(--sidebar-fg);
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: left;
+    transition: background-color .15s ease;
+}
+
+.sidebar-nav .nav-link > span[aria-hidden="true"] {
+    opacity: .45;
+    flex: 0 0 auto;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link:focus-visible {
+    background: rgba(0, 0, 0, 0.28);
+    color: var(--sidebar-fg);
+}
+
+/* Current page */
+.sidebar-nav .nav-link.active,
+.sidebar-nav .nav-link[aria-current="page"] {
+    background: var(--sidebar-active-bg);
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Parent / self entry acts as the section header */
+.sidebar-nav__parent,
+.sidebar-nav__self {
+    background: var(--sidebar-header-bg);
+    text-transform: uppercase;
+    letter-spacing: .03em;
+}
+
+.sidebar-nav__parent.active,
+.sidebar-nav__self.active {
+    background: var(--sidebar-active-bg);
+}
+
+/* Nested children (sibsChildren display mode) */
+.sidebar-nav .nav .nav {
+    margin: 0 !important;
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.sidebar-nav__child-link {
+    padding-left: 38px !important;
+    font-weight: 400 !important;
+    font-size: .95em;
+}
+
+/* Tablet / mobile: the sidebar column stacks under the main content
+   instead of being hidden. Give it breathing room and bigger tap targets. */
+@media (max-width: 767.98px){
+    .sidebar-nav{
+        margin-top: 1.5rem;
+    }
+    .sidebar-nav .nav-link{
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+}

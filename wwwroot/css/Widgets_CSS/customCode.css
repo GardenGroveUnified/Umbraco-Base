@@ -550,3 +550,27 @@
 }
 
 /* Vertical Marquee CSS end */
+
+/* Custom Code widget - raw HTML embed (e.g. an <iframe> calendar).
+   Make pasted embeds fit any screen instead of overflowing. */
+.block-custom-code__embed{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.block-custom-code__embed iframe{
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border: 0;
+}
+/* month-grid calendars need more vertical room once the screen is narrow */
+@media (max-width: 768px){
+    .block-custom-code__embed iframe{
+        min-height: 600px;
+    }
+}
+@media (max-width: 480px){
+    .block-custom-code__embed iframe{
+        min-height: 680px;
+    }
+}

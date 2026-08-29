@@ -1,0 +1,86 @@
+/* ==========================================================================
+   Link Cards widget - compact icon + label cards in a responsive grid
+   ========================================================================== */
+.block-student-links .student-links__grid{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 768px){
+    .block-student-links .student-links__grid{
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.block-student-links .student-links__item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    background: #f7f7f7;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #333;
+    text-align: center;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.block-student-links .student-links__item:hover{
+    background: var(--shs-purple-pale, #f3edfa);
+    border-color: var(--shs-purple, #4a1f7a);
+    color: var(--shs-purple, #4a1f7a);
+    transform: translateY(-2px);
+}
+
+.block-student-links .student-links__icon{
+    font-size: 20px;
+    color: var(--shs-purple, #4a1f7a);
+    line-height: 1;
+}
+
+.block-student-links .student-links__label{
+    font-size: 0.72rem;
+    line-height: 1.3;
+}
+
+/* When a Background Color is set on the block, the section fills with that
+   colour. Match the "home style" Events widget so blocks placed together
+   in a Block Line share one heading treatment. */
+.block-student-links--filled .student-links__header{
+    margin-bottom: 18px;
+}
+.block-student-links--filled .head{
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin: 0;
+    font-family: var(--font-nav-and-texts);
+}
+.block-student-links--filled .pre-head{
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 2px;
+}
+
+.block-student-links--filled .student-links__item{
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+}
+
+.block-student-links--filled .student-links__item:hover{
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #fff;
+    color: #fff;
+}
+
+.block-student-links--filled .student-links__icon{
+    color: #fff;
+}

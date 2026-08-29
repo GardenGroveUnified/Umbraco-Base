@@ -1,0 +1,105 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@{
+    // Model-agnostic access so the view compiles before ModelsBuilder regenerates.
+    var content = Model.Content;
+    var settings = Model.Settings;
+
+    // Convention in this codebase: blockVisibility toggle is "visible" (default on);
+    // only an explicit false hides the block.
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var heading    = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var text       = content.Value<IHtmlEncodedString>("text");
+    var links      = content.Value<IEnumerable<BlockListItem>>("links");
+
+    var anchorId      = settings?.Value<string>("anchorId");
+    var bgColor       = settings?.Value<string>("backgroundColor");
+    var verticalSpace = settings?.Value<string>("verticalSpacing");
+    var showTopBorder = settings?.Value<bool>("showTopBorder") == true;
+    var centerHeading = settings?.Value<bool>("centerHeading") == true;
+
+    var containerWidthClass = settings?.Value<string>("containerWidth") switch
+    {
+        "small"      => "container-md container-small",
+        "standard"   => "container",
+        "big"        => "container-xlg w-md-75",
+        "full width" => "container-fluid",
+        _            => "container"
+    };
+    var verticalSpacingClass  = string.IsNullOrWhiteSpace(verticalSpace) ? "py-3" : verticalSpace;
+    var topBorderClass        = showTopBorder ? "border-top" : "";
+    var backgroundColorStyle  = string.IsNullOrWhiteSpace(bgColor) ? "" : $"background-color:{bgColor};";
+    var isDarkBackground      = !string.IsNullOrWhiteSpace(bgColor);
+    var headerCenterTextClass = centerHeading ? "text-center" : "text-left";
+}
+
+@if (links != null && links.Any())
+{
+    <section class="section block-student-links @verticalSpacingClass @topBorderClass @(isDarkBackground ? "block-student-links--filled" : "")" style="@backgroundColorStyle"
+    @if (!string.IsNullOrEmpty(anchorId))
+    {
+        <text>id="@anchorId"</text>
+    }>
+        <div class="@containerWidthClass">
+            @if (!string.IsNullOrEmpty(preheading) || !string.IsNullOrEmpty(heading) || !string.IsNullOrEmpty(text?.ToString()))
+            {
+                <div class="student-links__header @headerCenterTextClass mb-4">
+                    @if (!string.IsNullOrEmpty(preheading))
+                    {
+                        <div class="pre-head">@preheading</div>
+                    }
+                    @if (!string.IsNullOrEmpty(heading))
+                    {
+                        @if (order == 0)
+                        {
+                            <h1 class="head display-5 bold">@heading</h1>
+                        }
+                        else
+                        {
+                            <h2 class="head display-6 bold">@heading</h2>
+                        }
+                    }
+                    @if (!string.IsNullOrEmpty(text?.ToString()))
+                    {
+                        <div>@text</div>
+                    }
+                </div>
+            }
+
+            <div class="student-links__grid">
+                @foreach (var item in links)
+                {
+                    var card = item.Content;
+                    if (card.Value<bool?>("blockVisibility") == false) { continue; }
+
+                    var icon  = card.Value<string>("icon");
+                    var label = card.Value<string>("label");
+                    var link  = card.Value<Link>("link");
+                    var url    = link?.Url ?? "#";
+                    var target = link?.Target ?? "_self";
+
+                    <a href="@url" target="@target" class="student-links__item"
+                    @if (target != "_self")
+                    {
+                        <text>rel="noopener"</text>
+                    }>
+                        <span class="student-links__icon">
+                            @if (!string.IsNullOrEmpty(icon))
+                            {
+                                <i class="@icon" aria-hidden="true"></i>
+                            }
+                        </span>
+                        <span class="student-links__label">@label</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}

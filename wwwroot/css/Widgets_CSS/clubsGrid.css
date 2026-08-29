@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Clubs Grid widget - badge + name chips in a responsive grid, brand colours
+   ========================================================================== */
+.block-clubs-grid .clubs-grid__grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 575.98px){
+    .block-clubs-grid .clubs-grid__grid{
+        grid-template-columns: 1fr;
+    }
+}
+
+.block-clubs-grid .clubs-grid__item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--shs-purple-pale, #f3edfa);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.block-clubs-grid a.clubs-grid__item:hover{
+    background: #fff;
+    border-color: var(--shs-purple, #4a1f7a);
+    transform: translateY(-2px);
+}
+
+.block-clubs-grid .clubs-grid__badge{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    border-radius: 7px;
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.block-clubs-grid .clubs-grid__name{
+    color: var(--shs-purple, #4a1f7a);
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.block-clubs-grid .clubs-grid__cta{
+    display: inline-block;
+    margin-top: 16px;
+    padding: 9px 18px;
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.block-clubs-grid .clubs-grid__cta:hover{
+    background: var(--shs-purple-light, #6b3fa0);
+    color: #fff;
+}
+
+/* When a Background Color is set on the block, the section fills with that
+   colour. Match the "home style" Events widget so the two read as a pair
+   when placed side by side in a Block Line. */
+.block-clubs-grid--filled .clubs-grid__header{
+    margin-bottom: 18px;
+}
+.block-clubs-grid--filled .head{
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin: 0;
+    font-family: var(--font-nav-and-texts);
+}
+.block-clubs-grid--filled .pre-head{
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 2px;
+}
+
+.block-clubs-grid--filled .clubs-grid__item{
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.block-clubs-grid--filled a.clubs-grid__item:hover{
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #fff;
+}
+
+.block-clubs-grid--filled .clubs-grid__badge{
+    background: var(--shs-gold, #c9a227);
+    color: var(--shs-purple, #4a1f7a);
+}
+
+.block-clubs-grid--filled .clubs-grid__name{
+    color: #fff;
+}
+
+.block-clubs-grid--filled .clubs-grid__cta{
+    background: var(--shs-gold, #c9a227);
+    color: var(--shs-purple, #4a1f7a);
+}
+
+.block-clubs-grid--filled .clubs-grid__cta:hover{
+    background: #fff;
+    color: var(--shs-purple, #4a1f7a);
+}

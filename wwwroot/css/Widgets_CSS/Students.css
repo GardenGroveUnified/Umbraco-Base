@@ -28,74 +28,7 @@
     color: rgba(255, 255, 255, 0.75);
 }
 
-.students-quicklinks {
-    padding: 22px 28px;
-}
-
-.students-quicklinks .nav-tabs {
-    border-bottom: 2px solid #eee;
-    margin-bottom: 16px;
-}
-
-.students-quicklinks .nav-tabs .nav-link {
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: #888;
-    font-weight: 600;
-    font-size: 0.85rem;
-    margin-bottom: -2px;
-}
-
-.students-quicklinks .nav-tabs .nav-link.active {
-    color: var(--shs-purple, #4a1f7a);
-    border-bottom: 2px solid var(--shs-purple, #4a1f7a);
-    background: transparent;
-}
-
-.students-linkgrid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 10px;
-}
-
-@media (max-width: 768px) {
-    .students-linkgrid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-.students-linkgrid__item {
-    background: #f7f7f7;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 12px 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    text-decoration: none;
-    color: #333;
-    transition: background .15s ease;
-}
-
-.students-linkgrid__item:hover {
-    background: #eee;
-    color: #333;
-}
-
-.students-linkgrid__icon {
-    font-size: 18px;
-}
-
-.students-linkgrid__label {
-    font-size: 0.7rem;
-    text-align: center;
-    line-height: 1.3;
-}
-
 .students-events-clubs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     border-top: 1px solid #eee;
 }
 
@@ -104,19 +37,7 @@
 }
 
 .students-events-clubs__col--events {
-    border-right: 1px solid #eee;
     background: #f7f7f7;
-}
-
-@media (max-width: 768px) {
-    .students-events-clubs {
-        grid-template-columns: 1fr;
-    }
-
-    .students-events-clubs__col--events {
-        border-right: none;
-        border-bottom: 1px solid #eee;
-    }
 }
 
 .students-event {
@@ -176,42 +97,6 @@
 .students-event__sub {
     font-size: 0.75rem;
     color: #888;
-}
-
-.students-clubs__grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.students-club {
-    background: var(--shs-purple-pale, #f3edfa);
-    border-radius: 6px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.students-club__badge {
-    width: 24px;
-    height: 24px;
-    background: var(--shs-purple, #4a1f7a);
-    border-radius: 4px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 700;
-    font-size: 0.7rem;
-}
-
-.students-club__name {
-    color: var(--shs-purple, #4a1f7a);
-    font-weight: 600;
-    font-size: 0.75rem;
 }
 
 .students-wellness-cta {

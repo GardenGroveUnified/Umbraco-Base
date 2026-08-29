@@ -61,6 +61,8 @@
 .news-widget__heading {
     color: #fff;
     font-weight: 800;
+    font-size: 1.5rem;
+    line-height: 1.2;
     margin: 0;
     font-family: var(--font-nav-and-texts);
 }

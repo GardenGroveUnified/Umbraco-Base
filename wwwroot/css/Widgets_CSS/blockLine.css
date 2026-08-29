@@ -7,3 +7,48 @@
         border-radius: 10px;
     }
 }
+
+/* ==========================================================================
+   Block Line widget - horizontal row container for nested widgets
+   ========================================================================== */
+.block-line{
+    width: 100%;
+}
+.block-line__row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+.block-line__col{
+    flex: 1 1 0;
+    min-width: min(100%, 280px);
+}
+/* neutralise the full-width section chrome of the child widgets so they
+   behave as equal columns inside the row */
+.block-line__col > .section{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+.block-line__col > .section > .container,
+.block-line__col > .section > .container-xxl,
+.block-line__col > .section > .container-fluid,
+.block-line__col > .section > .container-md,
+.block-line__col > .section > .container-xlg{
+    max-width: 100%;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+.block-line__col > .sidebar-nav{
+    height: 100%;
+}
+
+@media (max-width: 767.98px){
+    .block-line__row{
+        gap: 1rem;
+    }
+    .block-line__col{
+        flex-basis: 100%;
+    }
+}

@@ -18,6 +18,7 @@
 	@foreach (BlockListItem block in sidebarBlocks)
 	{
 		var blockType = block.Content.ContentType.Alias;
-			@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/" + blockType + ".cshtml", block, new ViewDataDictionary(ViewData))
+		var blockViewData = new ViewDataDictionary(ViewData) { ["SidebarOwner"] = sidebarSource };
+		@await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/" + blockType + ".cshtml", block, blockViewData)
 	}
 }

@@ -15,6 +15,11 @@
     var currentPage = Umbraco.AssignedContentItem;
     var currentUrl  = currentPage?.Url() ?? Context.Request.Path.Value ?? string.Empty;
 
+    // When this sidebar was inherited from an ancestor (see desktopSidebar.cshtml),
+    // that ancestor is the "section root". Used by the "sectionPages" display mode
+    // so every page in the section shows the same list of the section's pages.
+    var sidebarOwner = ViewData["SidebarOwner"] as IPublishedContent ?? currentPage;
+
     // Settings-driven classes
     var pillsClass      = settings?.DisplayAsPills == true ? "nav-pills" : "";
     var verticalSpacing = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
@@ -44,6 +49,12 @@
 
             case "children":
                 autoNavItems = currentPage.Children() ?? Enumerable.Empty<IPublishedContent>();
+                break;
+
+            case "sectionPages":
+                // Always the child pages of the section root (the page this sidebar
+                // block lives on), whatever page in the section you're viewing.
+                autoNavItems = sidebarOwner?.Children() ?? Enumerable.Empty<IPublishedContent>();
                 break;
 
             case "sibsChildren":

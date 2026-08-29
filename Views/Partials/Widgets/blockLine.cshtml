@@ -1,0 +1,36 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Models.PublishedContent
+@{
+    var content  = Model.Content;
+
+    // Block Line has no settings element - anchorId / blockVisibility / classnames
+    // live on the content itself (baseAdvancedSettings composition).
+    if (content.Value<bool?>("blockVisibility") == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var anchorId = content.Value<string>("anchorId");
+    var classNames = content.Value<IEnumerable<string>>("classnames")?.Where(s => !string.IsNullOrWhiteSpace(s)) ?? Enumerable.Empty<string>();
+    var extraClass = string.Join(" ", classNames);
+
+    var items = content.Value<IEnumerable<BlockListItem>>("widgets")?.ToList() ?? new List<BlockListItem>();
+}
+
+@if (items.Any())
+{
+    var childIndex = order;
+    <div class="block-line @extraClass" @if (!string.IsNullOrEmpty(anchorId)) { <text>id="@anchorId"</text> }>
+        <div class="block-line__row">
+            @foreach (var item in items)
+            {
+                var alias = item.Content.ContentType.Alias;
+                var vd = new ViewDataDictionary(ViewData) { ["order"] = childIndex, ["Order"] = childIndex };
+                childIndex++;
+                <div class="block-line__col">
+                    @await Html.PartialAsync("Widgets/" + alias, item, vd)
+                </div>
+            }
+        </div>
+    </div>
+}

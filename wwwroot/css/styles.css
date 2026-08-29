@@ -46,6 +46,10 @@ body{
     background-repeat: repeat;
     background-size: contain;
     position: relative;
+    /* base.css sets overflow-x:hidden, which turns <body> into a scroll
+       container and stops `position: sticky` on the header from working.
+       `clip` hides the same horizontal overflow without that side effect. */
+    overflow-x: clip;
 }
 
 /* Sitewide watermark: a faint, tiled Cavaliers seal behind all content.
@@ -71,9 +75,27 @@ body::before {
     min-height: 100vh;
 }
 
-header {
-    position: relative;
+/* The whole <header> (top bar + main nav) stays pinned to the top while
+   scrolling. sticky (not fixed) so it still reserves its own space in the
+   layout - no spacer needed, and it holds at the bottom of the page too. */
+.nav-sticky {
+    position: sticky;
+    top: 0;
     z-index: 1051;
+}
+
+/* so anchor / "jump to" links don't land hidden behind the sticky header */
+:target,
+section[id],
+.section[id] {
+    scroll-margin-top: 128px;
+}
+@media (max-width: 991.98px) {
+    :target,
+    section[id],
+    .section[id] {
+        scroll-margin-top: 96px;
+    }
 }
 
 .main-content {

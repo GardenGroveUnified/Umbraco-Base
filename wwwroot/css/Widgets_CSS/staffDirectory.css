@@ -1,0 +1,120 @@
+/* ==========================================================================
+   Staff Directory widget - searchable / filterable staff list
+   ========================================================================== */
+.staff-directory__controls{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-bottom: 24px;
+}
+
+.staff-directory__search{
+    position: relative;
+    flex: 1 1 240px;
+    max-width: 360px;
+}
+.staff-directory__search input{
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 999px;
+    font-size: 0.95rem;
+}
+.staff-directory__search input:focus{
+    outline: none;
+    border-color: var(--shs-purple, #4a1f7a);
+    box-shadow: 0 0 0 3px var(--shs-purple-pale, #f3edfa);
+}
+
+.staff-directory__filters{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.staff-directory__filter{
+    border: 1px solid var(--shs-purple, #4a1f7a);
+    background: transparent;
+    color: var(--shs-purple, #4a1f7a);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+.staff-directory__filter:hover{
+    background: var(--shs-purple-pale, #f3edfa);
+}
+.staff-directory__filter.is-active{
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+}
+
+.staff-directory__card{
+    padding: 8px;
+}
+
+.staff-directory__photo{
+    width: 130px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--shs-purple-pale, #f3edfa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--shs-gold, #c9a227);
+}
+.staff-directory__photo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.staff-directory__initial{
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--shs-purple, #4a1f7a);
+}
+
+.staff-directory__name{
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    line-height: 1.25;
+}
+.staff-directory__title{
+    font-size: 0.9rem;
+    color: #555;
+}
+.staff-directory__dept{
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+    margin-top: 2px;
+}
+.staff-directory__contact{
+    font-size: 0.85rem;
+}
+.staff-directory__contact a{
+    color: var(--shs-purple, #4a1f7a);
+    text-decoration: none;
+    word-break: break-word;
+}
+.staff-directory__contact a:hover{
+    text-decoration: underline;
+}
+
+.staff-directory__empty{
+    padding: 24px 0;
+    text-align: center;
+    color: #777;
+}
+
+@media (max-width: 575.98px){
+    .staff-directory__photo{ width: 100px; }
+    .staff-directory__controls{ flex-direction: column; align-items: stretch; }
+    .staff-directory__search{ max-width: none; }
+}

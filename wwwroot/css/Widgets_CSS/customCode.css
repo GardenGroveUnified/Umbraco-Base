@@ -574,3 +574,27 @@
         min-height: 680px;
     }
 }
+
+/* Opt-in: brand-purple backdrop for an embed (add "embed-purple" to the
+   Custom Code block's Classnames). The calendar's own white area can't be
+   recoloured (cross-origin iframe) - this frames it in SHS purple and makes
+   the iframe transparent in case the widget itself renders see-through. */
+.block-custom-code.embed-purple{
+    background: var(--shs-purple, #4a1f7a);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.block-custom-code.embed-purple .block-custom-code__embed{
+    background: transparent;
+    border-top: 4px solid var(--shs-gold, #c9a227);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.block-custom-code.embed-purple .block-custom-code__embed iframe{
+    background: transparent;
+}
+.block-custom-code.embed-purple .head,
+.block-custom-code.embed-purple .pre-head,
+.block-custom-code.embed-purple .container > div{
+    color: #fff;
+}

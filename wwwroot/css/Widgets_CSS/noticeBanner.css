@@ -1,0 +1,82 @@
+/* ==========================================================================
+   Notice Banner widget - gold, full-width attention bar
+   ========================================================================== */
+.block-notice-banner{
+    padding: 0 !important;
+}
+
+.notice-banner{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 28px;
+    background: var(--shs-gold, #c9a227);
+    color: #2a1040;
+    border-top: 2px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+}
+
+.notice-banner__badge{
+    flex-shrink: 0;
+    padding: 3px 12px;
+    border-radius: 4px;
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    animation: notice-banner-pulse 2.4s ease-in-out infinite;
+}
+
+.notice-banner__icon{
+    flex-shrink: 0;
+    font-size: 1rem;
+    color: var(--shs-purple, #4a1f7a);
+}
+
+.notice-banner__message{
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.notice-banner__message p{
+    display: inline;
+    margin: 0;
+}
+.notice-banner__message a{
+    color: var(--shs-purple, #4a1f7a);
+    text-decoration: underline;
+}
+
+.notice-banner__spacer{
+    flex: 1 1 auto;
+}
+
+.notice-banner__more{
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    text-decoration: none;
+    white-space: nowrap;
+}
+.notice-banner__more:hover{
+    color: #2a1040;
+}
+
+@keyframes notice-banner-pulse{
+    0%, 100% { box-shadow: 0 0 0 0 rgba(74, 31, 122, 0.45); }
+    50%      { box-shadow: 0 0 0 6px rgba(74, 31, 122, 0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .notice-banner__badge{ animation: none; }
+}
+
+@media (max-width: 575.98px){
+    .notice-banner{
+        padding: 10px 18px;
+        gap: 8px;
+    }
+}

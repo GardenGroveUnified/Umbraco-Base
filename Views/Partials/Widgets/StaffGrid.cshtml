@@ -153,6 +153,7 @@
                     </div>
                 }
 
+                @{ var gridUid = "sg-" + Guid.NewGuid().ToString("N").Substring(0, 8); var dlgIndex = 0; }
                 <div class="row @gutterSpacingClass @justifyContentClass">
                     @foreach (var item in content.StaffList)
                     {
@@ -162,9 +163,15 @@
                         var photoUrl = staff?.Photo?.GetCropUrl(300, 300);
                         var hasEmail = !string.IsNullOrEmpty(staff?.Email);
                         var hasPhone = !string.IsNullOrEmpty(staff?.Phone);
+                        var hasBio   = !string.IsNullOrWhiteSpace(staff?.Bio?.ToString());
+                        var dlgId    = hasBio ? $"{gridUid}-{dlgIndex++}" : null;
 
                         <div class="@numberOfColumnClass mb-3">
-                            <div class="h-100 rounded bg-white p-2 shadow-primary-xs text-center">
+                            <div class="staff-grid__card h-100 rounded bg-white p-2 shadow-primary-xs text-center @(hasBio ? "staff-grid__card--clickable" : "")"
+                            @if (hasBio)
+                            {
+                                <text>role="button" tabindex="0" aria-haspopup="dialog" data-staff-dialog="#@dlgId"</text>
+                            }>
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
                                     <img src="@photoUrl" class="img-fluid lazyload rounded mb-2" alt="@staff?.Name" />
@@ -192,16 +199,66 @@
                                     {
                                         <div><a href="tel:@staff!.Phone" class="small text-decoration-none">@staff.Phone</a></div>
                                     }
-                                    @if (!string.IsNullOrEmpty(staff?.Bio?.ToString()))
+                                    @if (hasBio)
                                     {
-                                        <div class="small mt-2">@staff.Bio</div>
+                                        <span class="staff-grid__biolink">Read bio &rarr;</span>
                                     }
                                 </div>
                             </div>
                         </div>
+
+                        @if (hasBio)
+                        {
+                            <dialog id="@dlgId" class="staff-grid__dialog">
+                                <form method="dialog" class="staff-grid__dialog-close-form">
+                                    <button class="staff-grid__dialog-close" aria-label="Close">&times;</button>
+                                </form>
+                                <div class="staff-grid__dialog-body">
+                                    @if (!string.IsNullOrEmpty(photoUrl))
+                                    {
+                                        <img src="@photoUrl" class="staff-grid__dialog-photo" alt="@staff?.Name" />
+                                    }
+                                    @if (!string.IsNullOrEmpty(staff?.Name))
+                                    {
+                                        <h3 class="staff-grid__dialog-name">@staff.Name</h3>
+                                    }
+                                    @if (!string.IsNullOrEmpty(staff?.Title))
+                                    {
+                                        <div class="staff-grid__dialog-title">@staff.Title</div>
+                                    }
+                                    @if (hasEmail)
+                                    {
+                                        <div><a href="mailto:@staff!.Email">@staff.Email</a></div>
+                                    }
+                                    @if (hasPhone)
+                                    {
+                                        <div><a href="tel:@staff!.Phone">@staff.Phone</a></div>
+                                    }
+                                    <div class="staff-grid__dialog-bio">@staff.Bio</div>
+                                </div>
+                            </dialog>
+                        }
                     }
                 </div>
             </div>
         </section>
+
+        <script>
+        (function () {
+            document.querySelectorAll('[data-staff-dialog]').forEach(function (el) {
+                function open(e) {
+                    if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') { return; }
+                    e.preventDefault();
+                    var dlg = document.querySelector(el.getAttribute('data-staff-dialog'));
+                    if (dlg && !dlg.open && typeof dlg.showModal === 'function') { dlg.showModal(); }
+                }
+                el.addEventListener('click', open);
+                if (el.getAttribute('role') === 'button') { el.addEventListener('keydown', open); }
+            });
+            document.querySelectorAll('dialog.staff-grid__dialog').forEach(function (dlg) {
+                dlg.addEventListener('click', function (e) { if (e.target === dlg) { dlg.close(); } });
+            });
+        })();
+        </script>
     }
 }

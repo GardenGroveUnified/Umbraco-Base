@@ -45,30 +45,30 @@
 
 .home-spotlight {
     background: var(--shs-purple);
-    padding: 14px 28px;
+    padding: 20px 28px;
     display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 24px;
 }
 
 .home-spotlight__icon {
-    width: 36px;
-    height: 36px;
-    background: var(--shs-gold);
-    border-radius: 50%;
+    width: 160px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    overflow: hidden;
 }
 
 .home-spotlight__icon img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
+}
+
+.home-spotlight__body {
+    flex: 1;
+    min-width: 0;
 }
 
 .awards-widget {
@@ -115,6 +115,16 @@
 
     .home-quicklinks__grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .home-spotlight {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .home-spotlight__icon {
+        width: 120px;
     }
 }
 

@@ -129,3 +129,77 @@
     font-size: 0.8rem;
     line-height: 1.4;
 }
+
+/* Staff Grid - click a card to open the member's bio in a dialog.
+   The bio no longer renders inline on the card. */
+.staff-grid__card--clickable{
+    cursor: pointer;
+    transition: box-shadow .15s ease, transform .15s ease;
+}
+.staff-grid__card--clickable:hover,
+.staff-grid__card--clickable:focus-visible{
+    box-shadow: 0 6px 18px rgba(74, 31, 122, .22);
+    transform: translateY(-2px);
+    outline: none;
+}
+.staff-grid__biolink{
+    display: inline-block;
+    margin-top: .5rem;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+}
+
+.staff-grid__dialog{
+    max-width: 520px;
+    width: calc(100% - 2rem);
+    border: 0;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+}
+.staff-grid__dialog::backdrop{
+    background: rgba(30, 12, 50, .55);
+}
+.staff-grid__dialog-close-form{
+    position: sticky;
+    top: 0;
+    margin: 0;
+    text-align: right;
+}
+.staff-grid__dialog-close{
+    border: 0;
+    background: none;
+    padding: .5rem .8rem;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+}
+.staff-grid__dialog-body{
+    padding: 0 1.6rem 1.8rem;
+    text-align: center;
+}
+.staff-grid__dialog-photo{
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: .75rem;
+}
+.staff-grid__dialog-name{
+    font-family: var(--body-font);
+    font-weight: 700;
+    margin-bottom: .15rem;
+}
+.staff-grid__dialog-title{
+    margin-bottom: .5rem;
+    color: #666;
+    font-size: .9rem;
+}
+.staff-grid__dialog-bio{
+    margin-top: 1rem;
+    text-align: left;
+    font-size: .95rem;
+    line-height: 1.55;
+}

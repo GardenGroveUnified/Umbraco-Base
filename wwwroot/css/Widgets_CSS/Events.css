@@ -168,6 +168,10 @@
     align-items: center;
 }
 
+.event-home-row:last-child {
+    margin-bottom: 0;
+}
+
 .event-home-row__date {
     width: 46px;
     height: 50px;

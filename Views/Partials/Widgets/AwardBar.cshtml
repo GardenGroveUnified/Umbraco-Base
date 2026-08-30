@@ -2,7 +2,7 @@
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
 @{
     var award = Model;
-    var photoUrl = award?.Photo?.GetCropUrl(72, 72);
+    var photoUrl = award?.Photo?.GetCropUrl(width: 320) ?? award?.Photo?.Url();
     var hasLink = award?.Link != null && !string.IsNullOrEmpty(award.Link.Url);
 }
 
@@ -17,7 +17,7 @@
             <span>&#127942;</span>
         }
     </div>
-    <div>
+    <div class="home-spotlight__body">
         @if (!string.IsNullOrEmpty(award?.Title))
         {
             <div class="home-spotlight__title">@award.Title</div>

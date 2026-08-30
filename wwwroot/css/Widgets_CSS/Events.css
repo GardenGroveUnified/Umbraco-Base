@@ -5,6 +5,24 @@
 .block-recent-news,
 .block-events-home {
     background: var(--shs-purple, #4a1f7a);
+    border: 3px solid var(--shs-gold, #c9a227);
+    border-radius: 14px;
+    margin: 18px 28px;
+}
+
+/* inside a Block Line the widget is a column, not a standalone panel -
+   drop the frame so it sits flush, unless the Block Line asks for the
+   framed look with the "block-line--framed" class */
+.block-line__col > .block-events-home,
+.block-line__col > .block-recent-news {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+.block-line--framed .block-line__col > .block-events-home,
+.block-line--framed .block-line__col > .block-recent-news {
+    border: 3px solid var(--shs-gold, #c9a227);
+    border-radius: 14px;
 }
 
 /* Side-by-side pairing: RenderBlocks.cshtml wraps an Upcoming Events
@@ -15,29 +33,25 @@
 .widget-pair-row {
     display: flex;
     align-items: stretch;
+    gap: 20px;
+    padding: 18px 28px;
 }
 
 .widget-pair-row > .block-events-home,
 .widget-pair-row > .block-recent-news {
-    width: 50%;
-}
-
-.widget-pair-row > .block-events-home {
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    flex: 1 1 0;
+    margin: 0;
 }
 
 @media (max-width: 768px) {
     .widget-pair-row {
         flex-direction: column;
+        padding: 14px;
     }
 
-    .widget-pair-row > .block-events-home,
-    .widget-pair-row > .block-recent-news {
-        width: 100%;
-    }
-
-    .widget-pair-row > .block-events-home {
-        border-right: none;
+    .block-recent-news,
+    .block-events-home {
+        margin: 14px;
     }
 }
 

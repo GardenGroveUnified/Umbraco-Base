@@ -1,0 +1,57 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Strings
+@{
+    // Model-agnostic access so the view compiles before ModelsBuilder regenerates.
+    var content = Model.Content;
+
+    // Notice Banner has no settings element - anchorId / blockVisibility /
+    // classnames live on the content itself (baseAdvancedSettings composition).
+    if (content.Value<bool?>("blockVisibility") == false) { return; }
+
+    var anchorId   = content.Value<string>("anchorId");
+    var classNames = content.Value<IEnumerable<string>>("classnames")?.Where(s => !string.IsNullOrWhiteSpace(s)) ?? Enumerable.Empty<string>();
+    var extraClass = string.Join(" ", classNames);
+
+    var badge   = content.Value<string>("badge");
+    var icon    = content.Value<string>("icon");
+    var message = content.Value<IHtmlEncodedString>("message");
+    var link    = content.Value<Link>("link");
+
+    if (badge == null || badge.Trim().Length == 0) { badge = "NOTICE"; }
+    var hasMessage = !string.IsNullOrWhiteSpace(message?.ToString());
+    var hasLink    = !string.IsNullOrEmpty(link?.Url);
+}
+
+@if (hasMessage || hasLink)
+{
+    <section class="section block-notice-banner @extraClass"
+    @if (!string.IsNullOrEmpty(anchorId))
+    {
+        <text>id="@anchorId"</text>
+    }>
+        <div class="notice-banner">
+            <span class="notice-banner__badge">@badge</span>
+            @if (!string.IsNullOrEmpty(icon))
+            {
+                <span class="notice-banner__icon"><i class="@icon" aria-hidden="true"></i></span>
+            }
+            @if (hasMessage)
+            {
+                <span class="notice-banner__message">@message</span>
+            }
+            <span class="notice-banner__spacer"></span>
+            @if (hasLink)
+            {
+                <a class="notice-banner__more" href="@link!.Url" target="@(link.Target ?? "_self")"
+                @if ((link.Target ?? "_self") != "_self")
+                {
+                    <text>rel="noopener"</text>
+                }>
+                    @(string.IsNullOrWhiteSpace(link.Name) ? "More" : link.Name) &rarr;
+                </a>
+            }
+        </div>
+    </section>
+}

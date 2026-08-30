@@ -3,6 +3,9 @@
 .home-quicklinks {
     background: var(--shs-purple);
     padding: 16px 28px;
+    border: 3px solid var(--shs-gold, #c9a227);
+    border-radius: 14px;
+    margin: 18px 28px;
 }
 
 .home-quicklinks__grid {
@@ -14,12 +17,12 @@
 .home-quicklinks__item {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    padding: 10px 6px;
+    padding: 12px 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    color: rgba(255, 255, 255, 0.85);
+    color: #fff;
     text-decoration: none;
     transition: background .15s ease;
 }
@@ -34,9 +37,10 @@
 }
 
 .home-quicklinks__label {
-    font-size: 11px;
+    font-size: 14px;
+    font-weight: 700;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.25;
 }
 
 .home-spotlight {
@@ -104,6 +108,11 @@
 }
 
 @media (max-width: 576px) {
+    .home-quicklinks {
+        margin: 14px;
+        padding: 14px 16px;
+    }
+
     .home-quicklinks__grid {
         grid-template-columns: repeat(3, 1fr);
     }

@@ -56,6 +56,15 @@
     padding-left: 0;
     padding-right: 0;
 }
+
+/* Framed mode: add the class "block-line--framed" to the Block Line
+   (Advanced > Classnames) so each child widget shows as its own bordered
+   panel with a gutter between. Widgets that carry a frame style (the home
+   Events / News panels) show their border here. */
+.block-line--framed .block-line__col > .section{
+    padding-top: 1.75rem !important;
+    padding-bottom: 1.75rem !important;
+}
 .block-line__col > .section > .container,
 .block-line__col > .section > .container-xxl,
 .block-line__col > .section > .container-fluid,

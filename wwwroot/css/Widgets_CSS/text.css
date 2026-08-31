@@ -84,6 +84,20 @@
   vertical-align: top;
   border: 1px solid #a0a0a0;
 }
+.table-style2 thead th {
+  text-align: left;
+  font-weight: 600;
+  color: #000;
+  background-color: #c4dbf2;
+}
+.table-style2 tbody tr:nth-child(even) td {
+  background-color: #f3edfa;
+}
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 #enrollNow .head span, #enrollNow .head{
   color: #fff !important;

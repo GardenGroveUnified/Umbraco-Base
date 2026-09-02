@@ -75,6 +75,11 @@
     padding: 24px 0;
 }
 
+/* Trim the white gap above the footer to roughly the awards banner padding */
+.main-content:has(> .awards-widget:last-child) {
+    padding-bottom: 0;
+}
+
 .awards-widget__swiper .swiper-slide {
     height: auto;
 }

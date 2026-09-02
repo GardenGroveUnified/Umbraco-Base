@@ -16,6 +16,17 @@
     var text       = content.Value<IHtmlEncodedString>("text");
     var staff      = content.Value<IEnumerable<BlockListItem>>("staffList")?.ToList() ?? new List<BlockListItem>();
 
+    // sort by surname; fall back to the full name when no lastName is set
+    string SortKey(BlockListItem s)
+    {
+        var ln = s.Content.Value<string>("lastName");
+        return (string.IsNullOrWhiteSpace(ln) ? s.Content.Value<string>("name") : ln) ?? "";
+    }
+    staff = staff
+        .OrderBy(SortKey, StringComparer.OrdinalIgnoreCase)
+        .ThenBy(s => s.Content.Value<string>("name") ?? "", StringComparer.OrdinalIgnoreCase)
+        .ToList();
+
     var anchorId      = settings?.Value<string>("anchorId");
     var bgColor       = settings?.Value<string>("backgroundColor");
     var verticalSpace = settings?.Value<string>("verticalSpacing");
@@ -111,6 +122,7 @@
                     }
                 </div>
 
+                @{ var dlgIndex = 0; }
                 <div class="row @gutterSpacingClass staff-directory__grid">
                     @foreach (var item in staff)
                     {
@@ -124,6 +136,9 @@
                         var dept  = m.Value<string>("department")?.Trim();
                         var photo = m.Value<MediaWithCrops>("photo");
                         var photoUrl = photo?.GetCropUrl(400, 400);
+                        var bio   = m.Value<IHtmlEncodedString>("bio");
+                        var hasBio = !string.IsNullOrWhiteSpace(bio?.ToString());
+                        var dlgId  = hasBio ? $"{uid}-bio-{dlgIndex++}" : null;
                         var search = ((name ?? "") + " " + (title ?? "") + " " + (dept ?? "")).ToLowerInvariant();
 
                         <div class="@columnClass mb-4 staff-directory__item"
@@ -160,8 +175,44 @@
                                 {
                                     <div class="staff-directory__contact"><a href="tel:@phone">@phone</a></div>
                                 }
+                                @if (hasBio)
+                                {
+                                    <button type="button" class="staff-directory__biolink" data-staffdir-dialog="#@dlgId" aria-haspopup="dialog">Read bio &rarr;</button>
+                                }
                             </div>
                         </div>
+
+                        @if (hasBio)
+                        {
+                            <dialog id="@dlgId" class="staff-directory__dialog">
+                                <form method="dialog" class="staff-directory__dialog-close-form">
+                                    <button class="staff-directory__dialog-close" aria-label="Close">&times;</button>
+                                </form>
+                                <div class="staff-directory__dialog-body">
+                                    @if (!string.IsNullOrEmpty(photoUrl))
+                                    {
+                                        <img src="@photoUrl" class="staff-directory__dialog-photo" alt="@name" />
+                                    }
+                                    @if (!string.IsNullOrEmpty(name))
+                                    {
+                                        <h3 class="staff-directory__dialog-name">@name</h3>
+                                    }
+                                    @if (!string.IsNullOrEmpty(title))
+                                    {
+                                        <div class="staff-directory__dialog-title">@title</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(email))
+                                    {
+                                        <div><a href="mailto:@email">@email</a></div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(phone))
+                                    {
+                                        <div><a href="tel:@phone">@phone</a></div>
+                                    }
+                                    <div class="staff-directory__dialog-bio">@bio</div>
+                                </div>
+                            </dialog>
+                        }
                     }
                 </div>
 
@@ -206,6 +257,16 @@
                 dept = this.getAttribute('data-staffdir-dept') || '';
                 apply();
             });
+        });
+
+        root.querySelectorAll('[data-staffdir-dialog]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var dlg = root.querySelector(this.getAttribute('data-staffdir-dialog'));
+                if (dlg && !dlg.open && typeof dlg.showModal === 'function') { dlg.showModal(); }
+            });
+        });
+        root.querySelectorAll('dialog.staff-directory__dialog').forEach(function (dlg) {
+            dlg.addEventListener('click', function (e) { if (e.target === dlg) { dlg.close(); } });
         });
     })();
     </script>

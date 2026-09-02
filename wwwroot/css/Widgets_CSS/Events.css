@@ -161,6 +161,22 @@
     margin-top: 2px;
 }
 
+/* Two-column list of events inside the home panel. Falls back to one
+   column when the panel gets narrow (small screens, or the side-by-side
+   pairing with Recent News). */
+.event-home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 18px;
+    row-gap: 10px;
+}
+
+@media (max-width: 992px) {
+    .event-home-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .event-home-row {
     display: flex;
     gap: 14px;
@@ -169,6 +185,10 @@
 }
 
 .event-home-row:last-child {
+    margin-bottom: 0;
+}
+
+.event-home-grid .event-home-row {
     margin-bottom: 0;
 }
 

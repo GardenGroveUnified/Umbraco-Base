@@ -2,6 +2,9 @@
 @using Umbraco.Cms.Core.Models.Blocks;
 @using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
 @using Umbraco.Cms.Web.Common.Views
+@using UmbracoBase.Core.Calendar
+@using UmbracoBase.Core.Models
+@inject ICalendarFeedService CalendarFeed
 @{
     var content = (ContentModels.EventsWidget)Model.Content;
     var settings = (ContentModels.EventsWidgetSettings?)Model.Settings;
@@ -29,19 +32,54 @@
 
     var hasActionLink = content?.ActionLink != null && !string.IsNullOrEmpty(content.ActionLink.Url);
 
-    // Only show events that are today or in the future, always sorted chronologically
-    // regardless of the order they were entered in - editors don't have to keep the
-    // list manually re-sorted.
-    var events = content?.EventsList?
-        .Select(item => (ContentModels.EventItem)item.Content)
-        .Where(ev => ev?.BlockVisibility != false && ev?.EventDate.Date >= DateTime.Today)
-        .OrderBy(ev => ev!.EventDate)
-        .ToList() ?? new List<ContentModels.EventItem>();
-}
+    // A Google Calendar feed URL, when set, replaces the manually entered list.
+    // The feed gives title, date, time, location and description only, so those
+    // cards have no photo or link. The soonest feed event is featured.
+    var feedUrl = Model.Content.Value<string>("googleCalendarUrl");
 
-@{
+    List<EventCardViewModel> events;
+    if (!string.IsNullOrWhiteSpace(feedUrl))
+    {
+        var feed = await CalendarFeed.GetUpcomingAsync(feedUrl, daysAhead: 60, maxResults: 12);
+        events = feed
+            .Select((ev, i) => new EventCardViewModel
+            {
+                Title = ev.Title,
+                Start = ev.Start,
+                IsAllDay = ev.IsAllDay,
+                Location = ev.Location,
+                DescriptionHtml = ev.DescriptionHtml,
+                Featured = i == 0,
+            })
+            .ToList();
+    }
+    else
+    {
+        // Only show events that are today or in the future, always sorted
+        // chronologically regardless of entry order.
+        events = (content?.EventsList?
+            .Select(item => (ContentModels.EventItem)item.Content)
+            .Where(ev => ev?.BlockVisibility != false && ev?.EventDate.Date >= DateTime.Today)
+            .OrderBy(ev => ev!.EventDate)
+            .Select(ev => new EventCardViewModel
+            {
+                Title = ev!.Title,
+                Start = ev.EventDate,
+                IsAllDay = false,
+                Location = ev.Location,
+                DescriptionHtml = ev.Description?.ToString(),
+                PhotoUrl = ev.Photo?.GetCropUrl(200, 200),
+                LinkUrl = ev.Link?.Url,
+                LinkName = ev.Link?.Name,
+                LinkTarget = ev.Link?.Target,
+                Featured = ev.Featured,
+            })
+            .ToList()) ?? new List<EventCardViewModel>();
+    }
+
     var hasEvents = events.Any();
 }
+
 @if (isHomeStyle)
 {
         <section class="section block-events block-events-home @verticalSpacingClass @classNames"
@@ -76,35 +114,36 @@
 
                 @if (hasEvents)
                 {
-                    @foreach (var ev in events)
-                    {
-                        var isFeatured = ev.Featured;
-                        var photoUrl = ev.Photo?.GetCropUrl(80, 80);
+                    <div class="event-home-grid">
+                        @foreach (var ev in events)
+                        {
+                            var isFeatured = ev.Featured;
 
-                        <div class="event-home-row">
-                            <div class="event-home-row__date @(isFeatured ? "event-home-row__date--featured" : "")">
-                                <span class="event-home-row__month">@ev.EventDate.ToString("MMM").ToUpper()</span>
-                                <span class="event-home-row__day">@ev.EventDate.Day</span>
-                            </div>
-                            @if (!string.IsNullOrEmpty(photoUrl))
-                            {
-                                <div class="event-home-row__photo"><img src="@photoUrl" alt="@ev.Title" /></div>
-                            }
-                            <div class="event-home-row__body">
-                                @if (!string.IsNullOrEmpty(ev.Title))
+                            <div class="event-home-row">
+                                <div class="event-home-row__date @(isFeatured ? "event-home-row__date--featured" : "")">
+                                    <span class="event-home-row__month">@ev.Start.ToString("MMM").ToUpper()</span>
+                                    <span class="event-home-row__day">@ev.Start.Day</span>
+                                </div>
+                                @if (!string.IsNullOrEmpty(ev.PhotoUrl))
                                 {
-                                    <div class="event-home-row__title">@ev.Title</div>
+                                    <div class="event-home-row__photo"><img src="@ev.PhotoUrl" alt="@ev.Title" /></div>
                                 }
-                                <div class="event-home-row__sub">
-                                    @ev.EventDate.ToString("h:mm tt")
-                                    @if (!string.IsNullOrEmpty(ev.Location))
+                                <div class="event-home-row__body">
+                                    @if (!string.IsNullOrEmpty(ev.Title))
                                     {
-                                        <text> &middot; @ev.Location</text>
+                                        <div class="event-home-row__title">@ev.Title</div>
                                     }
+                                    <div class="event-home-row__sub">
+                                        @(ev.IsAllDay ? "All day" : ev.Start.ToString("h:mm tt"))
+                                        @if (!string.IsNullOrEmpty(ev.Location))
+                                        {
+                                            <text> &middot; @ev.Location</text>
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 }
                 else
                 {
@@ -149,22 +188,21 @@
                         @foreach (var ev in events)
                         {
                             var isFeatured = ev.Featured;
-                            var photoUrl = ev.Photo?.GetCropUrl(300, 200);
 
                             <div class="col-12 col-md-6 col-lg-4 mb-3">
                                 <div class="d-flex gap-2 p-2 rounded bg-white shadow-primary-xs h-100 @(isFeatured ? "border border-2" : "")" style="@(isFeatured ? "border-color:var(--shs-gold,#c9a227) !important;" : "")">
-                                    @if (!string.IsNullOrEmpty(photoUrl))
+                                    @if (!string.IsNullOrEmpty(ev.PhotoUrl))
                                     {
                                         <div class="flex-shrink-0 rounded overflow-hidden" style="width:64px; height:64px;">
-                                            <img src="@photoUrl" alt="@ev.Title" style="width:100%; height:100%; object-fit:cover; display:block;" />
+                                            <img src="@ev.PhotoUrl" alt="@ev.Title" style="width:100%; height:100%; object-fit:cover; display:block;" />
                                         </div>
                                     }
                                     else
                                     {
                                         <div class="flex-shrink-0 rounded text-center d-flex flex-column align-items-center justify-content-center"
                                              style="width:44px; height:48px; background:@(isFeatured ? "var(--shs-purple,#4a1f7a)" : "#f1f1f1");">
-                                            <span class="d-block" style="font-size:9px; font-weight:700; color:@(isFeatured ? "var(--shs-gold,#c9a227)" : "#888");">@ev.EventDate.ToString("MMM").ToUpper()</span>
-                                            <span class="d-block" style="font-size:16px; font-weight:700; color:@(isFeatured ? "#fff" : "#333"); line-height:1;">@ev.EventDate.Day</span>
+                                            <span class="d-block" style="font-size:9px; font-weight:700; color:@(isFeatured ? "var(--shs-gold,#c9a227)" : "#888");">@ev.Start.ToString("MMM").ToUpper()</span>
+                                            <span class="d-block" style="font-size:16px; font-weight:700; color:@(isFeatured ? "#fff" : "#333"); line-height:1;">@ev.Start.Day</span>
                                         </div>
                                     }
                                     <div class="flex-grow-1">
@@ -173,19 +211,19 @@
                                             <div class="fw-bold" style="font-size:0.9rem;">@ev.Title</div>
                                         }
                                         <div class="text-muted small">
-                                            @ev.EventDate.ToString("h:mm tt")
+                                            @(ev.IsAllDay ? "All day" : ev.Start.ToString("h:mm tt"))
                                             @if (!string.IsNullOrEmpty(ev.Location))
                                             {
                                                 <text> &middot; @ev.Location</text>
                                             }
                                         </div>
-                                        @if (!string.IsNullOrEmpty(ev.Description?.ToString()))
+                                        @if (!string.IsNullOrEmpty(ev.DescriptionHtml))
                                         {
-                                            <div class="small mt-1">@ev.Description</div>
+                                            <div class="small mt-1">@Html.Raw(ev.DescriptionHtml)</div>
                                         }
-                                        @if (ev.Link != null && !string.IsNullOrEmpty(ev.Link.Url))
+                                        @if (!string.IsNullOrEmpty(ev.LinkUrl))
                                         {
-                                            <a href="@ev.Link.Url" target="@(ev.Link.Target ?? "_self")" class="small">@(string.IsNullOrEmpty(ev.Link.Name) ? "More info" : ev.Link.Name) &rarr;</a>
+                                            <a href="@ev.LinkUrl" target="@(ev.LinkTarget ?? "_self")" class="small">@(string.IsNullOrEmpty(ev.LinkName) ? "More info" : ev.LinkName) &rarr;</a>
                                         }
                                     </div>
                                 </div>

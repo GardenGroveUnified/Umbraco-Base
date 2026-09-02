@@ -66,6 +66,14 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual global::Umbraco.Cms.Core.Models.Blocks.BlockListModel EventsList => this.Value<global::Umbraco.Cms.Core.Models.Blocks.BlockListModel>(_publishedValueFallback, "eventsList");
 
 		///<summary>
+		/// Google Calendar Feed URL: Optional. Paste the calendar's "Secret address in iCal format" from Google Calendar settings (Settings } your calendar } Integrate calendar). When set, this block shows the next 60 days of events from that calendar and the manual list below is ignored.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("googleCalendarUrl")]
+		public virtual string GoogleCalendarUrl => this.Value<string>(_publishedValueFallback, "googleCalendarUrl");
+
+		///<summary>
 		/// Heading
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]

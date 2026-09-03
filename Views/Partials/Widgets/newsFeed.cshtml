@@ -34,10 +34,9 @@
         return d > DateTime.MinValue ? d : a.CreateDate;
     }
 
-    // Find the Newsroom: the first published newsroom node anywhere under the site root.
-    IPublishedContent? newsroom = Umbraco.AssignedContentItem?.Root()?
-        .DescendantsOrSelf()
-        .FirstOrDefault(c => c.ContentType.Alias == "newsroom" && c.IsPublished());
+    // The Newsroom is a direct child of the site root (restricted in site.config).
+    IPublishedContent? newsroom = Umbraco.AssignedContentItem?.Root()?.Children()
+        .FirstOrDefault(c => c.ContentType.Alias == "newsroom");
 
     var pinned = (content.Value<IEnumerable<IPublishedContent>>("pinnedArticles") ?? Enumerable.Empty<IPublishedContent>())
         .Where(a => a != null && a.ContentType.Alias == "newsArticle" && a.IsPublished())

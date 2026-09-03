@@ -33,7 +33,7 @@
         // full-width sections. See .widget-pair-row in Events.css.
         var isHomeStyleEvents = content.ContentType.Alias == "eventsWidget"
             && block.Settings?.Value<string>("blockStyle") == "Style 2";
-        var nextIsNews = i + 1 < blocks.Count && blocks[i + 1].Content.ContentType.Alias == "newsWidget";
+        var nextIsNews = i + 1 < blocks.Count && blocks[i + 1].Content.ContentType.Alias is "newsWidget" or "newsFeed";
 
         if (isHomeStyleEvents && nextIsNews)
         {

@@ -63,12 +63,15 @@
     @* --- Quick actions bar --- *@
     <div class="athletics-quickactions">
         @{
+            string DescendantUrl(string name) => Model?.Descendants()
+                .FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase))?.Url() ?? "#";
+
             var quickActions = new (string Label, string Url)[]
             {
-                ("Athletic Clearance", "#"),
+                ("Athletic Clearance", DescendantUrl("Athletic Clearance")),
                 ("Schedules", "#"),
                 ("Sports Demographics", "#"),
-                ("Summer Sports", "#"),
+                ("Summer Sports", DescendantUrl("Summer Sports")),
                 ("Athletic Staff", "#"),
             };
         }

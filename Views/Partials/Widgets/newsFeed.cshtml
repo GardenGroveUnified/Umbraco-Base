@@ -1,0 +1,128 @@
+﻿@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Extensions
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var heading = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var text = content.Value<Umbraco.Cms.Core.Strings.IHtmlEncodedString>("text");
+
+    var count = content.Value<int>("count");
+    if (count <= 0) { count = 3; }
+
+    var actionLink = content.Value<Link>("actionLink");
+    var hasActionLink = actionLink != null && !string.IsNullOrEmpty(actionLink.Url);
+
+    var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.Value<string>("verticalSpacing"))
+        ? "py-4" : settings.Value<string>("verticalSpacing");
+    var anchorId = settings?.Value<string>("anchorId");
+    var classNames = string.Join(" ",
+        (settings?.Value<IEnumerable<string>>("classnames") ?? Enumerable.Empty<string>())
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+
+    DateTime SortDate(IPublishedContent a)
+    {
+        var d = a.Value<DateTime>("publishedDate");
+        return d > DateTime.MinValue ? d : a.CreateDate;
+    }
+
+    // Find the Newsroom: the first published newsroom node anywhere under the site root.
+    IPublishedContent? newsroom = Umbraco.AssignedContentItem?.Root()?
+        .DescendantsOrSelf()
+        .FirstOrDefault(c => c.ContentType.Alias == "newsroom" && c.IsPublished());
+
+    var pinned = (content.Value<IEnumerable<IPublishedContent>>("pinnedArticles") ?? Enumerable.Empty<IPublishedContent>())
+        .Where(a => a != null && a.ContentType.Alias == "newsArticle" && a.IsPublished())
+        .ToList();
+
+    var newest = newsroom == null
+        ? new List<IPublishedContent>()
+        : newsroom.Children
+            .Where(c => c.ContentType.Alias == "newsArticle" && c.IsPublished())
+            .OrderByDescending(SortDate)
+            .ToList();
+
+    var pinnedIds = pinned.Select(p => p.Id).ToHashSet();
+    var feed = pinned
+        .Concat(newest.Where(n => !pinnedIds.Contains(n.Id)))
+        .Take(count)
+        .ToList();
+}
+
+@if (feed.Any())
+{
+    <section class="section block-recent-news @verticalSpacingClass @classNames"
+    @if (!string.IsNullOrEmpty(anchorId))
+    {
+        <text>id="@anchorId"</text>
+    }>
+        <div class="container-fluid px-4">
+            @if (!string.IsNullOrEmpty(preheading) || !string.IsNullOrEmpty(heading) || hasActionLink)
+            {
+                <div class="news-widget__header">
+                    <div class="news-widget__label">
+                        @if (!string.IsNullOrEmpty(preheading))
+                        {
+                            <span>@preheading</span>
+                        }
+                        @if (!string.IsNullOrEmpty(heading) && order == 0)
+                        {
+                            <h1 class="news-widget__heading">@heading</h1>
+                        }
+                        else if (!string.IsNullOrEmpty(heading))
+                        {
+                            <h2 class="news-widget__heading">@heading</h2>
+                        }
+                    </div>
+                    @if (hasActionLink)
+                    {
+                        <a href="@actionLink!.Url" target="@(actionLink.Target ?? "_self")" class="news-widget__action">@(string.IsNullOrEmpty(actionLink.Name) ? "All news" : actionLink.Name) &rarr;</a>
+                    }
+                </div>
+            }
+            @if (text != null && !string.IsNullOrEmpty(text.ToString()))
+            {
+                <p class="news-widget__text">@text</p>
+            }
+
+            @foreach (var a in feed)
+            {
+                var title = a.Value<string>("title");
+                if (string.IsNullOrWhiteSpace(title)) { title = a.Name; }
+                var tag = (a.Value<IEnumerable<string>>("tags") ?? Enumerable.Empty<string>()).FirstOrDefault();
+                var banner = a.Value<MediaWithCrops>("bannerImage");
+                var photoUrl = banner?.GetCropUrl(160, 130);
+                var dateText = SortDate(a).ToString("MMM d, yyyy");
+
+                <div class="news-item">
+                    @if (!string.IsNullOrEmpty(photoUrl))
+                    {
+                        <div class="news-item__thumb"><img src="@photoUrl" alt="@title" /></div>
+                    }
+                    else
+                    {
+                        <div class="news-item__thumb news-item__thumb--empty"></div>
+                    }
+                    <div class="news-item__body">
+                        @if (!string.IsNullOrEmpty(tag))
+                        {
+                            <span class="news-item__tag">@tag</span>
+                        }
+                        <div class="news-item__title">
+                            <a href="@a.Url()">@title</a>
+                        </div>
+                        <div class="news-item__date">@dateText</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}

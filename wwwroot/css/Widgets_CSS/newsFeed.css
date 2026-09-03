@@ -1,0 +1,116 @@
+/* ==========================================================================
+   News Feed block + Newsroom / News Article pages
+
+   The News Feed block reuses the .block-recent-news / .news-item rules from
+   the Recent News widget (see Events.css), so it needs nothing extra here.
+   This file styles the Newsroom listing page and the News Article page.
+   ========================================================================== */
+
+/* Newsroom listing page */
+.newsroom__intro{
+    font-size: 1.05rem;
+    color: #444;
+    margin-bottom: 1.5rem;
+}
+.newsroom__list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.newsroom__item{
+    border-top: 1px solid var(--shs-purple-pale, #f3edfa);
+}
+.newsroom__item:last-child{
+    border-bottom: 1px solid var(--shs-purple-pale, #f3edfa);
+}
+.newsroom__link{
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    text-decoration: none;
+    color: inherit;
+}
+.newsroom__link:hover .newsroom__title{
+    color: var(--shs-purple, #4a1f7a);
+    text-decoration: underline;
+}
+.newsroom__thumb img{
+    width: 160px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.newsroom__body{
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.newsroom__date{
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+}
+.newsroom__title{
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--shs-purple, #4a1f7a);
+}
+.newsroom__summary{
+    color: #555;
+}
+
+/* News Article page */
+.news-article__back{
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    text-decoration: none;
+}
+.news-article__banner{
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 12px;
+    border-top: 4px solid var(--shs-gold, #c9a227);
+    margin-bottom: 1.5rem;
+}
+.news-article__date{
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.news-article__intro{
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #333;
+}
+.news-article__body{
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    line-height: 1.7;
+}
+.news-article__tags{
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.news-article__tag{
+    background: var(--shs-purple-pale, #f3edfa);
+    color: var(--shs-purple, #4a1f7a);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+}
+
+@media (max-width: 576px){
+    .newsroom__link{ flex-direction: column; }
+    .newsroom__thumb img{ width: 100%; height: 180px; }
+}

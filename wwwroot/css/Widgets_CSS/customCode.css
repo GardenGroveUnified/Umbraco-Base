@@ -575,6 +575,14 @@
     }
 }
 
+/* Library Media Center page - keep the section headings on the site text
+   font. Bare <h2>/<h3> otherwise pick up the Yeseva One display font from
+   base.css, which does not match the page title or the rest of the page. */
+.library-media h2,
+.library-media h3{
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+}
+
 /* Opt-in: brand-purple backdrop for an embed (add "embed-purple" to the
    Custom Code block's Classnames). The calendar's own white area can't be
    recoloured (cross-origin iframe) - this frames it in SHS purple and makes
@@ -597,4 +605,110 @@
 .block-custom-code.embed-purple .pre-head,
 .block-custom-code.embed-purple .container > div{
     color: #fff;
+}
+
+/* Cheer page game schedule - brand-styled tables inside a Custom Code block.
+   Add "cheer-schedule" to the block's Classnames. Source data is the varsity
+   football schedule the cheer team follows. */
+.block-custom-code.cheer-schedule .block-custom-code__embed{
+    display: grid;
+    gap: 2rem;
+}
+.cheer-sched{
+    margin: 0;
+}
+.cheer-sched__scroll{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--shs-purple-pale, #f3edfa);
+    border-top: 3px solid var(--shs-gold, #c9a227);
+    border-radius: 10px;
+}
+.cheer-sched figcaption{
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--shs-purple, #4a1f7a);
+    margin-bottom: 0.6rem;
+}
+.cheer-sched table{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-size: 0.95rem;
+}
+.cheer-sched thead th{
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    font-weight: 700;
+    text-align: left;
+    padding: 0.65rem 0.9rem;
+    white-space: nowrap;
+}
+.cheer-sched tbody th,
+.cheer-sched tbody td{
+    padding: 0.6rem 0.9rem;
+    border-top: 1px solid var(--shs-purple-pale, #f3edfa);
+    text-align: left;
+    vertical-align: top;
+}
+.cheer-sched tbody th{
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    white-space: nowrap;
+}
+.cheer-sched tbody tr:nth-child(odd) td,
+.cheer-sched tbody tr:nth-child(odd) th{
+    background: var(--shs-purple-pale, #f3edfa);
+}
+.cheer-sched__note{
+    margin: 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #555;
+}
+
+/* Same brand look for a schedule typed as a plain table in a Text block's
+   rich-text editor. Add "cheer-table" to the Text block's Classnames. The
+   first row is treated as the header. */
+.block-text.cheer-table table{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-size: 0.9rem;
+    border: 1px solid var(--shs-purple-pale, #f3edfa);
+    border-top: 3px solid var(--shs-gold, #c9a227);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.block-text.cheer-table col{
+    width: auto !important;
+}
+.block-text.cheer-table td,
+.block-text.cheer-table th{
+    padding: 0.6rem 0.9rem;
+    border-top: 1px solid var(--shs-purple-pale, #f3edfa);
+    text-align: left;
+    vertical-align: top;
+}
+.block-text.cheer-table td p{
+    margin: 0;
+}
+.block-text.cheer-table tr:first-child{
+    background: var(--shs-purple, #4a1f7a);
+}
+.block-text.cheer-table tr:first-child td,
+.block-text.cheer-table tr:first-child th{
+    color: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+    border-top: 0;
+}
+.block-text.cheer-table tbody tr:nth-child(even) td{
+    background: var(--shs-purple-pale, #f3edfa);
+}
+.block-text.cheer-table td:first-child{
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    white-space: nowrap;
 }

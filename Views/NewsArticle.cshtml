@@ -1,0 +1,61 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Cms.Core.Strings
+@using Umbraco.Extensions
+@{
+    Layout = "Master.cshtml";
+
+    var title = Model.Value<string>("title");
+    if (string.IsNullOrWhiteSpace(title)) { title = Model.Name; }
+    ViewBag.Title = $"{title} | GGUSD News";
+
+    var intro = Model.Value<string>("introduction");
+    if (!string.IsNullOrWhiteSpace(intro)) { ViewBag.MetaDescription = intro; }
+
+    var banner = Model.Value<MediaWithCrops>("bannerImage");
+    var bannerUrl = banner?.GetCropUrl(1200, 500);
+    var body = Model.Value<IHtmlEncodedString>("bodyText");
+    var tags = Model.Value<IEnumerable<string>>("tags") ?? Enumerable.Empty<string>();
+
+    var date = Model.Value<DateTime>("publishedDate");
+    if (date <= DateTime.MinValue) { date = Model.CreateDate; }
+
+    var newsroom = Model.Parent;
+}
+
+<article class="section news-article py-4">
+    <div class="container">
+        @if (newsroom != null)
+        {
+            <a class="news-article__back" href="@newsroom.Url()">&larr; @newsroom.Name</a>
+        }
+
+        @if (!string.IsNullOrEmpty(bannerUrl))
+        {
+            <img class="news-article__banner" src="@bannerUrl" alt="@title" />
+        }
+
+        <h1 class="head display-5 bold text-blue">@title</h1>
+        <div class="news-article__date">@date.ToString("MMMM d, yyyy")</div>
+
+        @if (!string.IsNullOrWhiteSpace(intro))
+        {
+            <p class="news-article__intro">@intro</p>
+        }
+
+        @if (body != null && !string.IsNullOrWhiteSpace(body.ToString()))
+        {
+            <div class="news-article__body">@body</div>
+        }
+
+        @if (tags.Any())
+        {
+            <div class="news-article__tags">
+                @foreach (var t in tags)
+                {
+                    <span class="news-article__tag">@t</span>
+                }
+            </div>
+        }
+    </div>
+</article>

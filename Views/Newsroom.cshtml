@@ -1,0 +1,69 @@
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.PublishedContent.IPublishedContent>
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Extensions
+@{
+    Layout = "Master.cshtml";
+
+    var pageTitle = Model.Value<string>("pageTitle");
+    if (string.IsNullOrWhiteSpace(pageTitle)) { pageTitle = Model.Name; }
+    ViewBag.Title = $"{pageTitle} | GGUSD News";
+
+    var intro = Model.Value<string>("introduction");
+
+    DateTime SortDate(IPublishedContent a)
+    {
+        var d = a.Value<DateTime>("publishedDate");
+        return d > DateTime.MinValue ? d : a.CreateDate;
+    }
+
+    var articles = Model.Children
+        .Where(c => c.ContentType.Alias == "newsArticle" && c.IsPublished())
+        .OrderByDescending(SortDate)
+        .ToList();
+}
+
+<section class="section newsroom py-4">
+    <div class="container">
+        <h1 class="head display-5 bold text-blue">@pageTitle</h1>
+        @if (!string.IsNullOrWhiteSpace(intro))
+        {
+            <p class="newsroom__intro">@intro</p>
+        }
+
+        @if (articles.Count == 0)
+        {
+            <p class="text-muted">No news yet.</p>
+        }
+        else
+        {
+            <ul class="newsroom__list">
+                @foreach (var a in articles)
+                {
+                    var title = a.Value<string>("title");
+                    if (string.IsNullOrWhiteSpace(title)) { title = a.Name; }
+                    var summary = a.Value<string>("introduction");
+                    var banner = a.Value<MediaWithCrops>("bannerImage");
+                    var bannerUrl = banner?.GetCropUrl(320, 200);
+                    var date = SortDate(a);
+
+                    <li class="newsroom__item">
+                        <a class="newsroom__link" href="@a.Url()">
+                            @if (!string.IsNullOrEmpty(bannerUrl))
+                            {
+                                <span class="newsroom__thumb"><img src="@bannerUrl" alt="@title" loading="lazy" /></span>
+                            }
+                            <span class="newsroom__body">
+                                <span class="newsroom__date">@date.ToString("MMMM d, yyyy")</span>
+                                <span class="newsroom__title">@title</span>
+                                @if (!string.IsNullOrWhiteSpace(summary))
+                                {
+                                    <span class="newsroom__summary">@summary</span>
+                                }
+                            </span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</section>

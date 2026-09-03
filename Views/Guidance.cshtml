@@ -64,13 +64,16 @@
     <div class="guidance-pills">
         <span class="guidance-pills__label">Jump to:</span>
         @{
+            string ChildUrl(string name) => Model?.Children?
+                .FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase))?.Url() ?? "#";
+
             var jumpLinks = new (string Label, string Url)[]
             {
                 ("Counselors", "#counselors"),
                 ("College Planning", "#college-planning"),
                 ("AP/SAT Info", "#"),
-                ("Scholarships", "#"),
-                ("Transcripts", "#"),
+                ("Scholarships", ChildUrl("Scholarships")),
+                ("Transcripts", ChildUrl("Transcript Request")),
                 ("Financial Aid", "#"),
             };
         }

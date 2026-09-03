@@ -64,15 +64,18 @@
     <div class="athletics-quickactions">
         @{
             string DescendantUrl(string name) => Model?.Descendants()
-                .FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase))?.Url() ?? "#";
+                .FirstOrDefault(c =>
+                    string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(c.Value<string>("pageTitle"), name, StringComparison.OrdinalIgnoreCase))
+                ?.Url() ?? "#";
 
             var quickActions = new (string Label, string Url)[]
             {
                 ("Athletic Clearance", DescendantUrl("Athletic Clearance")),
-                ("Schedules", "#"),
-                ("Sports Demographics", "#"),
+                ("Schedules", DescendantUrl("Athletics Calendar")),
+                ("Sports Demographics", Model?.AncestorOrSelf(2)?.Url() ?? "#"),
                 ("Summer Sports", DescendantUrl("Summer Sports")),
-                ("Athletic Staff", "#"),
+                ("Athletic Staff", DescendantUrl("Athletic Staff"))
             };
         }
         @for (var i = 0; i < quickActions.Length; i++)

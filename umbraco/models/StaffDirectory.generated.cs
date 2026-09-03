@@ -50,6 +50,13 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		// properties
 
 		///<summary>
+		/// Show Search Box: Show the search-by-name-or-title box above the list. On by default.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[ImplementPropertyType("showSearch")]
+		public virtual bool ShowSearch => this.Value<bool>(_publishedValueFallback, "showSearch");
+
+		///<summary>
 		/// Staff List: Add a department to each staff member so it can be filtered.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]

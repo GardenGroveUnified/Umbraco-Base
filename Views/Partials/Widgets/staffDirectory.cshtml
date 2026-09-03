@@ -15,6 +15,7 @@
     var preheading = content.Value<string>("preheading");
     var text       = content.Value<IHtmlEncodedString>("text");
     var staff      = content.Value<IEnumerable<BlockListItem>>("staffList")?.ToList() ?? new List<BlockListItem>();
+    var showSearch = content.Value<bool?>("showSearch") ?? true;
 
     // sort by surname; fall back to the full name when no lastName is set
     string SortKey(BlockListItem s)
@@ -62,11 +63,14 @@
 
     var uid = "staffdir-" + Guid.NewGuid().ToString("N").Substring(0, 8);
 
+    // A staff member can sit in more than one department. The Department field
+    // holds a comma-separated list, e.g. "Counseling, Athletics".
+    static string[] DeptList(string? raw) =>
+        (raw ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
     // distinct departments, in first-seen order
     var departments = staff
-        .Select(s => s.Content.Value<string>("department"))
-        .Where(d => !string.IsNullOrWhiteSpace(d))
-        .Select(d => d!.Trim())
+        .SelectMany(s => DeptList(s.Content.Value<string>("department")))
         .Distinct(StringComparer.OrdinalIgnoreCase)
         .ToList();
 }
@@ -105,11 +109,16 @@
             }
 
             <div class="staff-directory" id="@uid">
+                @if (showSearch || departments.Any())
+                {
                 <div class="staff-directory__controls">
-                    <label class="staff-directory__search">
-                        <span class="visually-hidden">Search staff</span>
-                        <input type="search" placeholder="Search by name or title&hellip;" data-staffdir-search autocomplete="off" />
-                    </label>
+                    @if (showSearch)
+                    {
+                        <label class="staff-directory__search">
+                            <span class="visually-hidden">Search staff</span>
+                            <input type="search" placeholder="Search by name or title&hellip;" data-staffdir-search autocomplete="off" />
+                        </label>
+                    }
                     @if (departments.Any())
                     {
                         <div class="staff-directory__filters" role="group" aria-label="Filter by department">
@@ -121,6 +130,7 @@
                         </div>
                     }
                 </div>
+                }
 
                 @{ var dlgIndex = 0; }
                 <div class="row @gutterSpacingClass staff-directory__grid">
@@ -133,17 +143,17 @@
                         var title = m.Value<string>("title");
                         var email = m.Value<string>("email");
                         var phone = m.Value<string>("phone");
-                        var dept  = m.Value<string>("department")?.Trim();
+                        var depts = DeptList(m.Value<string>("department"));
                         var photo = m.Value<MediaWithCrops>("photo");
                         var photoUrl = photo?.GetCropUrl(400, 400);
                         var bio   = m.Value<IHtmlEncodedString>("bio");
                         var hasBio = !string.IsNullOrWhiteSpace(bio?.ToString());
                         var dlgId  = hasBio ? $"{uid}-bio-{dlgIndex++}" : null;
-                        var search = ((name ?? "") + " " + (title ?? "") + " " + (dept ?? "")).ToLowerInvariant();
+                        var search = ((name ?? "") + " " + (title ?? "") + " " + string.Join(" ", depts)).ToLowerInvariant();
 
                         <div class="@columnClass mb-4 staff-directory__item"
                              data-staffdir-text="@search"
-                             data-staffdir-dept="@(dept?.ToLowerInvariant() ?? "")">
+                             data-staffdir-dept="@string.Join("|", depts.Select(d => d.ToLowerInvariant()))">
                             <div class="staff-directory__card h-100 text-center">
                                 <div class="staff-directory__photo mx-auto mb-2">
                                     @if (!string.IsNullOrEmpty(photoUrl))
@@ -163,9 +173,9 @@
                                 {
                                     <div class="staff-directory__title">@title</div>
                                 }
-                                @if (!string.IsNullOrEmpty(dept))
+                                @if (depts.Any())
                                 {
-                                    <div class="staff-directory__dept">@dept</div>
+                                    <div class="staff-directory__dept">@string.Join(", ", depts)</div>
                                 }
                                 @if (!string.IsNullOrEmpty(email))
                                 {
@@ -236,7 +246,8 @@
             var shown = 0;
             items.forEach(function (el) {
                 var matchText = !term || (el.getAttribute('data-staffdir-text') || '').indexOf(term) !== -1;
-                var matchDept = !dept || (el.getAttribute('data-staffdir-dept') || '') === dept;
+                var cardDepts = (el.getAttribute('data-staffdir-dept') || '').split('|');
+                var matchDept = !dept || cardDepts.indexOf(dept) !== -1;
                 var show = matchText && matchDept;
                 el.hidden = !show;
                 if (show) shown++;

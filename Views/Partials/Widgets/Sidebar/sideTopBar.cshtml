@@ -34,6 +34,13 @@
         : string.Empty;
     var anchorId = !string.IsNullOrWhiteSpace(settings?.AnchorId) ? settings.AnchorId : null;
 
+    // Opt-in, added via the existing free-text "Classnames" field so no content-type
+    // change is needed: only a sidebar block explicitly marked "sidebar-searchable"
+    // (e.g. the Students > Policies sidebar) gets the filter box below. Every other
+    // sideTopBar instance on the site renders exactly as before.
+    var isSearchable = settings?.Classnames?.Any(s => string.Equals(s?.Trim(), "sidebar-searchable", StringComparison.OrdinalIgnoreCase)) == true;
+    var navUid = "sidenav-" + Guid.NewGuid().ToString("N").Substring(0, 8);
+
     // Build auto-nav items from the content tree based on displayOptions
     IEnumerable<IPublishedContent> autoNavItems = Enumerable.Empty<IPublishedContent>();
     IPublishedContent? parentNavItem = null;
@@ -103,8 +110,26 @@
         </p>
     }
 
+    <div id="@navUid">
+
+    @if (isSearchable)
+    {
+        <div class="sidebar-nav__search" role="search">
+            <label class="sidebar-nav__search-label" for="@(navUid)-input">
+                <span class="visually-hidden">Search @(content?.Heading ?? "this list")</span>
+                <input type="search"
+                       id="@(navUid)-input"
+                       class="sidebar-nav__search-input"
+                       placeholder="Search&hellip;"
+                       autocomplete="off"
+                       data-sidenav-search
+                       aria-controls="@(navUid)-list" />
+            </label>
+        </div>
+    }
+
     <nav aria-label="@(content?.Heading ?? "Section navigation")">
-        <ul class="nav flex-column @pillsClass gap-1">
+        <ul class="nav flex-column @pillsClass gap-1" id="@(navUid)-list">
 
             @* SelfNameLink: manually defined top entry *@
             @if (content?.SelfNameLink != null)
@@ -113,7 +138,7 @@
                 var selfName   = string.IsNullOrWhiteSpace(content.SelfNameLink.Name) ? selfUrl : content.SelfNameLink.Name;
                 var selfTarget = content.SelfNameLink.Target ?? "_self";
 
-                <li class="nav-item">
+                <li class="nav-item" data-sidenav-text="@selfName.ToLowerInvariant()">
                     <a class="nav-link sidebar-nav__self fw-medium d-flex align-items-center justify-content-end gap-2 @(ActiveAttr(selfUrl) != null ? "active" : "")"
                        href="@selfUrl"
                        target="@selfTarget"
@@ -128,7 +153,7 @@
             @if (parentNavItem != null)
             {
                 var pUrl = parentNavItem.Url();
-                <li class="nav-item">
+                <li class="nav-item" data-sidenav-text="@parentNavItem.Name.ToLowerInvariant()">
                     <a class="nav-link sidebar-nav__parent fw-medium d-flex align-items-center justify-content-end gap-2 @(ActiveAttr(pUrl) != null ? "active" : "")"
                        href="@pUrl"
                        aria-current="@ActiveAttr(pUrl)">
@@ -145,7 +170,7 @@
                 var isCurrent  = navItem.Id == currentPage?.Id;
                 var pageActive = ActiveAttr(pageUrl) != null || isCurrent;
 
-                <li class="nav-item">
+                <li class="nav-item" data-sidenav-text="@navItem.Name.ToLowerInvariant()">
                     <a class="nav-link sidebar-nav__auto-link d-flex align-items-center justify-content-end gap-2 @(pageActive ? "active" : "")"
                        href="@pageUrl"
                        aria-current="@(pageActive ? "page" : null)">
@@ -164,7 +189,7 @@
                                 {
                                     var childUrl    = child.Url();
                                     var childActive = ActiveAttr(childUrl);
-                                    <li class="nav-item">
+                                    <li class="nav-item" data-sidenav-text="@child.Name.ToLowerInvariant()">
                                         <a class="nav-link sidebar-nav__child-link d-flex align-items-center justify-content-end gap-2 @(childActive != null ? "active" : "")"
                                            href="@childUrl"
                                            aria-current="@childActive">
@@ -194,7 +219,7 @@
                     var linkTarget = link.Target ?? "_self";
                     var linkActive = ActiveAttr(linkUrl);
 
-                    <li class="nav-item">
+                    <li class="nav-item" data-sidenav-text="@linkName.ToLowerInvariant()">
                         <a class="nav-link sidebar-nav__sub-link d-flex align-items-center justify-content-end gap-2 @(linkActive != null ? "active" : "")"
                            href="@linkUrl"
                            target="@linkTarget"
@@ -209,4 +234,39 @@
         </ul>
     </nav>
 
+    @if (isSearchable)
+    {
+        <p class="sidebar-nav__empty" hidden aria-live="polite">No matching pages.</p>
+    }
+
+    </div>
+
 </div>
+
+@if (isSearchable)
+{
+    <script>
+    (function () {
+        var root = document.getElementById('@navUid');
+        if (!root) return;
+        var search = root.querySelector('[data-sidenav-search]');
+        var items = root.querySelectorAll('.nav-item[data-sidenav-text]');
+        var empty = root.querySelector('.sidebar-nav__empty');
+        if (!search) return;
+
+        function apply() {
+            var term = search.value.trim().toLowerCase();
+            var shown = 0;
+            items.forEach(function (li) {
+                var text = li.getAttribute('data-sidenav-text') || '';
+                var show = !term || text.indexOf(term) !== -1;
+                li.hidden = !show;
+                if (show) { shown++; }
+            });
+            if (empty) { empty.hidden = shown !== 0; }
+        }
+
+        search.addEventListener('input', apply);
+    })();
+    </script>
+}

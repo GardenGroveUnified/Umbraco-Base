@@ -98,6 +98,56 @@
     font-size: .95em;
 }
 
+/* Client-side filter box - opt-in via Classnames: "sidebar-searchable"
+   (see sideTopBar.cshtml). Reuses the sidebar's own custom properties. */
+.sidebar-nav__search {
+    padding: 12px 16px;
+    background: var(--sidebar-header-bg);
+}
+
+/* Qualified with .sidebar-nav (not just the input's own class) and !important
+   on the theme-controlled properties: widget/base.css styles every
+   input[type="search"] (including a `:focus` rule) at a higher specificity
+   than a single class, and would otherwise win. */
+.sidebar-nav .sidebar-nav__search-input {
+    width: 100%;
+    padding: 8px 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--sidebar-fg) !important;
+    font-size: .95rem;
+}
+
+.sidebar-nav .sidebar-nav__search-input::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+    opacity: 1;
+}
+
+.sidebar-nav .sidebar-nav__search-input:focus,
+.sidebar-nav .sidebar-nav__search-input:focus-visible {
+    outline: 2px solid var(--shs-gold, #c9a227) !important;
+    outline-offset: 1px;
+    background: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: none !important;
+}
+
+/* !important needed: core.min.css has a global
+   ":active, :focus, a, button, input, textarea { outline: 0 !important; }" reset. */
+.sidebar-nav .nav-link:focus-visible {
+    outline: 2px solid var(--shs-gold, #c9a227) !important;
+    outline-offset: -2px;
+}
+
+.sidebar-nav__empty {
+    margin: 0;
+    padding: 13px 20px;
+    color: var(--sidebar-fg);
+    opacity: .8;
+    font-size: .9rem;
+    font-style: italic;
+}
+
 /* Tablet / mobile: the sidebar column stacks under the main content
    instead of being hidden. Give it breathing room and bigger tap targets. */
 @media (max-width: 767.98px){

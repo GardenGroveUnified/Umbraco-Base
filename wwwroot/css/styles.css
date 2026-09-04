@@ -820,3 +820,15 @@ section#personnel-comms .split__text-inner{
     line-height: 1.15;
 }
 }
+
+@media print{
+    header.nav-sticky,
+    footer#footer{
+        display: none !important;
+    }
+    /* On a page that carries a Staff Directory widget, print only that
+       widget's section — every other block (hero, text, etc.) is dropped. */
+    body:has(.block-staff-directory) .section:not(.block-staff-directory){
+        display: none !important;
+    }
+}

@@ -109,6 +109,13 @@
             }
 
             <div class="staff-directory" id="@uid">
+                <div class="staff-directory__letterhead d-none d-print-flex align-items-center gap-3">
+                    <img src="/media/1nffde4w/svglogo.svg" alt="Santiago High School logo" class="staff-directory__letterhead-logo" />
+                    <div>
+                        <div class="staff-directory__letterhead-name">Santiago High School</div>
+                        <div class="staff-directory__letterhead-address">12342 Trask Ave., Garden Grove, CA 92843</div>
+                    </div>
+                </div>
                 @if (showSearch || departments.Any())
                 {
                 <div class="staff-directory__controls">
@@ -129,6 +136,7 @@
                             }
                         </div>
                     }
+                    <button type="button" class="staff-directory__print" data-staffdir-print>Print list</button>
                 </div>
                 }
 
@@ -264,6 +272,10 @@
                 term = this.value.trim().toLowerCase();
                 apply();
             });
+        }
+        var printBtn = root.querySelector('[data-staffdir-print]');
+        if (printBtn) {
+            printBtn.addEventListener('click', function () { window.print(); });
         }
         filters.forEach(function (btn) {
             btn.addEventListener('click', function () {

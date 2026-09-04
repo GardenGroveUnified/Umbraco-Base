@@ -244,8 +244,12 @@
 
         function apply() {
             var shown = 0;
+            // term can hold several pipe-separated names (see the deep-link block below);
+            // a card matches if the text matches any one of them.
+            var wanted = term ? term.split('|') : [];
             items.forEach(function (el) {
-                var matchText = !term || (el.getAttribute('data-staffdir-text') || '').indexOf(term) !== -1;
+                var text = el.getAttribute('data-staffdir-text') || '';
+                var matchText = !wanted.length || wanted.some(function (t) { return text.indexOf(t) !== -1; });
                 var cardDepts = (el.getAttribute('data-staffdir-dept') || '').split('|');
                 var matchDept = !dept || cardDepts.indexOf(dept) !== -1;
                 var show = matchText && matchDept;
@@ -279,6 +283,16 @@
         root.querySelectorAll('dialog.staff-directory__dialog').forEach(function (dlg) {
             dlg.addEventListener('click', function (e) { if (e.target === dlg) { dlg.close(); } });
         });
+
+        // Deep link from another page, e.g. a Clubs Grid chip: ?q=David+Allen|Erica+DuFault
+        // pre-fills the search box and filters to whichever names are listed.
+        var deepLinkQ = new URLSearchParams(window.location.search).get('q');
+        if (deepLinkQ) {
+            term = deepLinkQ.toLowerCase();
+            if (search) { search.value = deepLinkQ.split('|').join(', '); }
+            apply();
+            root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     })();
     </script>
 }

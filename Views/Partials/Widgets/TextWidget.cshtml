@@ -33,6 +33,7 @@
     }
     var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
     var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
+    var isDarkBackground = !string.IsNullOrWhiteSpace(settings?.BackgroundColor);
     var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : string.Empty;
@@ -54,7 +55,7 @@
 }
 
 
-<section class="section block-text aos-init aos-animate @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" style="@backgroundColorStyle" @if (!string.IsNullOrEmpty(settings?.AnchorId))
+<section class="section block-text aos-init aos-animate @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass) @(isDarkBackground ? "block-text--filled" : "")" style="@backgroundColorStyle" @if (!string.IsNullOrEmpty(settings?.AnchorId))
 {
     <text> id="@settings?.AnchorId" </text>
 }>

@@ -11,11 +11,15 @@
         .Select(item => (ContentModels.QuickLinkItem)item.Content)
         .Where(li => li?.BlockVisibility != false)
         .ToList() ?? new List<ContentModels.QuickLinkItem>();
+
+    var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+        ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        : string.Empty;
 }
 
 @if (links.Any())
 {
-    <div class="home-quicklinks"
+    <div class="home-quicklinks @classNames"
     @if (!string.IsNullOrEmpty(settings?.AnchorId))
     {
         <text>id="@settings.AnchorId"</text>

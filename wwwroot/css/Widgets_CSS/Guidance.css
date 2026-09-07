@@ -1,33 +1,69 @@
-.guidance-pills {
+/* Guidance section styles.
+   The "guidance-jump" marker turns a standard Quick Links Bar widget into the
+   slim in-page jump nav used at the top of the Guidance overview page. Set it
+   in the block's settings > Classnames field. Every other Quick Links Bar
+   instance on the site is unaffected. */
+
+.home-quicklinks.guidance-jump {
     background: var(--shs-purple, #4a1f7a);
+    border: 0;
+    border-radius: 0;
     padding: 12px 28px;
+}
+
+.home-quicklinks.guidance-jump .container-fluid {
+    padding: 0;
+}
+
+.home-quicklinks.guidance-jump .home-quicklinks__grid {
     display: flex;
-    gap: 8px;
     flex-wrap: wrap;
+    gap: 8px;
     align-items: center;
 }
 
-.guidance-pills__label {
+.home-quicklinks.guidance-jump .home-quicklinks__grid::before {
+    content: "Jump to:";
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.55);
     margin-right: 4px;
 }
 
-.guidance-pills__item {
+.home-quicklinks.guidance-jump .home-quicklinks__item {
     height: 26px;
     padding: 0 14px;
     border-radius: 13px;
     background: rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.85);
     font-size: 0.75rem;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    transition: background .15s ease;
+    font-weight: 600;
+    flex-direction: row;
+    gap: 0;
 }
 
-.guidance-pills__item:hover {
+.home-quicklinks.guidance-jump .home-quicklinks__item:hover {
     background: rgba(255, 255, 255, 0.22);
     color: #fff;
 }
 
+.home-quicklinks.guidance-jump .home-quicklinks__icon {
+    display: none;
+}
+
+.home-quicklinks.guidance-jump .home-quicklinks__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: left;
+    line-height: 1;
+}
+
+@media (max-width: 767px) {
+    .home-quicklinks.guidance-jump {
+        margin: 0;
+        padding: 12px 16px;
+    }
+
+    .home-quicklinks.guidance-jump .home-quicklinks__grid {
+        grid-template-columns: none;
+    }
+}

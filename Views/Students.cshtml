@@ -83,60 +83,13 @@
     {
         @if (Model!.Blocks!.Any())
         {
-            <div class="container">
-                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
-                {
-                    { "Blocks", Model.Blocks }
-                })
-            </div>
+            @* No .container wrapper here: each widget supplies its own
+               .container / .container-fluid, so a widget set to "full width"
+               can actually span the viewport (matches home.cshtml). *@
+            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+            {
+                { "Blocks", Model.Blocks }
+            })
         }
     }
-
-    @* --- Events + Clubs ---
-         Placeholder content; edit directly or wire up to real CMS data later. *@
-    <div class="students-events-clubs">
-        <div class="students-events-clubs__col students-events-clubs__col--events">
-            <div class="home-section-title">
-                <div class="home-section-title__label">
-                    <span class="home-section-title__bar"></span>
-                    Upcoming Events
-                </div>
-                <a href="#" class="home-section-title__action">Full calendar &rarr;</a>
-            </div>
-            @{
-                var studentEvents = new (string Month, string Day, string Title, string Sub)[]
-                {
-                    ("MAY", "3", "Grad Nite 2026 — Knott's Berry Farm", "6:00 PM · Permission slip required"),
-                    ("MAY", "8", "Club Rush — Spring Edition", "Lunch · Main Quad"),
-                    ("MAY", "13", "Spirit Week Begins", "Mon–Fri · Dress up daily!"),
-                    ("MAY", "20", "Senior Sunrise Celebration", "6:00 AM · Football Field"),
-                };
-            }
-            @for (var i = 0; i < studentEvents.Length; i++)
-            {
-                var ev = studentEvents[i];
-                <div class="students-event @(i == 0 ? "students-event--next" : "")">
-                    <div class="students-event__date">
-                        <span class="students-event__month">@ev.Month</span>
-                        <span class="students-event__day">@ev.Day</span>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="students-event__title">@ev.Title</div>
-                        <div class="students-event__sub">@ev.Sub</div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-
-    @* --- STOPit / wellness CTA --- *@
-    <div class="students-wellness-cta">
-        <span style="font-size:20px;">&#128683;</span>
-        <div>
-            <div class="students-wellness-cta__title">See Something? Say Something. Use STOPit.</div>
-            <div class="students-wellness-cta__text">Anonymous reporting for bullying, harassment, or safety concerns. Available 24/7.</div>
-        </div>
-        <div class="flex-grow-1"></div>
-        <a href="#" class="btn" style="background:var(--shs-gold); color:#2a1040;">Report Anonymously</a>
-    </div>
 }

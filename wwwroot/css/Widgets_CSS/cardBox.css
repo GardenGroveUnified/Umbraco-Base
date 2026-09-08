@@ -93,3 +93,8 @@
     box-shadow: none;
     border-color: transparent;
 }
+
+/* "college-boost-cards": application cards match the library database look */
+.block-card-box.college-boost-cards .card-box__item{
+    border-top: 3px solid var(--shs-purple, #4a1f7a);
+}

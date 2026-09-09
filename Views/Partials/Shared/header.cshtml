@@ -57,13 +57,16 @@
                 <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
                     <button id="@(pageId)"
                             class="nav-link dropdown-menu-hover align-content-center h-100 w-100 cursor-default"
+                            data-nav-toggle
                             aria-haspopup="true"
                             aria-expanded="false"
+                            aria-controls="@(pageId)-menu"
                             role="menuitem">
                         <b>@(linkTitle)</b>
                     </button>
 
-                    <div aria-labelledby="@(pageId)"
+                    <div id="@(pageId)-menu"
+                         aria-labelledby="@(pageId)"
                          class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0"
                          role="menu">
                         <ul class="list-unstyled" role="none">
@@ -108,7 +111,14 @@
                            role="menuitem"
                            @if(target != "_self"){<text>aria-label="@(page.Name) webpage opens in a new tab"</text>}
                            >@linkTitle</a>
-                        <div class="dropdown-menu dropdown-submenu-content" role="menu">
+                        <button type="button" class="submenu-toggle"
+                                data-nav-toggle
+                                aria-expanded="false"
+                                aria-controls="@(pageId)-submenu"
+                                aria-label="Show @(page.Name) submenu">
+                            <span aria-hidden="true">&rsaquo;</span>
+                        </button>
+                        <div id="@(pageId)-submenu" class="dropdown-menu dropdown-submenu-content" role="menu">
                             <ul class="list-unstyled" role="none">
                                 @foreach (var childPage in children)
                                 {
@@ -356,29 +366,5 @@
 </header>
 <!-- /NAVBAR -->
 
-<script>
-function toggleDropdownClassesOnResize() {
-  function checkAndToggleClasses() {
-    const dropdownMenus = document.querySelectorAll('.dropdownMenu');
-    const menuWidth = document.getElementById('menuWidth');
-    if (!menuWidth) return;
-
-    if (window.innerWidth < 992) {
-      menuWidth.classList.remove('w-100');
-    } else {
-      menuWidth.classList.add('w-100');
-    }
-
-    dropdownMenus.forEach(menu => {
-      if (window.innerWidth < 992) {
-        menu.classList.remove('dropdown-menu', 'animate-slideup');
-      } else {
-        menu.classList.add('dropdown-menu', 'animate-slideup');
-      }
-    });
-  }
-  checkAndToggleClasses();
-  window.addEventListener('resize', checkAndToggleClasses);
-}
-toggleDropdownClassesOnResize();
-</script>
+@* Main-nav keyboard, touch and responsive behaviour lives in /js/nav.js
+   (loaded with defer from Master.cshtml). *@

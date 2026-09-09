@@ -316,6 +316,60 @@ header .navbar{
         min-width: 15rem;
     }
 }
+
+/* Keyboard and touch access for the main-nav dropdowns.
+   core.css reveals the menus for mouse users on :hover only. These rules
+   add :focus-within (keyboard) and an .is-open state (set by /js/nav.js
+   on tap / click / Enter / Space) so every user reaches the same links. */
+@media (min-width: 992px){
+    #navbarMainNav .navbar-nav > .nav-item > .dropdownMenu{
+        display: none;
+    }
+    #navbarMainNav .navbar-nav > .nav-item:hover > .dropdownMenu,
+    #navbarMainNav .navbar-nav > .nav-item.is-open > .dropdownMenu,
+    #navbarMainNav .navbar-nav > .nav-item:focus-within:not(.nav-collapsed) > .dropdownMenu{
+        display: block;
+    }
+
+    #navbarMainNav .dropdown-submenu > .dropdown-submenu-content{
+        display: none;
+    }
+    #navbarMainNav .dropdown-submenu:hover > .dropdown-submenu-content,
+    #navbarMainNav .dropdown-submenu.is-open > .dropdown-submenu-content,
+    #navbarMainNav .dropdown-submenu:focus-within:not(.nav-collapsed) > .dropdown-submenu-content{
+        display: block;
+    }
+
+    /* Disclosure caret next to a nested section link. */
+    #navbarMainNav .submenu-toggle{
+        border: 0;
+        background: transparent;
+        padding: 0 .5rem;
+        font-size: 1.1rem;
+        line-height: 1;
+        color: inherit;
+        cursor: pointer;
+    }
+    #navbarMainNav .dropdown-submenu.is-open .submenu-toggle span{
+        display: inline-block;
+        transform: rotate(90deg);
+    }
+}
+
+/* Below 992px the menus expand inline and the caret toggle is not wired,
+   so hide it. Nested-submenu behaviour on mobile is unchanged. */
+@media (max-width: 991.98px){
+    #navbarMainNav .submenu-toggle{
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce){
+    .animate-slideup{
+        animation: none;
+    }
+}
+
 .navbar-nav:not(.navbar-sm) {
         height: 66px;
     }

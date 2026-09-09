@@ -29,6 +29,20 @@
     --shs-gold: #c9a227;
 }
 
+/* Skip link markup is in Master.cshtml. core.min.css already positions it
+   off-screen and reveals it on :focus. Override the theme colours to the
+   brand palette and add a gold border, because core.min.css forces
+   outline: 0 !important on :focus. */
+a.skip-link {
+    padding: 0.6rem 1rem;
+    background-color: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    font-weight: 600;
+}
+a.skip-link:focus {
+    border: 3px solid var(--shs-gold, #c9a227);
+}
+
 .breadcrumb-item.active {
     color: var(--shs-gold, #c9a227);
 }

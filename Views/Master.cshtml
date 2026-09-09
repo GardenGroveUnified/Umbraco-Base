@@ -43,9 +43,10 @@
 	</head>
 
 	<body class="header-sticky header-fixed" data-aos-easing="ease-in-out-sine" data-aos-duration="700" data-aos-delay="0">
+		<a class="skip-link" href="#main-content">Skip to main content</a>
 		<div id="wrapper">
 			@await Html.PartialAsync("~/Views/Partials/Shared/header.cshtml")
-			<main class="main-content position-relative" role="main"> 
+			<main id="main-content" tabindex="-1" class="main-content position-relative">
 				@RenderBody()
 			</main>
 			@await Html.PartialAsync("~/Views/Partials/Shared/footer.cshtml")
@@ -64,9 +65,9 @@
 				<div class="pswp__ui pswp__ui--hidden">
 					<div class="pswp__top-bar">
 						<div class="pswp__counter"></div>
-						<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-						<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-						<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+						<button class="pswp__button pswp__button--close" title="Close (Esc)" aria-label="Close (Esc)"></button>
+						<button class="pswp__button pswp__button--fs" title="Toggle fullscreen" aria-label="Toggle fullscreen"></button>
+						<button class="pswp__button pswp__button--zoom" title="Zoom in/out" aria-label="Zoom in/out"></button>
 						<div class="pswp__preloader">
 							<div class="pswp__preloader__icn">
 								<div class="pswp__preloader__cut">
@@ -78,8 +79,8 @@
 					<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
 						<div class="pswp__share-tooltip"></div>
 					</div>
-					<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-					<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+					<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)" aria-label="Previous (arrow left)"></button>
+					<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)" aria-label="Next (arrow right)"></button>
 					<div class="pswp__caption">
 						<div class="pswp__caption__center"></div>
 					</div>

@@ -1,0 +1,90 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Extensions
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    int order = ViewData["order"] != null ? Convert.ToInt32(ViewData["order"]) : 0;
+
+    var heading = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var text = content.Value<Umbraco.Cms.Core.Strings.IHtmlEncodedString>("text");
+
+    var stats = (content.Value<IEnumerable<BlockListItem>>("stats") ?? Enumerable.Empty<BlockListItem>())
+        .Where(s => s?.Content != null && s.Content.Value<bool?>("blockVisibility") != false)
+        .ToList();
+
+    var background = settings?.Value<string>("backgroundColor");
+    var backgroundStyle = string.IsNullOrWhiteSpace(background)
+        ? "background-color:var(--shs-purple, #4a1f7a);"
+        : $"background-color:{background};";
+    var verticalSpacingClass = settings?.Value<string>("verticalSpacing") ?? "";
+    var anchorId = settings?.Value<string>("anchorId");
+    var classNames = string.Join(" ",
+        (settings?.Value<IEnumerable<string>>("classnames") ?? Enumerable.Empty<string>())
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+}
+
+@if (stats.Any())
+{
+    <section class="section block-achievements @verticalSpacingClass @classNames" style="@backgroundStyle"
+    @if (!string.IsNullOrEmpty(anchorId))
+    {
+        <text>id="@anchorId"</text>
+    }>
+        <div class="container-fluid px-4">
+            @if (!string.IsNullOrEmpty(preheading) || !string.IsNullOrEmpty(heading))
+            {
+                <div class="block-achievements__header">
+                    @if (!string.IsNullOrEmpty(preheading))
+                    {
+                        <div class="block-achievements__preheading">@preheading</div>
+                    }
+                    @if (!string.IsNullOrEmpty(heading) && order == 0)
+                    {
+                        <h1 class="block-achievements__heading">@heading</h1>
+                    }
+                    else if (!string.IsNullOrEmpty(heading))
+                    {
+                        <h2 class="block-achievements__heading">@heading</h2>
+                    }
+                </div>
+            }
+            @if (text != null && !string.IsNullOrEmpty(text.ToString()))
+            {
+                <div class="block-achievements__text">@text</div>
+            }
+
+            <div class="block-achievements__grid">
+                @foreach (var item in stats)
+                {
+                    var stat = item.Content;
+                    var icon = stat.Value<string>("icon");
+                    var value = stat.Value<string>("value");
+                    var label = stat.Value<string>("label");
+
+                    <div class="achievement">
+                        @if (!string.IsNullOrEmpty(icon))
+                        {
+                            <span class="achievement__icon"><i class="@icon"></i></span>
+                        }
+                        <span class="achievement__body">
+                            @if (!string.IsNullOrEmpty(value))
+                            {
+                                <span class="achievement__value">@value</span>
+                            }
+                            @if (!string.IsNullOrEmpty(label))
+                            {
+                                <span class="achievement__label">@label</span>
+                            }
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

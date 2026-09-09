@@ -1,5 +1,23 @@
 /* Brand palette (--shs-purple, --shs-gold, ...) now lives in styles.css :root */
 
+/* Even 40px page-background gap between every home band, and the same at the
+   top and bottom of the stack. Bands butt together by default. */
+.main-content:has(> .home-stack) {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.home-stack > * + * {
+    margin-top: 40px;
+}
+
+/* Quick Links keeps its 28px side inset but drops its own vertical margin,
+   so the 40px rule alone sets its spacing. */
+.home-stack > .home-quicklinks {
+    margin-top: 40px;
+    margin-bottom: 0;
+}
+
 .home-quicklinks {
     background: var(--shs-purple);
     padding: 16px 28px;
@@ -69,6 +87,13 @@
 .home-spotlight__body {
     flex: 1;
     min-width: 0;
+    max-width: 72ch;
+}
+
+/* No "Read more" link, so the spacer that pushed it right is dead weight.
+   Drop it so the text uses its column instead of half of it. */
+.home-spotlight:not(:has(.home-spotlight__action)) .flex-grow-1 {
+    display: none;
 }
 
 .awards-widget {

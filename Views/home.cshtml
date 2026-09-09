@@ -12,16 +12,18 @@
     var socialLinks = Model.Value<IEnumerable<SocialLink>>("socialLinks");
 }
 
-@await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml")
+<div class="home-stack">
+    @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml")
 
-@* --- Social strip --- *@
-@if (socialLinks != null && socialLinks.Any())
-{
-    <div class="home-social">
-        <span class="home-social__label">Follow Santiago HS:</span>
-        @foreach (var link in socialLinks)
-        {
-            <a href="@link.Url" target="_blank" rel="noopener" class="home-social__link">@link.Network</a>
-        }
-    </div>
-}
+    @* --- Social strip --- *@
+    @if (socialLinks != null && socialLinks.Any())
+    {
+        <div class="home-social">
+            <span class="home-social__label">Follow Santiago HS:</span>
+            @foreach (var link in socialLinks)
+            {
+                <a href="@link.Url" target="_blank" rel="noopener" class="home-social__link">@link.Network</a>
+            }
+        </div>
+    }
+</div>

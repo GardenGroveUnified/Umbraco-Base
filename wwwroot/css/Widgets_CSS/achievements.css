@@ -1,0 +1,131 @@
+/* Achievements widget - stat tiles on a brand-purple band.
+   Brand vars (--shs-purple, --shs-gold) come from styles.css :root. */
+
+.block-achievements {
+    color: #fff;
+}
+
+/* The site gives every .section 100px top and bottom (base.css, min-width 768px).
+   Match the other home bands with a lighter, even pad. */
+.block-achievements.section {
+    padding-top: 48px !important;
+    padding-bottom: 48px !important;
+}
+
+.block-achievements__header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.block-achievements__preheading {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--shs-gold, #c9a227);
+    margin-bottom: 4px;
+}
+
+.block-achievements__heading {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 1.9rem;
+    letter-spacing: 0.02em;
+    color: #fff;
+    margin: 0;
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+}
+
+.block-achievements__text {
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 60ch;
+    margin: -20px auto 28px;
+    text-align: center;
+}
+
+.block-achievements__grid {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    column-gap: 72px;
+    row-gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.achievement {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.achievement__icon {
+    flex-shrink: 0;
+    width: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+    line-height: 1;
+    color: #fff;
+}
+
+.achievement__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.achievement__value {
+    font-weight: 800;
+    font-size: 2.4rem;
+    line-height: 1.05;
+    color: #fff;
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+}
+
+.achievement__label {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.3;
+    margin-top: 2px;
+}
+
+/* Inside a Block Line column the band is only half width, so drop to two
+   stats across and let the grid shrink with the column. */
+.block-line__col .block-achievements {
+    min-width: 0;
+}
+
+.block-line__col .block-achievements__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 32px;
+    max-width: none;
+}
+
+@media (max-width: 992px) {
+    .block-achievements__grid {
+        grid-template-columns: repeat(2, auto);
+        column-gap: 48px;
+    }
+}
+
+@media (max-width: 576px) {
+    .block-achievements__grid {
+        grid-template-columns: auto;
+        row-gap: 22px;
+    }
+
+    .block-achievements__heading {
+        font-size: 1.55rem;
+    }
+
+    .achievement__icon {
+        font-size: 2.1rem;
+        width: 46px;
+    }
+
+    .achievement__value {
+        font-size: 2rem;
+    }
+}

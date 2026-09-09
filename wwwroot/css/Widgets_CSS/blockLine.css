@@ -57,6 +57,27 @@
     padding-right: 0;
 }
 
+/* Let the columns shrink to equal halves even when a child (e.g. the
+   Achievements grid) has a wide intrinsic size. */
+.block-line--seamless .block-line__col{
+    min-width: 0;
+}
+
+/* The Awards widget is a plain div, not a .section, so the rules above skip
+   it. Give it the same purple fill and inner padding as its sibling column
+   so the two read as one panel. */
+.block-line--seamless .block-line__col > .awards-widget{
+    padding: 0 !important;
+    height: 100%;
+}
+.block-line--seamless .block-line__col > .awards-widget > .home-spotlight{
+    height: 100%;
+    padding: 1.75rem 1.25rem;
+}
+.block-line__col .home-spotlight__body{
+    max-width: none;
+}
+
 /* Framed mode: add the class "block-line--framed" to the Block Line
    (Advanced > Classnames) so each child widget shows as its own bordered
    panel with a gutter between. Widgets that carry a frame style (the home

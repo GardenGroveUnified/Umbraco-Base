@@ -1,4 +1,4 @@
-﻿@inherits UmbracoViewPage
+@inherits UmbracoViewPage
 @using Umbraco.Cms.Core.Models
 @using Umbraco.Cms.Core.Models.Blocks;
 @using Umbraco.Cms.Core.Models.PublishedContent;
@@ -10,17 +10,17 @@
     private List<IPublishedContent> GetVisibleChildren(IPublishedContent? parent)
     {
         if (parent == null) return new List<IPublishedContent>();
-        
+
         return parent.Children()?
             .Where(x => !x.IsVisible())
-            .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page 
-                     || x?.ContentType?.Alias == ContentTypeAlias.Link 
+            .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page
+                     || x?.ContentType?.Alias == ContentTypeAlias.Link
                      || x?.ContentType?.Alias == ContentTypeAlias.PagesList
                      || x?.ContentType?.Alias == ContentTypeAlias.Subsite)
             .OrderBy(x => x.SortOrder)
             .ToList() ?? new List<IPublishedContent>();
     }
-    
+
     // True when a section's own landing page has something worth linking to
     // (used to add an "Overview" entry at the top of that section's dropdown).
     private bool HasLandingContent(IPublishedContent page)
@@ -37,12 +37,12 @@
         var hasChildren = children.Any();
         var pageId = "mainNav" + page.Id + "_" + depth + "_" + itemIndex;
         itemIndex++;
-        
+
         var isHomeLink = page.ContentType.Alias == ContentTypeAlias.Link && page.Value<Link>("link")?.Url == "/";
         var menuItemSelectedClass = (page.IsAncestorOrSelf(currentPage) || (isHomeLink && currentPage.Url() == "/"))
             ? UmbracoBase.Core.Constants.Constants.MenuItemSelectedClass
             : null;
-        
+
         if (depth == 1)
         {
             // Top level navigation items
@@ -51,29 +51,26 @@
                 var linkTitle = string.IsNullOrEmpty(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
 
                 // Top-level items that have a dropdown don't navigate anywhere - the
-                // label is just a toggle that reveals the submenu (matches the public
-                // site). Where a section has its own landing page, link it from inside
-                // the menu rather than from this label.
-                <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
+                // label is just a disclosure toggle that reveals the submenu (matches
+                // the public site). Where a section has its own landing page, link it
+                // from inside the menu rather than from this label.
+                <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0">
                     <button id="@(pageId)"
                             class="nav-link dropdown-menu-hover align-content-center h-100 w-100 cursor-default"
                             data-nav-toggle
-                            aria-haspopup="true"
                             aria-expanded="false"
-                            aria-controls="@(pageId)-menu"
-                            role="menuitem">
+                            aria-controls="@(pageId)-menu">
                         <b>@(linkTitle)</b>
                     </button>
 
                     <div id="@(pageId)-menu"
                          aria-labelledby="@(pageId)"
-                         class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0"
-                         role="menu">
-                        <ul class="list-unstyled" role="none">
+                         class="dropdownMenu dropdown-menu animate-slideup m-0 p-lg-0 ps-5 rounded-0">
+                        <ul class="list-unstyled">
                             @if (HasLandingContent(page))
                             {
-                                <li class="dropdown-item my-lg-2 text-wrap" role="none">
-                                    <a href="@(page.Url())" class="dropdown-link text-black" role="menuitem">@(linkTitle) Overview</a>
+                                <li class="dropdown-item my-lg-2 text-wrap">
+                                    <a href="@(page.Url())" class="dropdown-link text-black">@(linkTitle) Overview</a>
                                 </li>
                             }
                             @foreach (var childPage in children)
@@ -87,10 +84,9 @@
             else
             {
                 // Top level item without children
-                <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0" role="none">
-                    <a href="@(page.Url())" id="@(pageId)" 
-                       class="nav-link align-content-center"
-                       role="menuitem"><b>@(page.Name)</b></a>
+                <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0">
+                    <a href="@(page.Url())" id="@(pageId)"
+                       class="nav-link align-content-center"><b>@(page.Name)</b></a>
                 </li>
             }
         }
@@ -103,13 +99,12 @@
                 var pageInfo = (Link)page.Value("Link")! ?? new Link();
                 var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                 var target = pageInfo.Target ?? "_self";
-                
-                <li class="dropdown-item my-lg-2 text-wrap" role="none">
+
+                <li class="dropdown-item my-lg-2 text-wrap">
                     <div class="dropdown-submenu">
                         <a href="@(page.Url())" target="@target"
                            class="dropdown-link text-black"
-                           role="menuitem"
-                           @if(target != "_self"){<text>aria-label="@(page.Name) webpage opens in a new tab"</text>}
+                           @if(target != "_self"){<text>rel="noopener" aria-label="@(page.Name) webpage opens in a new tab"</text>}
                            >@linkTitle</a>
                         <button type="button" class="submenu-toggle"
                                 data-nav-toggle
@@ -118,8 +113,8 @@
                                 aria-label="Show @(page.Name) submenu">
                             <span aria-hidden="true">&rsaquo;</span>
                         </button>
-                        <div id="@(pageId)-submenu" class="dropdown-menu dropdown-submenu-content" role="menu">
-                            <ul class="list-unstyled" role="none">
+                        <div id="@(pageId)-submenu" class="dropdown-menu dropdown-submenu-content">
+                            <ul class="list-unstyled">
                                 @foreach (var childPage in children)
                                 {
                                     RenderNavigationItem(childPage, currentPage, depth + 1, ref itemIndex);
@@ -135,12 +130,11 @@
                 var pageInfo = (Link)page.Value("Link")! ?? new Link();
                 var linkTitle = string.IsNullOrWhiteSpace(page.Value<string>("pageTitle")) ? page.Name : page.Value("pageTitle");
                 var target = pageInfo.Target ?? "_self";
-                
-                <li class="dropdown-item my-lg-2 text-wrap" role="none">
+
+                <li class="dropdown-item my-lg-2 text-wrap">
                     <a href="@(page.Url())" target="@target"
                        class="dropdown-link text-black"
-                       role="menuitem"
-                       @if(target != "_self"){<text>aria-label="@(page.Name) webpage opens in a new tab"</text>}
+                       @if(target != "_self"){<text>rel="noopener" aria-label="@(page.Name) webpage opens in a new tab"</text>}
                        >@linkTitle</a>
                 </li>
             }
@@ -151,11 +145,11 @@
 @{
     var siteRoot = Model.Root();
     var currentPage = Umbraco.AssignedContentItem;
-    
+
     // Determine the navigation root: if we're on a Subsite or under one, use that Subsite as root
     // Otherwise, use the Site root
     IPublishedContent? navRoot = null;
-    
+
     // Check if current page is a Subsite
     if (currentPage?.ContentType?.Alias == ContentTypeAlias.Subsite)
     {
@@ -175,26 +169,29 @@
             ancestor = ancestor?.Parent<IPublishedContent>();
         }
     }
-    
+
     // If no Subsite found, use the Site root
     if (navRoot == null)
     {
         navRoot = siteRoot;
     }
-    
+
     // Get navigation items from the determined root
     var level1Pages = navRoot?.Children()?
         .Where(x => !x.IsVisible())
-        .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page 
-                 || x?.ContentType?.Alias == ContentTypeAlias.Link 
+        .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page
+                 || x?.ContentType?.Alias == ContentTypeAlias.Link
                  || x?.ContentType?.Alias == ContentTypeAlias.PagesList
                  || x?.ContentType?.Alias == ContentTypeAlias.Subsite).ToList()
         ?? Enumerable.Empty<IPublishedContent>();
-    
+
     // Get top bar items and social links from the navigation root (Subsite or Site)
     var topBarNavItems = navRoot?.Value<IEnumerable<Link>>("topBarLinks");
     var SocialLinks = navRoot?.Value<IEnumerable<SocialLink>>("socialMediaLinks");
-    
+
+    // Absolute URL of the current page, for the Google Translate links.
+    var pageUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}";
+
     // Determine the navigation title
     string navTitle = "Intranet"; // Default title
     if (navRoot != null && navRoot.ContentType?.Alias == ContentTypeAlias.Subsite)
@@ -209,7 +206,7 @@
         var siteTitle = navRoot.Value<string>("pageTitle");
         navTitle = !string.IsNullOrWhiteSpace(siteTitle) ? siteTitle : "Intranet";
     }
-    
+
     int i = -1;
 }
 
@@ -223,10 +220,10 @@
                     <ul class="m-0 p-0 justify-content-center list-unstyled" role="list">
                         @if (SocialLinks != null)
                         {
-                            @foreach (var link in SocialLinks!)
+                            @foreach (var link in SocialLinks)
                             {
                                 <li class="list-inline-item d-inline-flex">
-                                    <a role="link" target="_blank" href="@link.Url" 
+                                    <a target="_blank" href="@link.Url"
                                        class="btn btn-xs btn-facebookx transition-hover-top text-white"
                                        rel="noopener"
                                        aria-label="Follow us on @link.Network">
@@ -241,13 +238,17 @@
                                     </a>
                                 </li>
                             }
+                        }
 
-                            @foreach (var link in topBarNavItems!)
+                        @if (topBarNavItems != null)
+                        {
+                            @foreach (var link in topBarNavItems)
                             {
                                 <li class="list-inline-item d-lg-inline-flex d-none">
                                     @if (link.Name == "Nominate an Employee of the Month")
                                     {
                                         <a href="@link.Url" target="@link.Target"
+                                           rel="noopener"
                                            class="p-2 px-3 d-inline-block text-gold font-weight-medium transition-hover-zoom"
                                            aria-label="@link.Name">
                                             @link.Name
@@ -264,17 +265,18 @@
                                                     aria-label="Select language">
                                                 🌍 <span>Language</span>
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-hover dropdown-fadeinup" 
-                                                aria-labelledby="languageDropdown" role="menu">
-                                                <li role="none"><a class="dropdown-item" href="#" role="menuitem" onclick="translatePage('es')">🇪🇸 Spanish</a></li>
-                                                <li role="none"><a class="dropdown-item" href="#" role="menuitem" onclick="translatePage('vi')">🇻🇳 Vietnamese</a></li>
-                                                <li role="none"><a class="dropdown-item" href="#" role="menuitem" onclick="translatePage('ko')">🇰🇷 Korean</a></li>
+                                            <ul class="dropdown-menu dropdown-menu-hover dropdown-fadeinup"
+                                                aria-labelledby="languageDropdown">
+                                                <li><a class="dropdown-item" href="https://translate.google.com/translate?sl=auto&amp;tl=es&amp;u=@(Uri.EscapeDataString(pageUrl))">🇪🇸 Spanish</a></li>
+                                                <li><a class="dropdown-item" href="https://translate.google.com/translate?sl=auto&amp;tl=vi&amp;u=@(Uri.EscapeDataString(pageUrl))">🇻🇳 Vietnamese</a></li>
+                                                <li><a class="dropdown-item" href="https://translate.google.com/translate?sl=auto&amp;tl=ko&amp;u=@(Uri.EscapeDataString(pageUrl))">🇰🇷 Korean</a></li>
                                             </ul>
                                         </div>
                                     }
                                     else
                                     {
                                         <a href="@link.Url" target="@link.Target"
+                                           rel="noopener"
                                            class="p-2 px-3 d-inline-block text-white font-weight-medium transition-hover-zoom"
                                            aria-label="@link.Name">
                                             @link.Name
@@ -298,20 +300,19 @@
 
         <div class="container p-0">
             <div class="collapse navbar-collapse justify-content-center align-items-lg-center" id="navbarMainNav">
-                
+
                 <!-- NAVIGATION TITLE -->
                 <div class="navbar-logo-wrap text-center d-flex align-items-center justify-content-center mb-3 mb-lg-0 me-lg-4">
                     <a href="@(navRoot?.Url() ?? "#")"
                        class="mb-0 text-decoration-none d-block"
-                       role="link"
                        aria-label="Go to @navTitle home page">
-                        <img src="/media/1nffde4w/svglogo.svg" alt="@navTitle logo" class="m-2 d-block navbar-logo" />
+                        <img src="/media/1nffde4w/svglogo.svg" alt="@navTitle logo" width="543" height="157" class="m-2 d-block navbar-logo" />
                     </a>
                 </div>
                 <!-- /NAVIGATION TITLE -->
 
                 <!-- NAVIGATION -->
-                <ul class="navbar-nav justify-content-center" id="menuWidth" role="menubar">
+                <ul class="navbar-nav justify-content-center" id="menuWidth">
 
                     @foreach (var level1Page in level1Pages.Take(7))
                     {
@@ -323,12 +324,12 @@
                         <h5 class="d-lg-none d-block w-100 m-2 ms-0">Top Bar Links</h5>
                         <div class="align-items-center d-lg-none d-block">
                             <ul class="m-0 p-0 justify-content-center list-unstyled" role="list">
-                                @foreach (var link in topBarNavItems!)
+                                @foreach (var link in topBarNavItems)
                                 {
-                                    <li class="nav-item ms-4" role="none">
-                                        <a href="@link.Url" target="@link.Target" 
-                                           class="nav-link dropdown-link"
-                                           role="menuitem">
+                                    <li class="nav-item ms-4">
+                                        <a href="@link.Url" target="@link.Target"
+                                           rel="noopener"
+                                           class="nav-link dropdown-link">
                                             @link.Name
                                         </a>
                                     </li>
@@ -342,12 +343,12 @@
         </div>
 
         <!-- OPTIONS -->
-        <ul class="list-inline list-unstyled mb-0 d-flex align-items-center px-1 me-xl-8" 
+        <ul class="list-inline list-unstyled mb-0 d-flex align-items-center px-1 me-xl-8"
             id="search-op" style="right: 0; position: absolute;">
             <li class="list-inline-item mx-1">
-                <button class="navbar-toggler" type="button" 
-                        data-bs-toggle="collapse" data-bs-target="#navbarMainNav" 
-                        aria-controls="navbarMainNav" aria-expanded="false" 
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#navbarMainNav"
+                        aria-controls="navbarMainNav" aria-expanded="false"
                         aria-label="Toggle navigation menu">
                     <svg width="25" viewBox="0 0 20 20" fill="#fff" role="img" aria-hidden="true">
                         <path d="M 19.9876 1.998 L -0.0108 1.998 L -0.0108 -0.0019 L 19.9876 -0.0019 L 19.9876 1.998 Z"></path>

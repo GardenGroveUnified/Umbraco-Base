@@ -22,7 +22,9 @@
             <span class="home-social__label">Follow Santiago HS:</span>
             @foreach (var link in socialLinks)
             {
-                <a href="@link.Url" target="_blank" rel="noopener" class="home-social__link">@link.Network</a>
+                <a href="@link.Url" target="_blank" rel="noopener"
+                   class="home-social__link"
+                   aria-label="@link.Network, opens in a new tab">@link.Network</a>
             }
         </div>
     }

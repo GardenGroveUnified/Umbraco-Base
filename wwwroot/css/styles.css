@@ -43,6 +43,29 @@ a.skip-link:focus {
     border: 3px solid var(--shs-gold, #c9a227);
 }
 
+/* The bundled theme CSS (custom.css, widget/*.css, core.css) strips focus
+   outlines site-wide, often with !important. Put a visible keyboard-focus
+   ring back. :focus-visible keeps it off plain mouse clicks. The class
+   selectors are needed to beat `outline: none !important` on `.btn:focus`. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+.btn:focus-visible,
+.nav-link:focus-visible,
+.dropdown-link:focus-visible,
+.accordion-button:focus-visible,
+.acc__head:focus-visible {
+    outline: 3px solid var(--shs-gold, #c9a227) !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55) !important;
+}
+
+.breadcrumb {
+    font-size: 14px;
+}
 .breadcrumb-item.active {
     color: var(--shs-gold, #c9a227);
 }
@@ -145,13 +168,13 @@ p{
     color: #fdb820 !important;
 }.bg-orange-hover:hover{
     background-color: #fdb820;
-    transition: all 0.5s ease;
+    transition: background-color 0.5s ease;
 }
 .bg-blue{
     background-color: var(--shs-purple, #4a1f7a) !important;
 }.bg-blue-hover:hover{
     background-color: var(--shs-purple, #4a1f7a);
-    transition: all 0.5s ease;
+    transition: background-color 0.5s ease;
 }.text-blue{
     color: var(--shs-purple, #4a1f7a) !important;
     font-family: var(--font-nav-and-texts);
@@ -373,9 +396,22 @@ header .navbar{
     }
 }
 
+/* Reduced-motion: collapse every transition and animation to near-instant,
+   including the bundled vendor CSS and the AOS scroll effects that the
+   individual rules in this file cannot reach. */
 @media (prefers-reduced-motion: reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration: 0.01ms !important;
+        animation-delay: 0s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+        scroll-behavior: auto !important;
+    }
     .animate-slideup{
-        animation: none;
+        animation: none !important;
     }
 }
 
@@ -429,7 +465,7 @@ header .navbar{
 /* Latest From Feed CSS */
 
 .hover-zoom .card img{
-    transition: all 1s ease-in-out;
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
     opacity: 1;
 }
 
@@ -444,7 +480,7 @@ header .navbar{
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: all 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
 }
 
 .hover-zoom:hover .card-img-overlay{
@@ -490,6 +526,7 @@ header .navbar{
 }
 
 #footer .footer-brand {
+    margin: 0;
     font-weight: 800;
     font-size: 1.5rem;
     line-height: 1.2;
@@ -498,14 +535,27 @@ header .navbar{
     font-family: var(--font-nav-and-texts);
 }
 
+#footer .footer-brand-second {
+    display: block;
+}
+
 #footer .footer-heading {
+    margin-top: 0;
+    margin-bottom: 8px;
     font-weight: 700;
     font-size: 0.8rem;
     letter-spacing: 0.02em;
     text-transform: uppercase;
     color: #fff;
-    margin-bottom: 8px;
     font-family: var(--font-nav-and-texts);
+}
+
+#footer .footer-copyright {
+    margin: 20px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 #footer .footer-text {
@@ -630,10 +680,6 @@ header .navbar{
 .sidebar-container .nav-item a:hover{
     color: #ec971f;
 }
-#financial-accordion .btn{
-    outline: none !important;
-}
-
 #lcap-resources .cta{
     justify-content: start;
 }
@@ -682,10 +728,7 @@ section#measurePTextandImage .grid-2{
     right: 0;
     top: auto;
     bottom: 0;
-    -webkit-transition: all 1s;
-    -moz-transition: all 1s;
-    -o-transition: all 1s;
-    transition: all 1s;
+    transition: transform 1s ease, opacity 1s ease;
     font-size: 13px !important;
     font-weight: normal !important;
     padding: 10px 5px !important;
@@ -798,23 +841,6 @@ section#personnel-comms .split__text-inner{
 .translate-btn{
     font-size: 14px;
     border: 0;
-}
-
-/* Campaign Animation */
-.campaign-item {
-    max-height: 0;
-    opacity: 0;
-    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
-}
-
-.campaign-item.show {
-    max-height: 500px; /* Adjust based on content */
-    opacity: 1;
-}
-
-/* Progress Bar Animation */
-.progress-bar {
-    transition: width 0.5s ease-in-out;
 }
 
 .dept-menu{

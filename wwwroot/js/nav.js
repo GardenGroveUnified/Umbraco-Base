@@ -57,9 +57,15 @@
             if (!isDesktop()) { return; }
             event.preventDefault();
             var item = owningItem(toggle);
-            var willOpen = !(item && item.classList.contains('is-open'));
+            // Read the state from aria-expanded, which the focusin handler keeps
+            // in step with the :focus-within reveal. The is-open class alone
+            // would miss a menu already open from keyboard focus.
+            var willOpen = toggle.getAttribute('aria-expanded') !== 'true';
             closeAll(willOpen ? toggle : null);
             setOpen(toggle, willOpen);
+            // Closing with focus still on the toggle: add nav-collapsed so the
+            // :focus-within rule in styles.css stops holding the menu open.
+            if (!willOpen && item) { item.classList.add('nav-collapsed'); }
         });
     });
 
@@ -85,6 +91,21 @@
         if (toggle) {
             toggle.setAttribute('aria-expanded', 'false');
             toggle.focus();
+        }
+    });
+
+    // Focus entering an item keeps aria-expanded in step with the
+    // :focus-within reveal in styles.css. Walk every enclosing item so a
+    // deep link marks both its submenu toggle and the top-level toggle open.
+    nav.addEventListener('focusin', function (event) {
+        if (!isDesktop()) { return; }
+        var item = event.target.closest('.nav-item, .dropdown-submenu');
+        while (item) {
+            if (!item.classList.contains('nav-collapsed')) {
+                var toggle = item.querySelector(':scope > [data-nav-toggle]');
+                if (toggle) { toggle.setAttribute('aria-expanded', 'true'); }
+            }
+            item = item.parentElement ? item.parentElement.closest('.nav-item, .dropdown-submenu') : null;
         }
     });
 

@@ -104,7 +104,23 @@ body::before {
 #wrapper {
     display: flex;
     flex-direction: column;
+    /* 100vh includes the mobile browser chrome and overflows; svh is the
+       small viewport height (chrome shown). vh stays as the fallback. */
     min-height: 100vh;
+    min-height: 100svh;
+}
+
+/* Remove the 300ms double-tap-zoom delay on things people tap. */
+a,
+button,
+[role="button"],
+input,
+label,
+select,
+summary,
+.btn,
+.nav-link {
+    touch-action: manipulation;
 }
 
 /* The whole <header> (top bar + main nav) stays pinned to the top while
@@ -119,13 +135,15 @@ body::before {
 /* so anchor / "jump to" links don't land hidden behind the sticky header */
 :target,
 section[id],
-.section[id] {
+.section[id],
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
     scroll-margin-top: 128px;
 }
 @media (max-width: 991.98px) {
     :target,
     section[id],
-    .section[id] {
+    .section[id],
+    h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
         scroll-margin-top: 96px;
     }
 }

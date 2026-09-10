@@ -42,6 +42,10 @@
         var menuItemSelectedClass = (page.IsAncestorOrSelf(currentPage) || (isHomeLink && currentPage.Url() == "/"))
             ? UmbracoBase.Core.Constants.Constants.MenuItemSelectedClass
             : null;
+        // Exact current page (not just an ancestor in the trail) - marks the
+        // one link that should carry aria-current="page".
+        var isCurrentPage = page.Id == currentPage.Id || (isHomeLink && currentPage.Url() == "/");
+        var ariaCurrent = isCurrentPage ? "page" : null;
 
         if (depth == 1)
         {
@@ -70,7 +74,7 @@
                             @if (HasLandingContent(page))
                             {
                                 <li class="dropdown-item my-lg-2 text-wrap">
-                                    <a href="@(page.Url())" class="dropdown-link text-black">@(linkTitle) Overview</a>
+                                    <a href="@(page.Url())" class="dropdown-link text-black" aria-current="@ariaCurrent">@(linkTitle) Overview</a>
                                 </li>
                             }
                             @foreach (var childPage in children)
@@ -85,7 +89,7 @@
             {
                 // Top level item without children
                 <li class="nav-item @(menuItemSelectedClass) text-lg-center mx-lg-2 mb-2 mb-lg-0">
-                    <a href="@(page.Url())" id="@(pageId)"
+                    <a href="@(page.Url())" id="@(pageId)" aria-current="@ariaCurrent"
                        class="nav-link align-content-center"><b>@(page.Name)</b></a>
                 </li>
             }
@@ -102,7 +106,7 @@
 
                 <li class="dropdown-item my-lg-2 text-wrap">
                     <div class="dropdown-submenu">
-                        <a href="@(page.Url())" target="@target"
+                        <a href="@(page.Url())" target="@target" aria-current="@ariaCurrent"
                            class="dropdown-link text-black"
                            @if(target != "_self"){<text>rel="noopener" aria-label="@(page.Name) webpage opens in a new tab"</text>}
                            >@linkTitle</a>
@@ -132,7 +136,7 @@
                 var target = pageInfo.Target ?? "_self";
 
                 <li class="dropdown-item my-lg-2 text-wrap">
-                    <a href="@(page.Url())" target="@target"
+                    <a href="@(page.Url())" target="@target" aria-current="@ariaCurrent"
                        class="dropdown-link text-black"
                        @if(target != "_self"){<text>rel="noopener" aria-label="@(page.Name) webpage opens in a new tab"</text>}
                        >@linkTitle</a>

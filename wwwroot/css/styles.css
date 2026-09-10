@@ -27,6 +27,12 @@
     --shs-purple-light: #6b3fa0;
     --shs-purple-pale: #f3edfa;
     --shs-gold: #c9a227;
+
+    /* AA-passing text colours for use ON a light/near-white background.
+       --shs-gold #c9a227 (2.4:1) and the brand orange fail AA on white; these
+       do not. Use them for text; keep --shs-gold for accents on dark. */
+    --shs-gold-text: #8f6d00;
+    --shs-orange-text: #a85f00;
 }
 
 /* Skip link markup is in Master.cshtml. core.min.css already positions it
@@ -67,7 +73,8 @@ summary:focus-visible,
     font-size: 14px;
 }
 .breadcrumb-item.active {
-    color: var(--shs-gold, #c9a227);
+    color: var(--shs-gold-text, #8f6d00);
+    font-weight: 600;
 }
 .breadcrumb-item+.breadcrumb-item:before {
     color: var(--shs-purple, #4a1f7a);
@@ -183,7 +190,7 @@ p{
 .bg-orange{
     background-color: #fdb820;
 }.text-orange{
-    color: #fdb820 !important;
+    color: var(--shs-orange-text, #a85f00) !important;
 }.bg-orange-hover:hover{
     background-color: #fdb820;
     transition: background-color 0.5s ease;
@@ -474,7 +481,7 @@ header .navbar{
     font-family: var(--font-nav-and-texts);
 }
 .head span{
-    color: var(--shs-gold, #c9a227);
+    color: var(--shs-gold-text, #8f6d00);
 }
 
 /* Rich text pasted from Word/Google Docs often carries inline
@@ -762,7 +769,8 @@ section#measurePTextandImage .grid-2{
 }
 
 a.nav-link.active{
-    color: #ec971f !important;
+    color: var(--shs-orange-text, #a85f00) !important;
+    text-decoration: underline;
 }
 
 #Intermediate-Image{

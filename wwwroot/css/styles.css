@@ -44,6 +44,9 @@ a.skip-link {
     background-color: var(--shs-purple, #4a1f7a);
     color: #fff;
     font-weight: 600;
+    /* When revealed on focus, keep it below the notch / clear of the cutout. */
+    margin-top: env(safe-area-inset-top);
+    margin-left: env(safe-area-inset-left);
 }
 a.skip-link:focus {
     border: 3px solid var(--shs-gold, #c9a227);
@@ -137,6 +140,14 @@ summary,
     position: sticky;
     top: 0;
     z-index: 1051;
+    /* viewport-fit=cover (Master.cshtml) lets the page go edge to edge on
+       phones with a notch or a rounded cutout. Fill that top strip with the
+       nav's own purple, and pad the content down so it clears the cutout.
+       env(safe-area-inset-*) is 0 on any device without one. */
+    background: var(--shs-purple, #4a1f7a);
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
 }
 
 /* so anchor / "jump to" links don't land hidden behind the sticky header */
@@ -144,14 +155,14 @@ summary,
 section[id],
 .section[id],
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
-    scroll-margin-top: 128px;
+    scroll-margin-top: calc(128px + env(safe-area-inset-top));
 }
 @media (max-width: 991.98px) {
     :target,
     section[id],
     .section[id],
     h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
-        scroll-margin-top: 96px;
+        scroll-margin-top: calc(96px + env(safe-area-inset-top));
     }
 }
 
@@ -159,6 +170,10 @@ h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
     flex: 1;
     padding-top: 24px;
     padding-bottom: 24px;
+    /* Landscape notch: keep content out of the cutout. 0 in portrait and on
+       devices without a cutout. */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
 }
 
 .clipart-top-left{
@@ -554,6 +569,11 @@ header .navbar{
     background: var(--shs-purple, #4a1f7a);
     color: #fff;
     padding: 20px 0;
+    /* Home indicator / rounded corners once the page runs edge to edge.
+       The purple already fills the strip; this keeps the text out of it. */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
 }
 
 #footer .footer-brand {

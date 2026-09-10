@@ -91,6 +91,10 @@
                 @foreach (var item in content.ImageBoxList)
                 {
                     var imageBox = (ContentModels.ImageBox)item.Content;
+                    // Natural media size for the Style 2 <img> (it uses GetCropUrl()
+                    // with no args). photoSwiper.cshtml uses the same pattern.
+                    var boxImgW  = imageBox?.Image?.Content?.Value<int>("umbracoWidth") ?? 0;
+                    var boxImgH  = imageBox?.Image?.Content?.Value<int>("umbracoHeight") ?? 0;
                     var hasText  = !string.IsNullOrEmpty(imageBox?.BodyText?.ToString());
                     var hasLink  = !string.IsNullOrEmpty(imageBox?.BoxLink?.Url);
                     var hasTitle = !string.IsNullOrEmpty(imageBox?.Title);
@@ -106,7 +110,8 @@
                                 }
                                 <div class="card-body p-4 p-sm-2 p-1-xs">
                                     <div class="image-wrapper">
-                                        <img src="@imageBox?.Image?.GetCropUrl()" class="card-img-top img-fluid m-auto" alt="@imageBox?.Image?.Name" />
+                                        <img src="@imageBox?.Image?.GetCropUrl()" class="card-img-top img-fluid m-auto" alt="@imageBox?.Image?.Name" loading="lazy" decoding="async"
+                                             @if (boxImgW > 0 && boxImgH > 0) { <text>width="@boxImgW" height="@boxImgH"</text> } />
                                     </div>
                                     <div class="card-text mt-3">
                                         @if (hasTitle)

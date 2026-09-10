@@ -4,13 +4,18 @@
     var award = Model;
     var photoUrl = award?.Photo?.GetCropUrl(width: 320) ?? award?.Photo?.Url();
     var hasLink = award?.Link != null && !string.IsNullOrEmpty(award.Link.Url);
+    // Natural media size, for the <img> width/height (the crop is width-only, so
+    // the ratio is what matters). See photoSwiper.cshtml for the same pattern.
+    var natW = award?.Photo?.Content?.Value<int>("umbracoWidth") ?? 0;
+    var natH = award?.Photo?.Content?.Value<int>("umbracoHeight") ?? 0;
 }
 
 <div class="home-spotlight">
     <div class="home-spotlight__icon">
         @if (!string.IsNullOrEmpty(photoUrl))
         {
-            <img src="@photoUrl" alt="@award?.Title" />
+            <img src="@photoUrl" alt="@award?.Title" loading="lazy" decoding="async"
+                 @if (natW > 0 && natH > 0) { <text>width="@natW" height="@natH"</text> } />
         }
         else
         {

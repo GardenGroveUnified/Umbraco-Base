@@ -104,7 +104,7 @@
 
             <div class="staff-directory" id="@uid">
                 <div class="staff-directory__letterhead d-none d-print-flex align-items-center gap-3">
-                    <img src="/media/1nffde4w/svglogo.svg" alt="Santiago High School logo" class="staff-directory__letterhead-logo" />
+                    <img src="/media/1nffde4w/svglogo.svg" alt="Santiago High School logo" width="543" height="157" class="staff-directory__letterhead-logo" />
                     <div>
                         <div class="staff-directory__letterhead-name">Santiago High School</div>
                         <div class="staff-directory__letterhead-address">12342 Trask Ave., Garden Grove, CA 92843</div>
@@ -160,7 +160,7 @@
                                 <div class="staff-directory__photo mx-auto mb-2">
                                     @if (!string.IsNullOrEmpty(photoUrl))
                                     {
-                                        <img src="@photoUrl" alt="@name" loading="lazy" />
+                                        <img src="@photoUrl" width="400" height="400" loading="lazy" decoding="async" alt="@name" />
                                     }
                                     else
                                     {
@@ -203,7 +203,7 @@
                                 <div class="staff-directory__dialog-body">
                                     @if (!string.IsNullOrEmpty(photoUrl))
                                     {
-                                        <img src="@photoUrl" class="staff-directory__dialog-photo" alt="@name" />
+                                        <img src="@photoUrl" class="staff-directory__dialog-photo" width="400" height="400" loading="lazy" decoding="async" alt="@name" />
                                     }
                                     @if (!string.IsNullOrEmpty(name))
                                     {

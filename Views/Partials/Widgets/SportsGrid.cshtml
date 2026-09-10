@@ -60,7 +60,7 @@
                             <div class="sports-grid__icon">
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
-                                    <img src="@photoUrl" alt="@sport.Name" />
+                                    <img src="@photoUrl" width="160" height="160" loading="lazy" decoding="async" alt="@sport.Name" />
                                 }
                                 else
                                 {
@@ -76,7 +76,7 @@
                             <div class="sports-grid__icon">
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
-                                    <img src="@photoUrl" alt="@sport.Name" />
+                                    <img src="@photoUrl" width="160" height="160" loading="lazy" decoding="async" alt="@sport.Name" />
                                 }
                                 else
                                 {

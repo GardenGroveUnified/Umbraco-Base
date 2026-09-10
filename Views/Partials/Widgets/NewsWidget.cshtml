@@ -62,7 +62,7 @@
                 <div class="news-item">
                     @if (!string.IsNullOrEmpty(photoUrl))
                     {
-                        <div class="news-item__thumb"><img src="@photoUrl" alt="@news?.Title" /></div>
+                        <div class="news-item__thumb"><img src="@photoUrl" width="160" height="130" loading="lazy" decoding="async" alt="@news?.Title" /></div>
                     }
                     else
                     {

@@ -185,7 +185,7 @@
     align-items: center;
     position: relative;
     box-shadow: 0 14px 26px rgba(0,0,0,0.1);
-    transition: all 0.3s ease-out;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out, color 0.3s ease-out;
     text-decoration: none;
     white-space: normal;
     word-break: break-word;
@@ -244,7 +244,7 @@
   align-items: center;
   position: relative;
   z-index: 1;
-  transition: all 0.3s ease-out;
+  transition: transform 0.3s ease-out, background-color 0.3s ease-out, border-color 0.3s ease-out;
 }
 
 .icon-style-2 .circle:after {
@@ -283,7 +283,7 @@
 			z-index:1;
 			width:100%;
 			color: #003768;
-			transition: all 0.5s ease;
+			transition: color 0.5s ease;
 
 		}
 

@@ -44,11 +44,7 @@
                     {
                         <div class="block-achievements__preheading">@preheading</div>
                     }
-                    @if (!string.IsNullOrEmpty(heading) && order == 0)
-                    {
-                        <h1 class="block-achievements__heading">@heading</h1>
-                    }
-                    else if (!string.IsNullOrEmpty(heading))
+                    @if (!string.IsNullOrEmpty(heading))
                     {
                         <h2 class="block-achievements__heading">@heading</h2>
                     }

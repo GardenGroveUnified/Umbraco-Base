@@ -28,21 +28,33 @@
             <div class="home-quicklinks__grid">
                 @foreach (var link in links)
                 {
-                    var url = link?.Link?.Url ?? "#";
+                    var url = link?.Link?.Url;
+                    // A quick link with no URL is a content mistake; skip it rather
+                    // than render a dead href="#" that jumps to the top of the page.
+                    if (string.IsNullOrEmpty(url)) { continue; }
+
                     var target = link?.Link?.Target ?? "_self";
+                    var label = link?.Label;
+                    // When the label is empty only the icon shows, so the link needs
+                    // an accessible name from somewhere.
+                    var accessibleName = !string.IsNullOrWhiteSpace(label) ? label : link?.Link?.Name;
 
                     <a href="@url" target="@target" class="home-quicklinks__item"
                     @if (target != "_self")
                     {
                         <text>rel="noopener"</text>
+                    }
+                    @if (string.IsNullOrWhiteSpace(label) && !string.IsNullOrWhiteSpace(accessibleName))
+                    {
+                        <text>aria-label="@accessibleName"</text>
                     }>
                         <span class="home-quicklinks__icon">
                             @if (!string.IsNullOrEmpty(link?.Icon))
                             {
-                                <i class="@link.Icon"></i>
+                                <i class="@link.Icon" aria-hidden="true"></i>
                             }
                         </span>
-                        <span class="home-quicklinks__label">@link?.Label</span>
+                        <span class="home-quicklinks__label">@label</span>
                     </a>
                 }
             </div>

@@ -8,10 +8,8 @@
 
     var title = Model.Value<string>("title");
     if (string.IsNullOrWhiteSpace(title)) { title = Model.Name; }
-    ViewBag.Title = $"{title} | GGUSD News";
 
     var intro = Model.Value<string>("introduction");
-    if (!string.IsNullOrWhiteSpace(intro)) { ViewBag.MetaDescription = intro; }
 
     var banner = Model.Value<MediaWithCrops>("bannerImage");
     var bannerUrl = banner?.GetCropUrl(1200, 500);

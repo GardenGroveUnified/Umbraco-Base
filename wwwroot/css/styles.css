@@ -413,6 +413,12 @@ header .navbar{
     .animate-slideup{
         animation: none !important;
     }
+    /* AOS starts elements at opacity:0 and only reveals them via a
+       transition; with the transition gone they must show immediately. */
+    [data-aos]{
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }
 
 .navbar-nav:not(.navbar-sm) {

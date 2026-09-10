@@ -3,11 +3,6 @@
 @inherits UmbracoViewPage
 @{
 	Layout = "Master.cshtml";
-	// Try to get the 'title' field, and if it's not available, use 'pageName'
-    var title = Model.Value<string>("pageTitle") ?? Model.Name;
-
-    // Set the ViewBag title with the fallback and the appended string
-    ViewBag.Title = $"{title}";
 
     var socialLinks = Model.Value<IEnumerable<SocialLink>>("socialLinks");
 }

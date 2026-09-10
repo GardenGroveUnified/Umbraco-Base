@@ -327,7 +327,7 @@
         border-radius: 10px;
         overflow: hidden;
         background: #000;
-        transition: all 0.3s ease-in-out;
+        transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
         margin: auto;
     }
 
@@ -357,7 +357,7 @@
         border-radius: 10px;
         overflow: hidden;
         background: #000;
-        transition: all 0.3s ease-in-out;
+        transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
         margin: auto;
     }
 
@@ -524,7 +524,7 @@
   height: 150px;
   display: block;
   margin:10px;
-  transition: all .2s ease-out;
+  transition: transform .2s ease-out, box-shadow .2s ease-out;
   background:#00cc00;
   border-radius: 5px;
   img{

@@ -76,11 +76,7 @@
                             {
                                 <div class="pre-head @(headerCenterTextClass)">@content?.Preheading</div>
                             }
-                            @if (content?.Heading != "" && order == 0)
-                            {
-                                <h1 class="head mb-4 display-4 @(headerCenterTextClass)">@content?.Heading</h1>
-                            }
-                            @if (content?.Heading != "" && order != 0)
+                            @if (content?.Heading != "")
                             {
                                 <h2 class="head mb-4 display-4 @(headerCenterTextClass)">@content?.Heading</h2>
                             }

@@ -67,11 +67,7 @@
                 <div class="home-section-title">
                     <div class="home-section-title__label">
                         <span class="home-section-title__bar"></span>
-                        @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
-                        {
-                            <h1 class="head display-6 bold mb-0">@content.Heading</h1>
-                        }
-                        else if (!string.IsNullOrEmpty(content?.Heading))
+                        @if (!string.IsNullOrEmpty(content?.Heading))
                         {
                             <h2 class="head display-6 bold mb-0">@content.Heading</h2>
                         }

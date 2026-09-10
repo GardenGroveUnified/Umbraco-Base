@@ -31,7 +31,7 @@
     var gapPx = noGap ? 0 : (settings?.GutterSize > 0 ? settings.GutterSize : 8);
     var allowZoom = settings?.DisableImageZoom != true;
     var media = content?.Media?.Where(m => m != null).ToList();
-    var galleryId = "pswp" + new Random().Next(100000);
+    var galleryId = "pswp-" + Model.Content.Key.ToString("N");
 }
 @if (media != null && media.Any())
 {
@@ -48,41 +48,39 @@
                     {
                         <div class="pre-head">@content.Preheading</div>
                     }
-                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
-                    {
-                        <h1 class="head display-5 bold">@content.Heading</h1>
-                    }
-                    else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                    @if (!string.IsNullOrEmpty(content?.Heading))
                     {
                         <h2 class="head display-6 bold">@content.Heading</h2>
                     }
                     @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
                     {
-                        <p>@content.Text</p>
+                        <div class="block-photo-swiper__text">@content.Text</div>
                     }
                 </div>
             }
 
             <div class="d-grid grid-@group photo-swiper" id="@galleryId" style="gap: @(gapPx.ToString(System.Globalization.CultureInfo.InvariantCulture))px;">
                 @{ var index = 0; }
+                @{ var thumbSize = 600; }
                 @foreach (var image in media)
                 {
-                    var thumbUrl = image.GetCropUrl(600, 600);
+                    var thumbUrl = image.GetCropUrl(thumbSize, thumbSize);
                     var fullUrl = image.Url();
-                    var width = image.Content.Value<int>("umbracoWidth");
-                    var height = image.Content.Value<int>("umbracoHeight");
+                    // Full-image dimensions, for the PhotoSwipe lightbox only.
+                    var fullWidth = image.Content.Value<int>("umbracoWidth");
+                    var fullHeight = image.Content.Value<int>("umbracoHeight");
                     <div class="ratio ratio-1x1 overflow-hidden">
                         @if (allowZoom)
                         {
                             <a href="@fullUrl" class="photo-swiper__item" data-index="@index"
-                               data-width="@(width > 0 ? width : 1600)" data-height="@(height > 0 ? height : 1200)"
+                               data-width="@(fullWidth > 0 ? fullWidth : 1600)" data-height="@(fullHeight > 0 ? fullHeight : 1200)"
                                data-caption="@image.Name">
-                                <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                                <img src="@thumbUrl" class="w-100 h-100" width="@thumbSize" height="@thumbSize" loading="lazy" decoding="async" style="object-fit: cover;" alt="@image.Name" />
                             </a>
                         }
                         else
                         {
-                            <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                            <img src="@thumbUrl" class="w-100 h-100" width="@thumbSize" height="@thumbSize" loading="lazy" decoding="async" style="object-fit: cover;" alt="@image.Name" />
                         }
                     </div>
                     index++;

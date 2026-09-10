@@ -80,14 +80,7 @@
                     }
                     @if (!string.IsNullOrEmpty(heading))
                     {
-                        @if (order == 0)
-                        {
-                            <h1 class="head display-5 bold">@heading</h1>
-                        }
-                        else
-                        {
-                            <h2 class="head display-6 bold">@heading</h2>
-                        }
+                        <h2 class="head display-6 bold">@heading</h2>
                     }
                     @if (!string.IsNullOrEmpty(text?.ToString()))
                     {
@@ -107,12 +100,21 @@
                     var body  = card.Value<IHtmlEncodedString>("text");
                     var link  = card.Value<Link>("link");
                     var hasLink = !string.IsNullOrEmpty(link?.Url);
+                    var linkTarget = link?.Target ?? "_self";
+                    // The stretched link has no text of its own, so it needs an
+                    // aria-label. Prefer the card title, then the link name.
+                    var linkLabel = !string.IsNullOrWhiteSpace(title) ? title
+                        : (!string.IsNullOrWhiteSpace(link?.Name) ? link!.Name : "Learn more");
 
                     <div class="@columnClass mb-4">
                         <div class="card-box__item h-100">
                             @if (hasLink)
                             {
-                                <a href="@link!.Url" target="@(link.Target ?? "_self")" class="stretched-link" aria-label="@title"></a>
+                                <a href="@link!.Url" target="@linkTarget" class="stretched-link" aria-label="@linkLabel"
+                                   @if (linkTarget != "_self")
+                                   {
+                                       <text>rel="noopener"</text>
+                                   }></a>
                             }
                             @if (!string.IsNullOrEmpty(icon))
                             {

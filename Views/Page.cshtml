@@ -6,8 +6,6 @@
 @{
     Layout = "Master.cshtml";
 
-    var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
-    ViewBag.Title = $"{title} | Santiago High School";
     var hasSidebar = Model is not null && Model.AncestorsOrSelf()
         .Any(p => p.Value<IEnumerable<BlockListItem>>("sidebarBlocks")?.Any() == true);
 }
@@ -43,33 +41,43 @@
         }
     }
 
-    @if (Model!.HeaderBlocks!.Any())
+    var headerBlocks = Model?.HeaderBlocks;
+    var hasHeaderBlocks = headerBlocks?.Any() == true;
+
+    @if (hasHeaderBlocks)
     {
         <div class="container-xxl">
             @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
             {
-                { "Blocks", Model.HeaderBlocks }
+                { "Blocks", headerBlocks }
             })
         </div>
     }
 
-    @if (Model?.PageTitle is not null && Model?.PageTitle != "")
+    @* A header block owns the page <h1> when present (Hero renders <h1> at order 0),
+       so the page-title <h1> only renders when there are no header blocks. It falls
+       back to the page name so every page has exactly one <h1>. *@
+    @if (!hasHeaderBlocks)
     {
+        var heading = string.IsNullOrWhiteSpace(Model?.PageTitle) ? Model?.Name : Model?.PageTitle;
         <div class="container">
-            <h1 class="mt-5 mb-3 text-blue">@Model!.PageTitle</h1>
+            <h1 class="mt-5 mb-3 text-blue">@heading</h1>
         </div>
     }
+
+    var blocks = Model?.Blocks;
+    var hasBlocks = blocks?.Any() == true;
 
     @if (hasSidebar)
 	{
 		<div class="container">
 			<div class="row">
-                @if (Model!.Blocks!.Any())
+                @if (hasBlocks)
                 {
                     <div class="col-12 col-md">
                         @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
                         {
-                            { "Blocks", Model.Blocks }
+                            { "Blocks", blocks }
                         })
                     </div>
                 }
@@ -84,12 +92,12 @@
 	} 
 	else
 	{
-        @if (Model!.Blocks!.Any())
+        @if (hasBlocks)
         {
             <div class="container">
                 @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
                 {
-                    { "Blocks", Model.Blocks }
+                    { "Blocks", blocks }
                 })
             </div>
         }

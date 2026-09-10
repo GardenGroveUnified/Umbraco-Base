@@ -19,7 +19,8 @@
     var message = content.Value<IHtmlEncodedString>("message");
     var link    = content.Value<Link>("link");
     var stamp   = content.Value<MediaWithCrops>("stampImage");
-    var stampUrl = stamp?.GetCropUrl(256, 256) ?? stamp?.Url();
+    var stampSize = 256;
+    var stampUrl = stamp?.GetCropUrl(stampSize, stampSize) ?? stamp?.Url();
     var stampAlt = stamp?.Content?.Value<string>("alternateText") ?? "";
 
     if (badge == null || badge.Trim().Length == 0) { badge = "NOTICE"; }
@@ -42,11 +43,11 @@
             }
             @if (hasMessage)
             {
-                <span class="notice-banner__message">@message</span>
+                <div class="notice-banner__message">@message</div>
             }
             @if (!string.IsNullOrEmpty(stampUrl))
             {
-                <img class="notice-banner__stamp" src="@stampUrl" alt="@stampAlt" loading="lazy" />
+                <img class="notice-banner__stamp" src="@stampUrl" alt="@stampAlt" width="@stampSize" height="@stampSize" loading="lazy" decoding="async" />
             }
             <span class="notice-banner__spacer"></span>
             @if (hasLink)

@@ -444,7 +444,7 @@
     border: none;
     cursor: pointer;
     font-size: 20px;
-    transition: all 0.5s ease-in-out;
+    transition: transform 0.5s ease-in-out, background-color 0.5s ease-in-out, color 0.5s ease-in-out;
     height: 100%;
     width: auto;
 }

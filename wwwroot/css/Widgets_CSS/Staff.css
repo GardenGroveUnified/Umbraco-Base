@@ -140,7 +140,10 @@
 .staff-grid__card--clickable:focus-visible{
     box-shadow: 0 6px 18px rgba(74, 31, 122, .22);
     transform: translateY(-2px);
-    outline: none;
+}
+.staff-grid__card--clickable:focus-visible{
+    outline: 3px solid var(--shs-gold, #c9a227);
+    outline-offset: 2px;
 }
 .staff-grid__biolink{
     display: inline-block;

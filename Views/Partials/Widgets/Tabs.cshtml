@@ -19,8 +19,8 @@
         ? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
         : string.Empty;
 
-    var random = new Random();
-    var tabsId = "tabs" + random.Next(1000);
+    // Stable per-block id so two tab widgets on one page never collide.
+    var tabsId = "tabs-" + Model.Content.Key.ToString("N");
 }
 
 @if (content?.TabList != null && content.TabList.Any())

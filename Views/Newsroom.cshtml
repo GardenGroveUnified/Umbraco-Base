@@ -7,7 +7,6 @@
 
     var pageTitle = Model.Value<string>("pageTitle");
     if (string.IsNullOrWhiteSpace(pageTitle)) { pageTitle = Model.Name; }
-    ViewBag.Title = $"{pageTitle} | GGUSD News";
 
     var intro = Model.Value<string>("introduction");
 

@@ -68,11 +68,7 @@
                     {
                         <div class="pre-head">@content.Preheading</div>
                     }
-                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
-                    {
-                        <h1 class="head display-5 bold">@content.Heading</h1>
-                    }
-                    else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                    @if (!string.IsNullOrEmpty(content?.Heading))
                     {
                         <h2 class="head display-6 bold">@content.Heading</h2>
                     }

@@ -31,7 +31,7 @@
     var simpleGrid = settings?.SimpleGrid == true;
     var allowZoom = settings?.DisableImageZoom != true;
     var media = content?.Media?.Where(m => m != null).ToList();
-    var galleryGroupId = "gallery" + new Random().Next(100000);
+    var galleryGroupId = "gallery-" + Model.Content.Key.ToString("N");
 }
 
 @if (media != null && media.Any())
@@ -49,17 +49,13 @@
                     {
                         <div class="pre-head">@content.Preheading</div>
                     }
-                    @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
-                    {
-                        <h1 class="head display-5 bold">@content.Heading</h1>
-                    }
-                    else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+                    @if (!string.IsNullOrEmpty(content?.Heading))
                     {
                         <h2 class="head display-6 bold">@content.Heading</h2>
                     }
                     @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
                     {
-                        <p>@content.Text</p>
+                        <div class="block-gallery__text">@content.Text</div>
                     }
                 </div>
             }

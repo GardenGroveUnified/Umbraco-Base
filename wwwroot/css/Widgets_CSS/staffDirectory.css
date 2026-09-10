@@ -22,7 +22,6 @@
     font-size: 0.95rem;
 }
 .staff-directory__search input:focus{
-    outline: none;
     border-color: var(--shs-purple, #4a1f7a);
     box-shadow: 0 0 0 3px var(--shs-purple-pale, #f3edfa);
 }

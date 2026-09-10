@@ -37,29 +37,33 @@
 
 @if (content.AccordionList != null)
 {
-    var random = new Random();
-    var accordionId = "accordion" + random.Next(1000).ToString();
+    // Stable per-block id so two accordions on one page never collide.
+    var accordionId = "accordion-" + Model.Content.Key.ToString("N");
+    var sectionHeadingId = accordionId + "-heading";
+    var hasHeading = !string.IsNullOrEmpty(content?.Heading);
     var itemCount = 0;
 
     <section    class="section block-accordion @classNames @containerWidthClass @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" style="@backgroundColorStyle"
-                role="region"
-                aria-labelledby="@settings!.AnchorId"
+                @if (hasHeading)
+                {
+                    <text>role="region" aria-labelledby="@sectionHeadingId"</text>
+                }
                 @if (!string.IsNullOrEmpty(settings?.AnchorId)){<text>id="@settings.AnchorId"</text>}
     >
             <div class="container">
-            @if (content.Preheading != "" || content.Heading != "" || content?.Text?.ToString() != "")
+            @if (!string.IsNullOrEmpty(content?.Preheading) || hasHeading || !string.IsNullOrEmpty(content?.Text?.ToString()))
             {
                 <div class="@(headerCenterTextClass)">
                     <div class="mb-4">
-                    @if (content?.Preheading != "")
+                    @if (!string.IsNullOrEmpty(content?.Preheading))
                     {
                         <div class="pre-head">@content?.Preheading</div>
                     }
-                    @if (content?.Heading != "")
+                    @if (hasHeading)
                     {
-                        <h2 class="head mb-4 display-3 bold">@content?.Heading</h2>
+                        <h2 id="@sectionHeadingId" class="head mb-4 display-3 bold">@content?.Heading</h2>
                     }
-                    @if (content?.Text?.ToString() != "")
+                    @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
                     {
                         <div class="block__header-text">
                             @content?.Text
@@ -104,7 +108,7 @@
             }
             else if(blockStyle == "Style 2")
             {
-                <div data-accordion-close-siblings="true" data-accordion-css-init="" role="listbox" class="accordion-css" id="@(accordionId)" aria-labelledby="heading-@(accordionId)-@(itemCount)" data-bs-parent="#@(accordionId)">
+                <div data-accordion-close-siblings="true" data-accordion-css-init="" class="accordion-css" id="@(accordionId)">
                     <ul class="accordion-css__list">
                          @foreach (var item in content!.AccordionList)
                         {
@@ -122,7 +126,7 @@
                                         <path d="M371 1199C371 1205.63 365.627 1211 359 1211H13C6.37258 1211 1 1205.63 1 1199V13C1 6.37261 6.37258 1 13 1H116C118.761 1 121 3.23858 121 6V6C121 8.76142 123.239 11 126 11H359C365.627 11 371 16.3726 371 23V1199Z" fill="#123524" stroke="#fff" stroke-width="0.125em" vector-effect="non-scaling-stroke"></path>
                                     </svg>
                                 </div>
-                                <div class="accordion-css__item-bottom" id="@panelId">
+                                <div class="accordion-css__item-bottom" id="@panelId"@if (!isExpanded){<text> inert</text>}>
                                     <div class="accordion-css__item-bottom-wrap">
                                         <div class="accordion-css__item-bottom-content">
                                             <div class="accordion-css__card">
@@ -144,33 +148,7 @@
                         }
                     </ul>
                 </div>
-                <script>
-                    function initAccordionCSS() {
-                    document.querySelectorAll('[data-accordion-css-init]').forEach((accordion) => {
-                        const closeSiblings = accordion.getAttribute('data-accordion-close-siblings') === 'true';
-
-                        accordion.addEventListener('click', (event) => {
-                        const toggle = event.target.closest('[data-accordion-toggle]');
-                        if (!toggle) return; // Exit if the clicked element is not a toggle
-
-                        const singleAccordion = toggle.closest('[data-accordion-status]');
-                        if (!singleAccordion) return; // Exit if no accordion container is found
-
-                        const isActive = singleAccordion.getAttribute('data-accordion-status') === 'active';
-                        singleAccordion.setAttribute('data-accordion-status', isActive ? 'not-active' : 'active');
-                        
-                        // When [data-accordion-close-siblings="true"]
-                        if (closeSiblings && !isActive) {
-                            accordion.querySelectorAll('[data-accordion-status="active"]').forEach((sibling) => {
-                            if (sibling !== singleAccordion) sibling.setAttribute('data-accordion-status', 'not-active');
-                            });
-                        }
-                        });
-                    });
-                    }
-
-                    initAccordionCSS();
-                </script>
+                @* Toggle behaviour lives in /js/accordion.js (loaded once from Master.cshtml). *@
             }
         </div>
     </section>

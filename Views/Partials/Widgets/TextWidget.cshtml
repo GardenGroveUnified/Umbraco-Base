@@ -65,7 +65,7 @@
                 @if (hasPhoto)
                 {
                     <div class="@photoColClass @photoOrderClass">
-                        <img src="@photoUrl" class="img-fluid lazyload rounded @(stacked ? "block-text__photo--stacked" : "")" alt="@content?.Heading" />
+                        <img src="@photoUrl" class="img-fluid rounded @(stacked ? "block-text__photo--stacked" : "")" width="700" height="700" loading="lazy" decoding="async" alt="@content?.Heading" />
                     </div>
                 }
                 <div class="@textColClass @(hasPhoto ? textOrderClass : "")">

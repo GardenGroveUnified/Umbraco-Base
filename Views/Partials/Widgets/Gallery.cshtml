@@ -71,12 +71,12 @@
                             @if (allowZoom)
                             {
                                 <a href="@fullUrl" data-fancybox="@galleryGroupId" data-caption="@image.Name" target="_blank" rel="noopener">
-                                    <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                                    <img src="@thumbUrl" class="w-100 h-100" width="600" height="600" loading="lazy" decoding="async" style="object-fit: cover;" alt="@image.Name" />
                                 </a>
                             }
                             else
                             {
-                                <img src="@thumbUrl" class="w-100 h-100 lazyload" style="object-fit: cover;" alt="@image.Name" />
+                                <img src="@thumbUrl" class="w-100 h-100" width="600" height="600" loading="lazy" decoding="async" style="object-fit: cover;" alt="@image.Name" />
                             }
                         </div>
                     }
@@ -96,12 +96,12 @@
                                     @if (allowZoom)
                                     {
                                         <a href="@fullUrl" data-fancybox="@galleryGroupId" data-caption="@image.Name" target="_blank" rel="noopener">
-                                            <img src="@thumbUrl" class="lazyload" alt="@image.Name" />
+                                            <img src="@thumbUrl" width="800" height="800" loading="lazy" decoding="async" alt="@image.Name" />
                                         </a>
                                     }
                                     else
                                     {
-                                        <img src="@thumbUrl" class="lazyload" alt="@image.Name" />
+                                        <img src="@thumbUrl" width="800" height="800" loading="lazy" decoding="async" alt="@image.Name" />
                                     }
                                 </figure>
                             </div>

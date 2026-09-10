@@ -321,8 +321,8 @@
 
                     @if (topBarNavItems?.Any() == true)
                     {
-                        <h5 class="d-lg-none d-block w-100 m-2 ms-0">Top Bar Links</h5>
-                        <div class="align-items-center d-lg-none d-block">
+                        <li class="d-lg-none d-block w-100 m-2 ms-0">
+                            <h5 class="w-100 m-0 mb-2">Top Bar Links</h5>
                             <ul class="m-0 p-0 justify-content-center list-unstyled" role="list">
                                 @foreach (var link in topBarNavItems)
                                 {
@@ -335,7 +335,7 @@
                                     </li>
                                 }
                             </ul>
-                        </div>
+                        </li>
                     }
                 </ul>
                 <!-- /NAVIGATION -->

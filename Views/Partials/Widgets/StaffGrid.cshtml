@@ -96,7 +96,7 @@
                             <div class="staff-grid-cavaliers__photo mx-auto mb-3">
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
-                                    <img src="@photoUrl" class="lazyload" alt="@staff?.Name" />
+                                    <img src="@photoUrl" width="600" height="600" loading="lazy" decoding="async" alt="@staff?.Name" />
                                 }
                                 else
                                 {
@@ -166,7 +166,7 @@
                             }>
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
-                                    <img src="@photoUrl" class="img-fluid lazyload rounded mb-2" alt="@staff?.Name" />
+                                    <img src="@photoUrl" class="img-fluid rounded mb-2" width="300" height="300" loading="lazy" decoding="async" alt="@staff?.Name" />
                                 }
                                 else
                                 {
@@ -208,7 +208,7 @@
                                 <div class="staff-grid__dialog-body">
                                     @if (!string.IsNullOrEmpty(photoUrl))
                                     {
-                                        <img src="@photoUrl" class="staff-grid__dialog-photo" alt="@staff?.Name" />
+                                        <img src="@photoUrl" class="staff-grid__dialog-photo" width="300" height="300" loading="lazy" decoding="async" alt="@staff?.Name" />
                                     }
                                     @if (!string.IsNullOrEmpty(staff?.Name))
                                     {

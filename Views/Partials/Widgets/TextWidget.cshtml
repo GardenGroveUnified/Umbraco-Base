@@ -31,7 +31,9 @@
             containerWidthClass = "container-fluid";
             break;
     }
-    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
+    var isDarkBackground = !string.IsNullOrWhiteSpace(settings?.BackgroundColor);
     var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : string.Empty;
@@ -40,36 +42,41 @@
     : string.Empty;
     var photoUrl = content?.Photo?.GetCropUrl(700, 700);
     var hasPhoto = !string.IsNullOrEmpty(photoUrl);
-    var textColClass = hasPhoto ? "col-12 col-md-7" : "col";
+    // Block Style toggles how the photo sits relative to the text:
+    //   "Style 2" -> photo to the right of the text (default is left)
+    //   "Style 3" -> photo stacked below the text, both full width
+    var imageOnRight = settings?.BlockStyle == "Style 2";
+    var stacked = settings?.BlockStyle == "Style 3";
+    var rowAlignClass = stacked ? "" : "align-items-center";
+    var textColClass = !hasPhoto ? "col" : (stacked ? "col-12" : "col-12 col-md-7");
+    var photoColClass = stacked ? "col-12 mt-4 text-center" : "col-12 col-md-5 mb-3 mb-md-0";
+    var photoOrderClass = stacked ? "order-2" : (imageOnRight ? "order-2" : "order-1");
+    var textOrderClass = stacked ? "order-1" : (imageOnRight ? "order-1" : "order-2");
 }
 
 
-<section class="section block-text aos-init aos-animate @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" @if (!string.IsNullOrEmpty(settings?.AnchorId))
+<section class="section block-text aos-init aos-animate @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass) @(isDarkBackground ? "block-text--filled" : "")" style="@backgroundColorStyle" @if (!string.IsNullOrEmpty(settings?.AnchorId))
 {
     <text> id="@settings?.AnchorId" </text>
 }>
     <div class="block-text @classNames">
         <div class="@containerWidthClass">
-            <div class="row align-items-center gutters-sm">
+            <div class="row @rowAlignClass gutters-sm">
                 @if (hasPhoto)
                 {
-                    <div class="col-12 col-md-5 mb-3 mb-md-0">
-                        <img src="@photoUrl" class="img-fluid lazyload rounded" alt="@content?.Heading" />
+                    <div class="@photoColClass @photoOrderClass">
+                        <img src="@photoUrl" class="img-fluid rounded @(stacked ? "block-text__photo--stacked" : "")" width="700" height="700" loading="lazy" decoding="async" alt="@content?.Heading" />
                     </div>
                 }
-                <div class="@textColClass">
+                <div class="@textColClass @(hasPhoto ? textOrderClass : "")">
                     @if (content?.Preheading != "" || content.Heading != "" || content?.Text?.ToString() != "")
                     {
-                        <div class="@verticalSpacingClass">
+                        <div>
                             @if (content?.Preheading != "")
                             {
                                 <div class="pre-head @(headerCenterTextClass)">@content?.Preheading</div>
                             }
-                            @if (content?.Heading != "" && order == 0)
-                            {
-                                <h1 class="head mb-4 display-4 @(headerCenterTextClass)">@content?.Heading</h1>
-                            }
-                            @if (content?.Heading != "" && order != 0)
+                            @if (content?.Heading != "")
                             {
                                 <h2 class="head mb-4 display-4 @(headerCenterTextClass)">@content?.Heading</h2>
                             }

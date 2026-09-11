@@ -1,0 +1,54 @@
+@inherits UmbracoViewPage<BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks;
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.Views
+@{
+    var content = (ContentModels.AwardsWidget)Model.Content;
+    var settings = (ContentModels.AwardsWidgetSettings?)Model.Settings;
+    if (settings?.BlockVisibility == false) { return; }
+
+    var awards = content?.AwardsList?
+        .Select(item => (ContentModels.AwardItem)item.Content)
+        .Where(a => a?.BlockVisibility != false)
+        .ToList() ?? new List<ContentModels.AwardItem>();
+
+    var useSlideshow = settings?.EnableSlideshow == true && awards.Count > 1;
+    var delay = settings?.SlideshowSpeed > 0 ? settings.SlideshowSpeed * 1000 : 6000;
+}
+
+@if (awards.Any())
+{
+    <div class="awards-widget"
+    @if (!string.IsNullOrEmpty(settings?.AnchorId))
+    {
+        <text>id="@settings.AnchorId"</text>
+    }>
+        @if (useSlideshow)
+        {
+            <div class="swiper-container awards-widget__swiper swiper-preloader"
+                 data-swiper='{
+                     "slidesPerView": 1,
+                     "spaceBetween": 0,
+                     "autoplay": { "delay": @delay, "disableOnInteraction": false },
+                     "loop": true,
+                     "pagination": { "type": "bullets" }
+                 }'>
+                <div class="swiper-wrapper">
+                    @foreach (var award in awards)
+                    {
+                        <div class="swiper-slide">
+                            @await Html.PartialAsync("~/Views/Partials/Widgets/AwardBar.cshtml", award)
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var award in awards)
+            {
+                @await Html.PartialAsync("~/Views/Partials/Widgets/AwardBar.cshtml", award)
+            }
+        }
+    </div>
+}

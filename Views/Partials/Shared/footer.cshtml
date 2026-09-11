@@ -2,7 +2,7 @@
 @inherits UmbracoViewPage
 
 @{
-    var date = DateTime.Now.Year;
+    var year = DateTime.Now.Year;
 }
 
 <footer id="footer" class="santiago-footer">
@@ -11,8 +11,7 @@
 
             <!-- LEFT SIDE -->
             <div class="col-12 col-lg-5 footer-left">
-                <div class="footer-brand">SANTIAGO</div>
-                <div class="footer-brand footer-brand-second">HIGH SCHOOL</div>
+                <h2 class="footer-brand">Santiago<span class="footer-brand-second">High School</span></h2>
 
                 <div class="footer-contact">
                     <a href="https://maps.google.com/?q=12342+Trask+Ave.,+Garden+Grove,+CA+92843"
@@ -33,9 +32,7 @@
             <!-- RIGHT SIDE -->
             <div class="col-12 col-lg-7 footer-right">
 
-                <div class="footer-heading">
-                    NON-DISCRIMINATION STATEMENT
-                </div>
+                <h3 class="footer-heading">Non-Discrimination Statement</h3>
 
                 <p>
                     Garden Grove Unified School District prohibits discrimination,
@@ -50,16 +47,14 @@
                     perceived characteristics.
                 </p>
 
-                <div class="footer-heading">
-                    CONTACT INFORMATION
-                </div>
+                <h3 class="footer-heading">Contact Information</h3>
 
                 <p>
                     Questions or complaints of alleged discrimination, harassment,
                     intimidation, bullying, and equity should be directed to the
-                    Assistant Superintendent of K-12 Educational Services Dr. Lorena
-                    Sanchez at
-                    <a href="mailto:llsanche@ggusd.us">llsanche@ggusd.us</a>
+                    Assistant Superintendent of K-12 Educational Services Tanya 
+                    Avina at
+                    <a href="mailto:tavina@ggusd.us">tavina@ggusd.us</a>
                     or
                     <a href="tel:+17146636143">(714) 663-6143</a>.
                     Title IX equity and compliance concerns should be directed to the
@@ -73,5 +68,7 @@
             </div>
 
         </div>
+
+        <p class="footer-copyright">&copy; @year Santiago High School</p>
     </div>
 </footer>

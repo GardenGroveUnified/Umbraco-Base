@@ -194,6 +194,81 @@
     }
 }
 
+/* --- Sports Grid widget: purple/gold card per sport --- */
+.sports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.sports-grid__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 18px 12px;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.sports-grid__card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
+    border-color: var(--shs-gold, #c9a227);
+}
+
+.sports-grid__card--nolink {
+    cursor: default;
+}
+
+.sports-grid__card--nolink:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: #eee;
+}
+
+.sports-grid__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--shs-purple, #4a1f7a);
+    border: 3px solid var(--shs-gold, #c9a227);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 10px;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.sports-grid__icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sports-grid__name {
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    font-size: 0.9rem;
+}
+
+/* --- Athletics Schedule widget: reuses .athletics-game* styling --- */
+.athletics-schedule-list {
+    background: #f7f7f7;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.athletics-featured-standalone {
+    padding: 24px 28px;
+    border-top: 1px solid #eee;
+}
+
 .athletics-clearance-cta {
     background: var(--shs-gold, #c9a227);
     padding: 16px 28px;

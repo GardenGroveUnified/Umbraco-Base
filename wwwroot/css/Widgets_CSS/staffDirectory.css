@@ -1,0 +1,323 @@
+/* ==========================================================================
+   Staff Directory widget - searchable / filterable staff list
+   ========================================================================== */
+.staff-directory__controls{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-bottom: 24px;
+}
+
+.staff-directory__search{
+    position: relative;
+    flex: 1 1 240px;
+    max-width: 360px;
+}
+.staff-directory__search input{
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 999px;
+    font-size: 0.95rem;
+}
+.staff-directory__search input:focus{
+    border-color: var(--shs-purple, #4a1f7a);
+    box-shadow: 0 0 0 3px var(--shs-purple-pale, #f3edfa);
+}
+
+.staff-directory__filters{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.staff-directory__filter{
+    border: 1px solid var(--shs-purple, #4a1f7a);
+    background: transparent;
+    color: var(--shs-purple, #4a1f7a);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease;
+}
+.staff-directory__filter:hover{
+    background: var(--shs-purple-pale, #f3edfa);
+}
+.staff-directory__filter.is-active{
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+}
+
+.staff-directory__card{
+    padding: 8px;
+}
+
+.staff-directory__photo{
+    width: 130px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--shs-purple-pale, #f3edfa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--shs-gold, #c9a227);
+}
+.staff-directory__photo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.staff-directory__initial{
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--shs-purple, #4a1f7a);
+}
+
+.staff-directory__name{
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    line-height: 1.25;
+}
+.staff-directory__title{
+    font-size: 0.9rem;
+    color: #555;
+}
+.staff-directory__dept{
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--shs-gold, #c9a227);
+    font-weight: 700;
+    margin-top: 2px;
+}
+.staff-directory__contact{
+    font-size: 0.85rem;
+}
+.staff-directory__contact a{
+    color: var(--shs-purple, #4a1f7a);
+    text-decoration: none;
+    word-break: break-word;
+}
+.staff-directory__contact a:hover{
+    text-decoration: underline;
+}
+
+.staff-directory__empty{
+    padding: 24px 0;
+    text-align: center;
+    color: #777;
+}
+
+/* Read bio link + popup dialog */
+.staff-directory__biolink{
+    display: inline-block;
+    margin-top: .5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    cursor: pointer;
+}
+.staff-directory__biolink:hover{
+    text-decoration: underline;
+}
+
+.staff-directory__dialog{
+    max-width: 520px;
+    width: calc(100% - 2rem);
+    border: 0;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+}
+.staff-directory__dialog::backdrop{
+    background: rgba(30, 12, 50, .55);
+}
+.staff-directory__dialog-close-form{
+    position: sticky;
+    top: 0;
+    margin: 0;
+    text-align: right;
+}
+.staff-directory__dialog-close{
+    border: 0;
+    background: none;
+    padding: .5rem .8rem;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: #666;
+    cursor: pointer;
+}
+.staff-directory__dialog-body{
+    padding: 0 1.6rem 1.8rem;
+    text-align: center;
+}
+.staff-directory__dialog-photo{
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: .75rem;
+}
+.staff-directory__dialog-name{
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    margin-bottom: .15rem;
+}
+.staff-directory__dialog-title{
+    margin-bottom: .5rem;
+    color: #666;
+    font-size: .9rem;
+}
+.staff-directory__dialog-body a{
+    color: var(--shs-purple, #4a1f7a);
+}
+.staff-directory__dialog-bio{
+    margin-top: 1rem;
+    text-align: left;
+    font-size: .95rem;
+    line-height: 1.55;
+}
+
+@media (max-width: 575.98px){
+    .staff-directory__photo{ width: 100px; }
+    .staff-directory__controls{ flex-direction: column; align-items: stretch; }
+    .staff-directory__search{ max-width: none; }
+}
+
+.staff-directory__print{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--shs-purple, #4a1f7a);
+    background: transparent;
+    color: var(--shs-purple, #4a1f7a);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.staff-directory__print:hover{
+    background: var(--shs-purple-pale, #f3edfa);
+}
+
+/* Print: drop interactive chrome, keep one clean staff list */
+@media print{
+    /* core.css sets @page margin: 0 -6cm, which stretches the print canvas
+       past the paper edge and garbles every printed page. Override it. */
+    @page{
+        size: letter portrait;
+        margin: 0.508cm;
+    }
+    @page :first{
+        margin-top: 0cm;
+    }
+    /* styles.css sets #wrapper min-height:100vh, which fills one whole sheet on
+       its own. Any trailing space below the list then spills to a blank page 2.
+       Drop the min-height and the trailing padding/margins. */
+    #wrapper{
+        min-height: 0 !important;
+    }
+    .block-staff-directory{
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    .staff-directory__grid.row{
+        margin-bottom: 0 !important;
+    }
+    .staff-directory__controls,
+    .staff-directory__biolink,
+    .staff-directory__dialog{
+        display: none !important;
+    }
+    /* core.css also floats .row > * and sizes it by its col-* class in
+       print; drop both and lay the list out as two paper columns. */
+    .staff-directory__grid.row{
+        display: block !important;
+        column-count: 3;
+        column-gap: 24px;
+    }
+    .staff-directory__item{
+        display: block !important;
+        float: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        border-bottom: 1px solid #ccc;
+        padding: 8px 0;
+        margin-bottom: 0 !important;
+    }
+    .staff-directory__item:last-child{
+        border-bottom: 0;
+    }
+    .staff-directory__letterhead{
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+    }
+    .staff-directory__letterhead-logo{
+        width: 56px;
+        height: 56px;
+    }
+    .staff-directory__letterhead-name{
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    .staff-directory__letterhead-address{
+        font-size: 0.85rem;
+        color: #333;
+    }
+    /* keep the search/filter result: items the widget script hid must stay hidden */
+    .staff-directory__item[hidden]{
+        display: none !important;
+    }
+    /* Circles (border-radius + overflow:hidden) can rasterise as corrupted
+       blocks in Chromium's print pipeline; print a plain square instead. */
+    .staff-directory__photo{
+        width: 85px;
+        height: 85px;
+        aspect-ratio: unset;
+        border-radius: 0;
+        border: 1px solid #999;
+        flex: 0 0 auto;
+        margin: 0 !important;
+    }
+    .staff-directory__initial{
+        font-size: 1.9rem;
+    }
+    .staff-directory__name{
+        font-size: 0.9rem;
+    }
+    .staff-directory__title{
+        font-size: 0.78rem;
+    }
+    .staff-directory__dept{
+        font-size: 0.66rem;
+    }
+    .staff-directory__contact{
+        font-size: 0.72rem;
+        word-break: break-word;
+    }
+    .staff-directory__card{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        text-align: center !important;
+        padding: 0;
+    }
+    .staff-directory__contact a{
+        color: #000;
+        text-decoration: none;
+    }
+}

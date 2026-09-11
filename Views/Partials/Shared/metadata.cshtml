@@ -1,3 +1,70 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Routing
+@using Umbraco.Extensions
+@inject IPublishedUrlProvider PublishedUrlProvider
 
-<title>@ViewData["Title"]</title>
+@{
+    const string siteName = "Santiago High School";
+
+    var isRoot = Model is not null && Model.Level <= 1;
+
+    var titleText = Model?.Value<string>("pageTitle");
+    if (string.IsNullOrWhiteSpace(titleText)) { titleText = Model?.Value<string>("title"); }
+    if (string.IsNullOrWhiteSpace(titleText)) { titleText = Model?.Name; }
+    if (string.IsNullOrWhiteSpace(titleText)) { titleText = siteName; }
+    var fullTitle = isRoot || titleText == siteName ? siteName : $"{titleText} | {siteName}";
+
+    var description = Model?.Value<string>("metaDescription");
+    if (string.IsNullOrWhiteSpace(description)) { description = Model?.Value<string>("introduction"); }
+    if (!string.IsNullOrWhiteSpace(description) && description.Length > 160)
+    {
+        description = description.Substring(0, 157).TrimEnd() + "…";
+    }
+    var hasDescription = !string.IsNullOrWhiteSpace(description);
+
+    var canonical = Model?.Url(PublishedUrlProvider, mode: UrlMode.Absolute);
+
+    var origin = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    var share = Model?.Value<MediaWithCrops>("socialShareImage")
+                ?? Model?.Root()?.Value<MediaWithCrops>("socialShareImage");
+    var shareUrl = share is null ? null : origin + share.GetCropUrl(1200, 630);
+    var twitterCard = shareUrl is null ? "summary" : "summary_large_image";
+}
+
+<title>@fullTitle</title>
+@if (hasDescription)
+{
+    <meta name="description" content="@description" />
+}
+@if (!string.IsNullOrWhiteSpace(canonical))
+{
+    <link rel="canonical" href="@canonical" />
+}
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="@siteName" />
+<meta property="og:title" content="@fullTitle" />
+@if (hasDescription)
+{
+    <meta property="og:description" content="@description" />
+}
+@if (!string.IsNullOrWhiteSpace(canonical))
+{
+    <meta property="og:url" content="@canonical" />
+}
+@if (shareUrl is not null)
+{
+    <meta property="og:image" content="@shareUrl" />
+}
+
+<meta name="twitter:card" content="@twitterCard" />
+<meta name="twitter:title" content="@fullTitle" />
+@if (hasDescription)
+{
+    <meta name="twitter:description" content="@description" />
+}
+@if (shareUrl is not null)
+{
+    <meta name="twitter:image" content="@shareUrl" />
+}

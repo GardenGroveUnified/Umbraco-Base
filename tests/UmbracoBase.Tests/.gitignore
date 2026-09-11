@@ -1,0 +1,2 @@
+# Umbraco package build targets copy plugin content into the project dir. Not ours.
+App_Plugins/

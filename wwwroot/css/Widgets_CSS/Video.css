@@ -23,7 +23,7 @@
         border-radius: 10px;
         overflow: hidden;
         background: #000;
-        transition: all 0.3s ease-in-out;
+        transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
         margin: auto;
     }
 

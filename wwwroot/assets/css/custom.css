@@ -371,8 +371,9 @@ p {
     }
 }
 
-/*first block on the page*/
-.main-content .section:first-child:not(.block-slider, .block-heading) {
+/*first block on the page - direct child only, so sections nested in a
+  Block Line column keep their own padding */
+.main-content > .section:first-child:not(.block-slider, .block-heading) {
     padding: 60px 0 32px 0 !important;
 }
 

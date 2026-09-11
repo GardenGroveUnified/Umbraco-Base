@@ -327,7 +327,7 @@
         border-radius: 10px;
         overflow: hidden;
         background: #000;
-        transition: all 0.3s ease-in-out;
+        transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
         margin: auto;
     }
 
@@ -357,7 +357,7 @@
         border-radius: 10px;
         overflow: hidden;
         background: #000;
-        transition: all 0.3s ease-in-out;
+        transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
         margin: auto;
     }
 
@@ -524,7 +524,7 @@
   height: 150px;
   display: block;
   margin:10px;
-  transition: all .2s ease-out;
+  transition: transform .2s ease-out, box-shadow .2s ease-out;
   background:#00cc00;
   border-radius: 5px;
   img{
@@ -550,3 +550,157 @@
 }
 
 /* Vertical Marquee CSS end */
+
+/* Custom Code widget - raw HTML embed (e.g. an <iframe> calendar).
+   Make pasted embeds fit any screen instead of overflowing. */
+.block-custom-code__embed{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.block-custom-code__embed iframe{
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border: 0;
+}
+/* month-grid calendars need more vertical room once the screen is narrow */
+@media (max-width: 768px){
+    .block-custom-code__embed iframe{
+        min-height: 600px;
+    }
+}
+@media (max-width: 480px){
+    .block-custom-code__embed iframe{
+        min-height: 680px;
+    }
+}
+
+/* Opt-in: brand-purple backdrop for an embed (add "embed-purple" to the
+   Custom Code block's Classnames). The calendar's own white area can't be
+   recoloured (cross-origin iframe) - this frames it in SHS purple and makes
+   the iframe transparent in case the widget itself renders see-through. */
+.block-custom-code.embed-purple{
+    background: var(--shs-purple, #4a1f7a);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+.block-custom-code.embed-purple .block-custom-code__embed{
+    background: transparent;
+    border-top: 4px solid var(--shs-gold, #c9a227);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.block-custom-code.embed-purple .block-custom-code__embed iframe{
+    background: transparent;
+}
+.block-custom-code.embed-purple .head,
+.block-custom-code.embed-purple .pre-head,
+.block-custom-code.embed-purple .container > div{
+    color: #fff;
+}
+
+/* Cheer page game schedule - brand-styled tables inside a Custom Code block.
+   Add "cheer-schedule" to the block's Classnames. Source data is the varsity
+   football schedule the cheer team follows. */
+.block-custom-code.cheer-schedule .block-custom-code__embed{
+    display: grid;
+    gap: 2rem;
+}
+.cheer-sched{
+    margin: 0;
+}
+.cheer-sched__scroll{
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--shs-purple-pale, #f3edfa);
+    border-top: 3px solid var(--shs-gold, #c9a227);
+    border-radius: 10px;
+}
+.cheer-sched figcaption{
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--shs-purple, #4a1f7a);
+    margin-bottom: 0.6rem;
+}
+.cheer-sched table{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-size: 0.95rem;
+}
+.cheer-sched thead th{
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    font-weight: 700;
+    text-align: left;
+    padding: 0.65rem 0.9rem;
+    white-space: nowrap;
+}
+.cheer-sched tbody th,
+.cheer-sched tbody td{
+    padding: 0.6rem 0.9rem;
+    border-top: 1px solid var(--shs-purple-pale, #f3edfa);
+    text-align: left;
+    vertical-align: top;
+}
+.cheer-sched tbody th{
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    white-space: nowrap;
+}
+.cheer-sched tbody tr:nth-child(odd) td,
+.cheer-sched tbody tr:nth-child(odd) th{
+    background: var(--shs-purple-pale, #f3edfa);
+}
+.cheer-sched__note{
+    margin: 0;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #555;
+}
+
+/* Same brand look for a schedule typed as a plain table in a Text block's
+   rich-text editor. Add "cheer-table" to the Text block's Classnames. The
+   first row is treated as the header. */
+.block-text.cheer-table table{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-nav-and-texts, "Nunito", sans-serif);
+    font-size: 0.9rem;
+    border: 1px solid var(--shs-purple-pale, #f3edfa);
+    border-top: 3px solid var(--shs-gold, #c9a227);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.block-text.cheer-table col{
+    width: auto !important;
+}
+.block-text.cheer-table td,
+.block-text.cheer-table th{
+    padding: 0.6rem 0.9rem;
+    border-top: 1px solid var(--shs-purple-pale, #f3edfa);
+    text-align: left;
+    vertical-align: top;
+}
+.block-text.cheer-table td p{
+    margin: 0;
+}
+.block-text.cheer-table tr:first-child{
+    background: var(--shs-purple, #4a1f7a);
+}
+.block-text.cheer-table tr:first-child td,
+.block-text.cheer-table tr:first-child th{
+    color: #fff;
+    font-weight: 700;
+    white-space: nowrap;
+    border-top: 0;
+}
+.block-text.cheer-table tbody tr:nth-child(even) td{
+    background: var(--shs-purple-pale, #f3edfa);
+}
+.block-text.cheer-table td:first-child{
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    white-space: nowrap;
+}

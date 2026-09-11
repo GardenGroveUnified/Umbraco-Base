@@ -17,7 +17,8 @@
         "full width" => "container-fluid",
         _ => "container"
     };
-    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
     var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
@@ -47,7 +48,7 @@
 
 @if (content?.IconBoxList != null)
 {
-    <section class="section block-icon-boxes @backgroundColorClass @verticalSpacingClass @topBorderClass"
+    <section class="section block-icon-boxes @backgroundColorClass @verticalSpacingClass @topBorderClass" style="@backgroundColorStyle"
     @if (!string.IsNullOrEmpty(settings?.AnchorId))
     {
         <text>id="@settings.AnchorId"</text>
@@ -60,11 +61,7 @@
                     {
                         <div class="pre-head">@content.Preheading</div>
                     }
-                    @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
-                    {
-                        <h1 class="head display-5 bold">@content.Heading</h1>
-                    }
-                    else if (!string.IsNullOrEmpty(content.Heading) && order != 0)
+                    @if (!string.IsNullOrEmpty(content.Heading))
                     {
                         <h2 class="head display-6 bold">@content.Heading</h2>
                     }

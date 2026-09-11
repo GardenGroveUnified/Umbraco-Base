@@ -60,13 +60,13 @@
 }>
     @if (isVideoBackground)
     {
-        <video class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: 0;" autoplay muted loop playsinline>
+        <video class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: 0;" autoplay muted loop playsinline preload="metadata">
             <source src="@backgroundUrl" type="video/mp4" />
         </video>
     }
     else if (!string.IsNullOrEmpty(backgroundUrl))
     {
-        <img src="@backgroundUrl" alt="@content?.Heading" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: 0;" />
+        <img src="@backgroundUrl" alt="" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; z-index: 0;" fetchpriority="high" decoding="async" />
     }
     <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background-color:#000; opacity:@(overlayOpacity.ToString(System.Globalization.CultureInfo.InvariantCulture)); z-index: 1;"></div>
 
@@ -91,7 +91,7 @@
             }
             @if (!string.IsNullOrEmpty(content?.Text?.ToString()))
             {
-                <p>@content.Text</p>
+                <div class="hero__text">@content.Text</div>
             }
             @await Html.PartialAsync("~/Views/Partials/Widgets/RenderLinkButton.cshtml", content?.Links)
         </div>

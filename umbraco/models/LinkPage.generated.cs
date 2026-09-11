@@ -20,7 +20,7 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 {
 	/// <summary>Link</summary>
 	[PublishedModel("linkPage")]
-	public partial class LinkPage : PublishedContentModel
+	public partial class LinkPage : PublishedContentModel, ISeo
 	{
 		// helpers
 #pragma warning disable 0109 // new is redundant
@@ -70,5 +70,21 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[ImplementPropertyType("umbracoNaviHide")]
 		public virtual bool UmbracoNaviHide => this.Value<bool>(_publishedValueFallback, "umbracoNaviHide");
+
+		///<summary>
+		/// Meta Description
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("metaDescription")]
+		public virtual string MetaDescription => global::Umbraco.Cms.Web.Common.PublishedModels.Seo.GetMetaDescription(this, _publishedValueFallback);
+
+		///<summary>
+		/// Social Share Image
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("socialShareImage")]
+		public virtual global::Umbraco.Cms.Core.Models.MediaWithCrops SocialShareImage => global::Umbraco.Cms.Web.Common.PublishedModels.Seo.GetSocialShareImage(this, _publishedValueFallback);
 	}
 }

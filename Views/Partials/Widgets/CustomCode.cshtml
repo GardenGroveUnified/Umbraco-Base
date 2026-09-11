@@ -10,6 +10,10 @@
     var classNames = content?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
         ? string.Join(" ", content.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
         : string.Empty;
+
+    // Raw embed markup (e.g. an <iframe> calendar). Rendered verbatim - editors
+    // must only paste from trusted sources (same trust level as Custom JS below).
+    var customHtml = content?.Value<string>("customHtml");
 }
 
 @* Note: "Razor Code" is intentionally NOT compiled/executed here - running editor-supplied
@@ -28,11 +32,7 @@
             {
                 <div class="pre-head">@content.Preheading</div>
             }
-            @if (!string.IsNullOrEmpty(content?.Heading) && order == 0)
-            {
-                <h1 class="head display-5 bold">@content.Heading</h1>
-            }
-            else if (!string.IsNullOrEmpty(content?.Heading) && order != 0)
+            @if (!string.IsNullOrEmpty(content?.Heading))
             {
                 <h2 class="head display-6 bold">@content.Heading</h2>
             }
@@ -40,6 +40,13 @@
             {
                 <div>@content.Text</div>
             }
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(customHtml))
+    {
+        <div class="container block-custom-code__embed">
+            @Html.Raw(customHtml)
         </div>
     }
 </section>

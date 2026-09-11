@@ -7,3 +7,104 @@
         border-radius: 10px;
     }
 }
+
+/* ==========================================================================
+   Block Line widget - horizontal row container for nested widgets
+   ========================================================================== */
+.block-line{
+    width: 100%;
+}
+.block-line__row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+.block-line__col{
+    flex: 1 1 0;
+    min-width: min(100%, 280px);
+    display: flex;
+    flex-direction: column;
+}
+/* child widget fills the column height so two coloured panels stay level */
+.block-line__col > .section{
+    flex: 1 1 auto;
+    height: 100%;
+}
+/* neutralise the full-width section chrome of the child widgets so they
+   behave as equal columns inside the row */
+.block-line__col > .section{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Seamless mode: add the class "block-line--seamless" to the Block Line
+   (Advanced > Classnames) when the child widgets carry the same background
+   colour and should read as one continuous panel. Drops the gutter and
+   gives every column matching inner padding. */
+.block-line--seamless .block-line__row{
+    gap: 0;
+}
+.block-line--seamless .block-line__col > .section{
+    padding: 1.75rem 1.25rem !important;
+}
+.block-line--seamless .block-line__col > .section > .container,
+.block-line--seamless .block-line__col > .section > .container-xxl,
+.block-line--seamless .block-line__col > .section > .container-fluid,
+.block-line--seamless .block-line__col > .section > .container-md,
+.block-line--seamless .block-line__col > .section > .container-xlg{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* Let the columns shrink to equal halves even when a child (e.g. the
+   Achievements grid) has a wide intrinsic size. */
+.block-line--seamless .block-line__col{
+    min-width: 0;
+}
+
+/* The Awards widget is a plain div, not a .section, so the rules above skip
+   it. Give it the same purple fill and inner padding as its sibling column
+   so the two read as one panel. */
+.block-line--seamless .block-line__col > .awards-widget{
+    padding: 0 !important;
+    height: 100%;
+}
+.block-line--seamless .block-line__col > .awards-widget > .home-spotlight{
+    height: 100%;
+    padding: 1.75rem 1.25rem;
+}
+.block-line__col .home-spotlight__body{
+    max-width: none;
+}
+
+/* Framed mode: add the class "block-line--framed" to the Block Line
+   (Advanced > Classnames) so each child widget shows as its own bordered
+   panel with a gutter between. Widgets that carry a frame style (the home
+   Events / News panels) show their border here. */
+.block-line--framed .block-line__col > .section{
+    padding-top: 1.75rem !important;
+    padding-bottom: 1.75rem !important;
+}
+.block-line__col > .section > .container,
+.block-line__col > .section > .container-xxl,
+.block-line__col > .section > .container-fluid,
+.block-line__col > .section > .container-md,
+.block-line__col > .section > .container-xlg{
+    max-width: 100%;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+.block-line__col > .sidebar-nav{
+    height: 100%;
+}
+
+@media (max-width: 767.98px){
+    .block-line__row{
+        gap: 1rem;
+    }
+    .block-line__col{
+        flex-basis: 100%;
+    }
+}

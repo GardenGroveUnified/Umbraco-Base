@@ -58,12 +58,28 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual global::Umbraco.Cms.Core.Strings.IHtmlEncodedString Bio => this.Value<global::Umbraco.Cms.Core.Strings.IHtmlEncodedString>(_publishedValueFallback, "bio");
 
 		///<summary>
+		/// Department: e.g. "Administration", "Counseling", "English" - used by the Staff Directory filter.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("department")]
+		public virtual string Department => this.Value<string>(_publishedValueFallback, "department");
+
+		///<summary>
 		/// Email
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
 		[ImplementPropertyType("email")]
 		public virtual string Email => this.Value<string>(_publishedValueFallback, "email");
+
+		///<summary>
+		/// Last Name: Surname only - used to sort the Staff Directory. Leave blank to fall back to the full name.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("lastName")]
+		public virtual string LastName => this.Value<string>(_publishedValueFallback, "lastName");
 
 		///<summary>
 		/// Name

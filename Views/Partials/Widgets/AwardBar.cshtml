@@ -1,0 +1,40 @@
+@inherits UmbracoViewPage<ContentModels.AwardItem>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    var award = Model;
+    var photoUrl = award?.Photo?.GetCropUrl(width: 320) ?? award?.Photo?.Url();
+    var hasLink = award?.Link != null && !string.IsNullOrEmpty(award.Link.Url);
+    // Natural media size, for the <img> width/height (the crop is width-only, so
+    // the ratio is what matters). See photoSwiper.cshtml for the same pattern.
+    var natW = award?.Photo?.Content?.Value<int>("umbracoWidth") ?? 0;
+    var natH = award?.Photo?.Content?.Value<int>("umbracoHeight") ?? 0;
+}
+
+<div class="home-spotlight">
+    <div class="home-spotlight__icon">
+        @if (!string.IsNullOrEmpty(photoUrl))
+        {
+            <img src="@photoUrl" alt="@award?.Title" loading="lazy" decoding="async"
+                 @if (natW > 0 && natH > 0) { <text>width="@natW" height="@natH"</text> } />
+        }
+        else
+        {
+            <span>&#127942;</span>
+        }
+    </div>
+    <div class="home-spotlight__body">
+        @if (!string.IsNullOrEmpty(award?.Title))
+        {
+            <div class="home-spotlight__title">@award.Title</div>
+        }
+        @if (!string.IsNullOrEmpty(award?.Text?.ToString()))
+        {
+            <div class="home-spotlight__text">@award.Text</div>
+        }
+    </div>
+    <div class="flex-grow-1"></div>
+    @if (hasLink)
+    {
+        <a href="@award!.Link!.Url" target="@(award.Link.Target ?? "_self")" class="home-spotlight__action">@(string.IsNullOrEmpty(award.Link.Name) ? "Read more" : award.Link.Name) &rarr;</a>
+    }
+</div>

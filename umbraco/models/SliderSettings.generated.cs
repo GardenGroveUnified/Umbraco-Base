@@ -50,7 +50,21 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		// properties
 
 		///<summary>
-		/// Slider Timing
+		/// Disable Autoplay: Turn off automatic slide advancing. Visitors can still change slides using the arrows or dots.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[ImplementPropertyType("disableAutoplay")]
+		public virtual bool DisableAutoplay => this.Value<bool>(_publishedValueFallback, "disableAutoplay");
+
+		///<summary>
+		/// Full-Width Banner: Stretch this banner edge-to-edge across the full browser width. Recommended for homepage hero banners.
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
+		[ImplementPropertyType("fullWidthBanner")]
+		public virtual bool FullWidthBanner => this.Value<bool>(_publishedValueFallback, "fullWidthBanner");
+
+		///<summary>
+		/// Autoplay Delay (Seconds): How long each slide stays on screen before automatically advancing to the next one. Has no effect if Autoplay is disabled below.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[ImplementPropertyType("sliderTiming")]

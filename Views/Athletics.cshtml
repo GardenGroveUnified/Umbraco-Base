@@ -6,9 +6,8 @@
 @{
     Layout = "Master.cshtml";
 
-    var title = string.IsNullOrWhiteSpace(Model.Value<string>("pageTitle")) ? Model.Name : Model.Value<string>("pageTitle");
-    ViewBag.Title = $"{title} | GGUSD Athletics";
-    var hasSidebar = Model?.SidebarBlocks?.Count > 0;
+    var hasSidebar = Model is not null && Model.AncestorsOrSelf()
+        .Any(p => p.Value<IEnumerable<BlockListItem>>("sidebarBlocks")?.Any() == true);
 }
 
 @{
@@ -55,20 +54,26 @@
     @if (Model?.PageTitle is not null && Model?.PageTitle != "")
     {
         <div class="container">
-            <h1 class="my-5 text-blue">@Model!.PageTitle</h1>
+            <h1 class="mt-5 mb-3 text-blue">@Model!.PageTitle</h1>
         </div>
     }
 
     @* --- Quick actions bar --- *@
     <div class="athletics-quickactions">
         @{
+            string DescendantUrl(string name) => Model?.Descendants()
+                .FirstOrDefault(c =>
+                    string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(c.Value<string>("pageTitle"), name, StringComparison.OrdinalIgnoreCase))
+                ?.Url() ?? "#";
+
             var quickActions = new (string Label, string Url)[]
             {
-                ("Athletic Clearance", "#"),
-                ("Schedules", "#"),
-                ("Sports Demographics", "#"),
-                ("Summer Sports", "#"),
-                ("Athletic Staff", "#"),
+                ("Athletic Clearance", DescendantUrl("Athletic Clearance")),
+                ("Schedules", DescendantUrl("Athletics Calendar")),
+                ("Sports Demographics", Model?.AncestorOrSelf(2)?.Url() ?? "#"),
+                ("Summer Sports", DescendantUrl("Summer Sports")),
+                ("Athletic Staff", DescendantUrl("Athletic Staff"))
             };
         }
         @for (var i = 0; i < quickActions.Length; i++)
@@ -83,14 +88,14 @@
             <div class="row">
                 @if (Model!.Blocks!.Any())
                 {
-                    <div class="col">
+                    <div class="col-12 col-md">
                         @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
                         {
                             { "Blocks", Model.Blocks }
                         })
                     </div>
                 }
-                <div class="col-md-3 my-5 d-md-block d-none">
+                <div class="col-12 col-md-4 col-lg-3 my-4 my-md-5">
                     @await Html.PartialAsync("~/Views/Partials/Widgets/Sidebar/desktopSidebar.cshtml")
                 </div>
             </div>
@@ -109,70 +114,36 @@
         }
     }
 
-    @* --- Featured Sport + Upcoming Games ---
-         Placeholder content until real team/game content types exist; edit
-         the values below directly, or replace with real CMS data later. *@
-    <div class="athletics-featured-games">
-        <div class="athletics-featured-games__col athletics-featured-games__col--featured">
-            <div class="home-section-title">
-                <div class="home-section-title__label">
-                    <span class="home-section-title__bar"></span>
-                    Featured Sport
-                </div>
-                <a href="#" class="home-section-title__action">View roster &rarr;</a>
+    @* --- Featured Sport ---
+         Placeholder content until a real "featured sport" content type exists;
+         edit the values below directly, or replace with real CMS data later.
+         The schedule that used to live next to this is now the real,
+         backoffice-editable Athletics Schedule widget below (in Model.Blocks). *@
+    <div class="athletics-featured-standalone">
+        <div class="home-section-title">
+            <div class="home-section-title__label">
+                <span class="home-section-title__bar"></span>
+                Featured Sport
             </div>
-            <div class="athletics-featured">
-                <div class="athletics-featured__photo"></div>
-                <div>
-                    <div class="athletics-featured__title">Boys Varsity Soccer</div>
-                    <div class="athletics-featured__meta">Coach: Mr. Rodriguez &middot; Spring 2026</div>
-                    <div class="athletics-featured__meta">Empire League &middot; Home: Santiago Stadium</div>
-                </div>
-            </div>
-            <div class="athletics-featured__stats">
-                @{
-                    var stats = new (string Label, string Value)[] { ("Wins", "8"), ("Losses", "3"), ("Ties", "1") };
-                }
-                @foreach (var stat in stats)
-                {
-                    <div class="athletics-featured__stat">
-                        <div class="athletics-featured__stat-value">@stat.Value</div>
-                        <div class="athletics-featured__stat-label">@stat.Label</div>
-                    </div>
-                }
+            <a href="#" class="home-section-title__action">View roster &rarr;</a>
+        </div>
+        <div class="athletics-featured">
+            <div class="athletics-featured__photo"></div>
+            <div>
+                <div class="athletics-featured__title">Boys Varsity Soccer</div>
+                <div class="athletics-featured__meta">Coach: Mr. Rodriguez &middot; Spring 2026</div>
+                <div class="athletics-featured__meta">Empire League &middot; Home: Santiago Stadium</div>
             </div>
         </div>
-
-        <div class="athletics-featured-games__col athletics-featured-games__col--games">
-            <div class="home-section-title">
-                <div class="home-section-title__label">
-                    <span class="home-section-title__bar"></span>
-                    Upcoming Games
-                </div>
-                <a href="#" class="home-section-title__action">Full schedule &rarr;</a>
-            </div>
+        <div class="athletics-featured__stats">
             @{
-                var games = new (string Month, string Day, string Opponent, string Time, string Location)[]
-                {
-                    ("MAY", "2", "vs. Garden Grove HS", "3:30 PM", "HOME"),
-                    ("MAY", "6", "vs. Rancho Alamitos HS", "4:00 PM", "AWAY"),
-                    ("MAY", "9", "vs. Bolsa Grande HS", "3:30 PM", "HOME"),
-                    ("MAY", "13", "vs. Pacifica HS", "4:00 PM", "AWAY"),
-                };
+                var stats = new (string Label, string Value)[] { ("Wins", "8"), ("Losses", "3"), ("Ties", "1") };
             }
-            @for (var i = 0; i < games.Length; i++)
+            @foreach (var stat in stats)
             {
-                var g = games[i];
-                <div class="athletics-game @(i == 0 ? "athletics-game--next" : "")">
-                    <div class="athletics-game__date">
-                        <span class="athletics-game__month">@g.Month</span>
-                        <span class="athletics-game__day">@g.Day</span>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="athletics-game__opponent">@g.Opponent</div>
-                        <div class="athletics-game__time">@g.Time</div>
-                    </div>
-                    <span class="athletics-game__loc">@g.Location</span>
+                <div class="athletics-featured__stat">
+                    <div class="athletics-featured__stat-value">@stat.Value</div>
+                    <div class="athletics-featured__stat-label">@stat.Label</div>
                 </div>
             }
         </div>

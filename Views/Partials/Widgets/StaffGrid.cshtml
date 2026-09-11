@@ -18,7 +18,8 @@
         "full width" => "container-fluid",
         _ => "container"
     };
-    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : settings?.BackgroundColor;
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.BackgroundColor) ? "" : $"background-color:{settings.BackgroundColor};";
     var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
     var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
     var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : "text-left";
@@ -46,6 +47,10 @@
     };
     var itemsPerRowKey = settings?.ItemsPerRow > 0 ? settings.ItemsPerRow.ToString("0") : "4";
     var numberOfColumnClass = columnMap.GetValueOrDefault(itemsPerRowKey, "col-6 col-md-3 col-lg-3");
+
+    // The Cavaliers style uses much larger portrait photos, so when the editor
+    // hasn't picked an items-per-row, default it to 2 across so the photos have room.
+    var cavaliersColumnClass = settings?.ItemsPerRow > 0 ? numberOfColumnClass : "col-12 col-sm-10 col-md-6";
 }
 
 @if (content?.StaffList != null && content.StaffList.Any())
@@ -61,17 +66,12 @@
                 @if (!string.IsNullOrEmpty(content.Preheading) || !string.IsNullOrEmpty(content.Heading))
                 {
                     <div class="staff-grid-cavaliers__header">
-                        <img src="/media/upqfqrvj/shslogo.jpg" class="staff-grid-cavaliers__logo" alt="Santiago High School logo" />
                         <div>
                             @if (!string.IsNullOrEmpty(content.Preheading))
                             {
                                 <div class="staff-grid-cavaliers__pre">@content.Preheading</div>
                             }
-                            @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
-                            {
-                                <h1 class="staff-grid-cavaliers__heading">@content.Heading</h1>
-                            }
-                            else if (!string.IsNullOrEmpty(content.Heading))
+                            @if (!string.IsNullOrEmpty(content.Heading))
                             {
                                 <h2 class="staff-grid-cavaliers__heading">@content.Heading</h2>
                             }
@@ -90,13 +90,13 @@
                         var staff = (ContentModels.StaffMember)item.Content;
                         if (staff?.BlockVisibility == false) { continue; }
 
-                        var photoUrl = staff?.Photo?.GetCropUrl(300, 300);
+                        var photoUrl = staff?.Photo?.GetCropUrl(600, 600);
 
-                        <div class="@numberOfColumnClass mb-4 text-center">
+                        <div class="@cavaliersColumnClass mb-4 text-center">
                             <div class="staff-grid-cavaliers__photo mx-auto mb-3">
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
-                                    <img src="@photoUrl" class="lazyload" alt="@staff?.Name" />
+                                    <img src="@photoUrl" width="600" height="600" loading="lazy" decoding="async" alt="@staff?.Name" />
                                 }
                                 else
                                 {
@@ -121,7 +121,7 @@
     }
     else
     {
-        <section class="section block-staff-grid @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames"
+        <section class="section block-staff-grid @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames" style="@backgroundColorStyle"
         @if (!string.IsNullOrEmpty(settings?.AnchorId))
         {
             <text>id="@settings.AnchorId"</text>
@@ -134,11 +134,7 @@
                         {
                             <div class="pre-head">@content.Preheading</div>
                         }
-                        @if (!string.IsNullOrEmpty(content.Heading) && order == 0)
-                        {
-                            <h1 class="head display-5 bold">@content.Heading</h1>
-                        }
-                        else if (!string.IsNullOrEmpty(content.Heading) && order != 0)
+                        @if (!string.IsNullOrEmpty(content.Heading))
                         {
                             <h2 class="head display-6 bold">@content.Heading</h2>
                         }
@@ -149,6 +145,7 @@
                     </div>
                 }
 
+                @{ var gridUid = "sg-" + Guid.NewGuid().ToString("N").Substring(0, 8); var dlgIndex = 0; }
                 <div class="row @gutterSpacingClass @justifyContentClass">
                     @foreach (var item in content.StaffList)
                     {
@@ -158,12 +155,18 @@
                         var photoUrl = staff?.Photo?.GetCropUrl(300, 300);
                         var hasEmail = !string.IsNullOrEmpty(staff?.Email);
                         var hasPhone = !string.IsNullOrEmpty(staff?.Phone);
+                        var hasBio   = !string.IsNullOrWhiteSpace(staff?.Bio?.ToString());
+                        var dlgId    = hasBio ? $"{gridUid}-{dlgIndex++}" : null;
 
                         <div class="@numberOfColumnClass mb-3">
-                            <div class="h-100 rounded bg-white p-2 shadow-primary-xs text-center">
+                            <div class="staff-grid__card h-100 rounded bg-white p-2 shadow-primary-xs text-center @(hasBio ? "staff-grid__card--clickable" : "")"
+                            @if (hasBio)
+                            {
+                                <text>role="button" tabindex="0" aria-haspopup="dialog" data-staff-dialog="#@dlgId"</text>
+                            }>
                                 @if (!string.IsNullOrEmpty(photoUrl))
                                 {
-                                    <img src="@photoUrl" class="img-fluid lazyload rounded mb-2" alt="@staff?.Name" />
+                                    <img src="@photoUrl" class="img-fluid rounded mb-2" width="300" height="300" loading="lazy" decoding="async" alt="@staff?.Name" />
                                 }
                                 else
                                 {
@@ -174,7 +177,7 @@
                                 <div class="p-2">
                                     @if (!string.IsNullOrEmpty(staff?.Name))
                                     {
-                                        <h3 class="fs-5 mb-1">@staff.Name</h3>
+                                        <h3 class="staff-grid__name fs-5 mb-1">@staff.Name</h3>
                                     }
                                     @if (!string.IsNullOrEmpty(staff?.Title))
                                     {
@@ -188,16 +191,66 @@
                                     {
                                         <div><a href="tel:@staff!.Phone" class="small text-decoration-none">@staff.Phone</a></div>
                                     }
-                                    @if (!string.IsNullOrEmpty(staff?.Bio?.ToString()))
+                                    @if (hasBio)
                                     {
-                                        <div class="small mt-2">@staff.Bio</div>
+                                        <span class="staff-grid__biolink">Read bio &rarr;</span>
                                     }
                                 </div>
                             </div>
                         </div>
+
+                        @if (hasBio)
+                        {
+                            <dialog id="@dlgId" class="staff-grid__dialog">
+                                <form method="dialog" class="staff-grid__dialog-close-form">
+                                    <button class="staff-grid__dialog-close" aria-label="Close">&times;</button>
+                                </form>
+                                <div class="staff-grid__dialog-body">
+                                    @if (!string.IsNullOrEmpty(photoUrl))
+                                    {
+                                        <img src="@photoUrl" class="staff-grid__dialog-photo" width="300" height="300" loading="lazy" decoding="async" alt="@staff?.Name" />
+                                    }
+                                    @if (!string.IsNullOrEmpty(staff?.Name))
+                                    {
+                                        <h3 class="staff-grid__dialog-name">@staff.Name</h3>
+                                    }
+                                    @if (!string.IsNullOrEmpty(staff?.Title))
+                                    {
+                                        <div class="staff-grid__dialog-title">@staff.Title</div>
+                                    }
+                                    @if (hasEmail)
+                                    {
+                                        <div><a href="mailto:@staff!.Email">@staff.Email</a></div>
+                                    }
+                                    @if (hasPhone)
+                                    {
+                                        <div><a href="tel:@staff!.Phone">@staff.Phone</a></div>
+                                    }
+                                    <div class="staff-grid__dialog-bio">@staff.Bio</div>
+                                </div>
+                            </dialog>
+                        }
                     }
                 </div>
             </div>
         </section>
+
+        <script>
+        (function () {
+            document.querySelectorAll('[data-staff-dialog]').forEach(function (el) {
+                function open(e) {
+                    if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') { return; }
+                    e.preventDefault();
+                    var dlg = document.querySelector(el.getAttribute('data-staff-dialog'));
+                    if (dlg && !dlg.open && typeof dlg.showModal === 'function') { dlg.showModal(); }
+                }
+                el.addEventListener('click', open);
+                if (el.getAttribute('role') === 'button') { el.addEventListener('keydown', open); }
+            });
+            document.querySelectorAll('dialog.staff-grid__dialog').forEach(function (dlg) {
+                dlg.addEventListener('click', function (e) { if (e.target === dlg) { dlg.close(); } });
+            });
+        })();
+        </script>
     }
 }

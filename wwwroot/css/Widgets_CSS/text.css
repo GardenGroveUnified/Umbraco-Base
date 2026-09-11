@@ -1,5 +1,14 @@
 @import '../styles.css';
 
+/* Text widget - Block Style "Style 3": photo stacked below the text */
+.block-text__photo--stacked {
+  display: inline-block;
+  max-width: 100%;
+  width: auto;
+  max-height: 500px;
+  margin-inline: auto;
+}
+
 .border-fs-green{
   border: 5px solid #7abb45;
   padding: 50px 20px 50px 20px;
@@ -75,9 +84,53 @@
   vertical-align: top;
   border: 1px solid #a0a0a0;
 }
+.table-style2 thead th {
+  text-align: left;
+  font-weight: 600;
+  color: #000;
+  background-color: #c4dbf2;
+}
+.table-style2 tbody tr:nth-child(even) td {
+  background-color: #f3edfa;
+}
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 #enrollNow .head span, #enrollNow .head{
   color: #fff !important;
+}
+
+/* When a Background Color is set on the block, the section fills with that
+   colour. Match the "home style" Events widget so blocks placed together
+   in a Block Line share one heading treatment. */
+.block-text--filled .head{
+  color: #fff;
+  font-weight: 800;
+  font-family: var(--font-nav-and-texts);
+}
+.block-text--filled .pre-head{
+  color: var(--shs-gold, #c9a227);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.block-text--filled p,
+.block-text--filled li,
+.block-text--filled strong{
+  color: #fff;
+}
+
+/* Vision and Mission intro: light translucent purple wash, so text stays dark. */
+#visionMissionIntro.block-text--filled .head,
+#visionMissionIntro.block-text--filled p{
+  color: var(--shs-purple, #4a1f7a);
+}
+#visionMissionIntro.block-text--filled .pre-head{
+  color: #6b6b6b;
 }
 
 #FamiliesHeader .top-heading, #FamiliesHeader .bottom-heading{

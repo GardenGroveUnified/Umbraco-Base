@@ -7,8 +7,11 @@
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	<meta charset="utf-8">
 	@await Html.PartialAsync("~/Views/Partials/Shared/metadata.cshtml")
-	<meta name="viewport" content="width=device-width, maximum-scale=5, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="color-scheme" content="light">
+	<meta name="theme-color" content="#4a1f7a">
 	<!--[if IE]><meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'><![endif]-->
 	<!-- up to 10% speed up for external res -->
 	<link rel="dns-prefetch" href="https://fonts.googleapis.com/">
@@ -18,54 +21,32 @@
 	<!-- preloading icon font is helping to speed up a little bit -->
 	<link rel="preload" href="~/assets/fonts/flaticon/Flaticon.woff2" as="font" type="font/woff2" crossorigin>
 	<link rel="preload" href="~/assets/fonts/fontawesome/fontawesome-webfont.woff2?v=4.7.0" as="font" type="font/woff2" crossorigin>
-	<!-- AOS CSS -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-	<link rel="stylesheet" href="~/assets/css/vendor.swiper.css"/>
+	@* Google Fonts. These were @import rules at the top of styles.css. They
+	   moved here because WebOptimizer concatenates styles.css into the middle
+	   of the bundle, where a browser ignores @import. *@
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Yeseva+One&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Playwrite+AU+NSW:wght@100..400&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
 
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+	@* All local site CSS, combined and minified by WebOptimizer.
+	   Source order lives in Core/Bundling/StylesheetBundle.cs. *@
+	<link rel="stylesheet" href="/css/site.bundle.css" />
 
-	
-	<link rel="stylesheet" href="/assets/css/core.min.css" />
-	<link rel="stylesheet" href="/assets/css/vendor_bundle.css" />
-	<link rel="stylesheet" href="/assets/css/widget/theme.defaults.css" />
-	<link rel="stylesheet" href="/assets/css/widget/font-awesome.css" />
-	<link rel="stylesheet" href="/assets/css/widget/base.css" />
-	<link rel="stylesheet" href="/assets/css/widget/widgets.css" />
-	<link rel="stylesheet" href="/assets/css/custom.css" />
-	<link rel="stylesheet" href="/css/styles.css" />
-	<link rel="stylesheet" href="/css/mediaQueries.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/imageBoxes.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/IconBoxes.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Gallery.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Heading.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/slider.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/text.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Events.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/customCode.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Video.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/blockLine.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Hero.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Staff.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Accordion.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Tab.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Notification.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Modal.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Home.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Athletics.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Guidance.css" />
-	<link rel="stylesheet" href="/css/Widgets_CSS/Students.css" />
-	
-	
 	<!-- favicon -->
 	<link rel="shortcut icon" href="/favicon.ico">
-	<link rel="stylesheet" href="~/assets/css/vendor.fancybox.min.css">
-	@* <link rel="stylesheet" href="~/assets/css/vendor.swiper.min.css"> *@
 	</head>
 
 	<body class="header-sticky header-fixed" data-aos-easing="ease-in-out-sine" data-aos-duration="700" data-aos-delay="0">
+		<a class="skip-link" href="#main-content">Skip to main content</a>
 		<div id="wrapper">
 			@await Html.PartialAsync("~/Views/Partials/Shared/header.cshtml")
-			<main class="main-content position-relative" role="main"> 
+			<main id="main-content" tabindex="-1" class="main-content position-relative">
 				@RenderBody()
 			</main>
 			@await Html.PartialAsync("~/Views/Partials/Shared/footer.cshtml")
@@ -84,9 +65,9 @@
 				<div class="pswp__ui pswp__ui--hidden">
 					<div class="pswp__top-bar">
 						<div class="pswp__counter"></div>
-						<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-						<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-						<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+						<button class="pswp__button pswp__button--close" title="Close (Esc)" aria-label="Close (Esc)"></button>
+						<button class="pswp__button pswp__button--fs" title="Toggle fullscreen" aria-label="Toggle fullscreen"></button>
+						<button class="pswp__button pswp__button--zoom" title="Zoom in/out" aria-label="Zoom in/out"></button>
 						<div class="pswp__preloader">
 							<div class="pswp__preloader__icn">
 								<div class="pswp__preloader__cut">
@@ -98,8 +79,8 @@
 					<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
 						<div class="pswp__share-tooltip"></div>
 					</div>
-					<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-					<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+					<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)" aria-label="Previous (arrow left)"></button>
+					<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)" aria-label="Next (arrow right)"></button>
 					<div class="pswp__caption">
 						<div class="pswp__caption__center"></div>
 					</div>
@@ -117,6 +98,14 @@
 		<script src="/assets/js/vendor.swiper.js"></script>
 		<script src="/assets/js/core.min.js"></script>
 		<script src="/assets/js/vendor_bundle.min.js"></script>
+		<!-- Main navigation: keyboard + touch dropdowns, responsive class swap -->
+		<script src="/js/nav.js" defer></script>
+		<!-- Reduced-motion: pause autoplaying video (CSS handles the rest) -->
+		<script src="/js/motion.js" defer></script>
+		<!-- Style 2 accordion toggle (Default style uses Bootstrap collapse) -->
+		<script src="/js/accordion.js" defer></script>
+		<!-- Slider: pause/play toggle and reduced-motion autoplay opt-out -->
+		<script src="/js/slider.js" defer></script>
 		<!-- Fancybox (image galleries) -->
 		<script src="/assets/js/vendor.fancybox.js"></script>
 		<!-- PhotoSwipe (Photo Swiper widget) -->

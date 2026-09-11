@@ -49,7 +49,7 @@
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: var(--shs-gold, #c9a227);
+    color: var(--shs-gold-text, #8f6d00);
     font-weight: 700;
 }
 .newsroom__title{

@@ -302,18 +302,20 @@
 
     <nav class="navbar navbar-expand-lg navbar-light" aria-label="Main navigation">
 
-        <div class="container p-0">
-            <div class="collapse navbar-collapse justify-content-center align-items-lg-center" id="navbarMainNav">
+        <div class="container p-0 d-flex align-items-center justify-content-lg-center">
 
-                <!-- NAVIGATION TITLE -->
-                <div class="navbar-logo-wrap text-center d-flex align-items-center justify-content-center mb-3 mb-lg-0 me-lg-4">
-                    <a href="@(navRoot?.Url() ?? "#")"
-                       class="mb-0 text-decoration-none d-block"
-                       aria-label="Go to @navTitle home page">
-                        <img src="/media/1nffde4w/svglogo.svg" alt="@navTitle logo" width="543" height="157" class="m-2 d-block navbar-logo" />
-                    </a>
-                </div>
-                <!-- /NAVIGATION TITLE -->
+            <!-- NAVIGATION TITLE : outside the collapsible panel so it's
+                 visible next to the hamburger before the menu is opened. -->
+            <div class="navbar-logo-wrap d-flex align-items-center me-lg-4">
+                <a href="@(navRoot?.Url() ?? "#")"
+                   class="mb-0 text-decoration-none d-block"
+                   aria-label="Go to @navTitle home page">
+                    <img src="/media/1nffde4w/svglogo.svg" alt="@navTitle logo" width="543" height="157" class="m-2 d-block navbar-logo" />
+                </a>
+            </div>
+            <!-- /NAVIGATION TITLE -->
+
+            <div class="collapse navbar-collapse justify-content-center align-items-lg-center" id="navbarMainNav">
 
                 <!-- NAVIGATION -->
                 <ul class="navbar-nav justify-content-center" id="menuWidth">

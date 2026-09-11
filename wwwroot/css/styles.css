@@ -411,28 +411,65 @@ header .navbar{
     #navbarMainNav .dropdown-submenu:focus-within:not(.nav-collapsed) > .dropdown-submenu-content{
         display: block;
     }
-
-    /* Disclosure caret next to a nested section link. */
-    #navbarMainNav .submenu-toggle{
-        border: 0;
-        background: transparent;
-        padding: 0 .5rem;
-        font-size: 1.1rem;
-        line-height: 1;
-        color: inherit;
-        cursor: pointer;
-    }
-    #navbarMainNav .dropdown-submenu.is-open .submenu-toggle span{
-        display: inline-block;
-        transform: rotate(90deg);
-    }
 }
 
-/* Below 992px the menus expand inline and the caret toggle is not wired,
-   so hide it. Nested-submenu behaviour on mobile is unchanged. */
+/* Disclosure caret next to a nested section link - used at every width,
+   the toggle is wired in /js/nav.js regardless of viewport. */
+#navbarMainNav .submenu-toggle{
+    border: 0;
+    background: transparent;
+    padding: 0 .5rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: inherit;
+    cursor: pointer;
+}
+#navbarMainNav .dropdown-submenu.is-open .submenu-toggle span{
+    display: inline-block;
+    transform: rotate(90deg);
+}
+
+/* Below 992px the top-level menus collapse to an accordion instead of the
+   desktop hover/absolute-overlay treatment above. /js/nav.js toggles the
+   same .is-open class it uses on desktop; this just decides what that
+   class reveals down here. */
 @media (max-width: 991.98px){
-    #navbarMainNav .submenu-toggle{
+    /* is-open only down here, no :focus-within: on a touch tap the toggle
+       itself gets focus (Chromium focuses clicked buttons) and keeps it,
+       so a :focus-within reveal would fight the explicit is-open state
+       and can even flip the accordion open again mid-gesture. */
+    #navbarMainNav .navbar-nav > .nav-item > .dropdownMenu{
         display: none;
+    }
+    #navbarMainNav .navbar-nav > .nav-item.is-open > .dropdownMenu{
+        display: block;
+    }
+
+    /* Nested (grandchild) sections, e.g. Athletics > Athletic Department. */
+    #navbarMainNav .dropdown-submenu.is-open > .dropdown-submenu-content{
+        display: block;
+    }
+
+    /* h-100/w-100 (header.cshtml) are Bootstrap !important utilities that
+       size the button to match the desktop overlay's hit target. In
+       normal flow that stretches the button to the height of its own
+       (sibling) menu content and the next section renders on top of it -
+       reset to a normal row height instead (needs !important to win). */
+    #navbarMainNav .navbar-nav > .nav-item > .nav-link[data-nav-toggle]{
+        height: auto !important;
+        padding: 12px 16px;
+    }
+
+    /* Same disclosure caret language as .submenu-toggle, on the
+       top-level toggle so it's visibly expandable. */
+    #navbarMainNav .navbar-nav > .nav-item > .nav-link[data-nav-toggle]::after{
+        content: '\203A';
+        display: inline-block;
+        margin-left: 8px;
+        transition: transform .15s ease;
+    }
+    #navbarMainNav .navbar-nav > .nav-item.is-open > .nav-link[data-nav-toggle]::after{
+        transform: rotate(90deg);
     }
 }
 

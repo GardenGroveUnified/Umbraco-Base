@@ -3,18 +3,20 @@
  *
  * Mouse users get the desktop dropdowns from a :hover rule in core.css.
  * styles.css adds :focus-within so keyboard focus opens the same menu,
- * and an .is-open class for the touch path (tap, no hover, no focus).
- * This file supplies:
- *   - click / tap / Enter / Space toggles .is-open (the touch path)
+ * and an .is-open class for the tap path (touch, or click with no
+ * hover/focus). This file supplies:
+ *   - click / tap / Enter / Space toggles .is-open (the tap path)
  *   - Escape adds .nav-collapsed, which suppresses the :focus-within
  *     reveal while focus stays on the toggle; the class is cleared when
  *     focus leaves, on the next key, or on a pointer press
  *   - a click or tap outside closes everything
  * It also keeps the responsive class swap that used to be inline in
- * header.cshtml: below 992px the menus expand in the flow.
+ * header.cshtml.
  *
- * The open/close handling only runs at desktop width. Below 992px the
- * hamburger menu and inline expansion already work.
+ * This same toggle/close/Escape/focus logic runs at every width. Below
+ * 992px styles.css hides each .dropdownMenu until its .nav-item gets
+ * .is-open, so the accordion behaviour is identical to desktop - only
+ * the reveal is a tap on the toggle instead of a :hover.
  */
 (function () {
     'use strict';
@@ -39,9 +41,27 @@
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
 
+    // Ancestor toggles of `toggle` (its own item's toggle, and that
+    // item's parents' toggles) - these must stay open when `toggle`
+    // itself is the one being opened, or opening a nested submenu would
+    // immediately collapse the parent section around it.
+    function ancestorToggles(toggle) {
+        var result = [];
+        var item = owningItem(toggle) && owningItem(toggle).parentElement
+            ? owningItem(toggle).parentElement.closest('.nav-item, .dropdown-submenu')
+            : null;
+        while (item) {
+            var t = item.querySelector(':scope > [data-nav-toggle]');
+            if (t) { result.push(t); }
+            item = item.parentElement ? item.parentElement.closest('.nav-item, .dropdown-submenu') : null;
+        }
+        return result;
+    }
+
     function closeAll(except) {
+        var spared = except ? ancestorToggles(except) : [];
         toggles.forEach(function (toggle) {
-            if (toggle !== except) { setOpen(toggle, false); }
+            if (toggle !== except && spared.indexOf(toggle) === -1) { setOpen(toggle, false); }
         });
     }
 
@@ -54,13 +74,14 @@
     // Touch / mouse / Enter / Space: explicit toggle.
     toggles.forEach(function (toggle) {
         toggle.addEventListener('click', function (event) {
-            if (!isDesktop()) { return; }
             event.preventDefault();
             var item = owningItem(toggle);
-            // Read the state from aria-expanded, which the focusin handler keeps
-            // in step with the :focus-within reveal. The is-open class alone
-            // would miss a menu already open from keyboard focus.
-            var willOpen = toggle.getAttribute('aria-expanded') !== 'true';
+            // Read the state from is-open, not aria-expanded: clicking a button
+            // also focuses it in Chromium, and focusin (below) sets
+            // aria-expanded=true as part of that same click before this handler
+            // runs - reading aria-expanded here would see its own click's
+            // side effect and immediately close what it just opened.
+            var willOpen = !item || !item.classList.contains('is-open');
             closeAll(willOpen ? toggle : null);
             setOpen(toggle, willOpen);
             // Closing with focus still on the toggle: add nav-collapsed so the
@@ -73,7 +94,6 @@
     // that toggle. .nav-collapsed keeps the menu shut while focus is still
     // on the toggle (which would otherwise re-open it via :focus-within).
     nav.addEventListener('keydown', function (event) {
-        if (!isDesktop()) { return; }
         if (event.key !== 'Escape') {
             if (event.key !== 'Tab' && event.key !== 'Shift') { clearCollapsed(); }
             return;
@@ -98,7 +118,6 @@
     // :focus-within reveal in styles.css. Walk every enclosing item so a
     // deep link marks both its submenu toggle and the top-level toggle open.
     nav.addEventListener('focusin', function (event) {
-        if (!isDesktop()) { return; }
         var item = event.target.closest('.nav-item, .dropdown-submenu');
         while (item) {
             if (!item.classList.contains('nav-collapsed')) {
@@ -111,7 +130,6 @@
 
     // Focus leaving an item closes it and clears the Escape guard.
     nav.addEventListener('focusout', function (event) {
-        if (!isDesktop()) { return; }
         var item = event.target.closest('.nav-item, .dropdown-submenu');
         if (!item || item.contains(event.relatedTarget)) { return; }
         item.classList.remove('nav-collapsed');
@@ -121,7 +139,7 @@
 
     // Click or tap outside the nav closes everything.
     document.addEventListener('pointerdown', function (event) {
-        if (!isDesktop() || nav.contains(event.target)) { return; }
+        if (nav.contains(event.target)) { return; }
         clearCollapsed();
         closeAll(null);
     });

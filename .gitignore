@@ -483,3 +483,4 @@ umbraco-package-schema.json
 
 appsettings.json
 appsettings.Development.json
+.claude/

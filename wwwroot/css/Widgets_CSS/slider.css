@@ -316,6 +316,13 @@
     z-index: 0;
 }
 
+/* "elo-photo-slider": portrait flyers shown in full (letterboxed) rather than
+   cropped to fill the landscape slide. */
+.block-slider.elo-photo-slider .hero-slide__bg {
+    object-fit: contain;
+    background-color: var(--shs-purple-pale, #f3edfa);
+}
+
 /* Pause / play control for the autoplaying carousel (WCAG 2.2.2). */
 .block-slider .hero-slide__autoplay-toggle {
     position: absolute;

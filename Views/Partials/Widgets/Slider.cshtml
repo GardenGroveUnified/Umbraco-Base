@@ -51,13 +51,16 @@
 	var verticalSpacingClass = string.IsNullOrWhiteSpace(settings?.VerticalSpacing) ? "py-3" : settings.VerticalSpacing;
 	var topBorderClass = settings?.ShowTopBorder == true ? "border-top" : "";
 	var headerCenterTextClass = settings?.CenterHeading == true ? "text-center" : string.Empty;
+	var classNames = settings?.Classnames?.Any(s => !string.IsNullOrWhiteSpace(s)) == true
+		? string.Join(" ", settings.Classnames.Where(s => !string.IsNullOrWhiteSpace(s)))
+		: string.Empty;
 
 	if (content.SliderItems.Any())
 	{
 		// When the slider is the first block on the page it owns the page <h1>;
 		// only the first visible slide's heading gets it, later slides stay <h2>.
 		var firstSlidePending = true;
-		<section class="section block-slider @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass)" style="@backgroundColorStyle" @if (!string.IsNullOrEmpty(settings?.AnchorId))
+		<section class="section block-slider @(backgroundColorClass) @(verticalSpacingClass) @(topBorderClass) @(classNames)" style="@backgroundColorStyle" @if (!string.IsNullOrEmpty(settings?.AnchorId))
 		{
 			<text>id="@settings.AnchorId"</text>
 		}>

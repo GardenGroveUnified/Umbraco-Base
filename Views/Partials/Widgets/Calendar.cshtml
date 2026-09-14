@@ -62,7 +62,7 @@
         {
             <div class="ratio ratio-16x9" style="--bs-aspect-ratio: 75%;">
                 <iframe src="https://calendar.google.com/calendar/embed?src=@Uri.EscapeDataString(calendarId)&mode=@mode&showDate=@showDate&showPrint=0&showCalendars=0&showTz=0"
-                        style="border: 0" loading="lazy" title="@(content?.Heading ?? "Calendar")"></iframe>
+                        style="border: 0" loading="lazy" title="@(string.IsNullOrWhiteSpace(content?.Heading) ? "Calendar" : content.Heading)"></iframe>
             </div>
         }
         else

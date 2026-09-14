@@ -90,7 +90,10 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--shs-gold, #c9a227);
+    /* --shs-gold-text (#8f6d00) is only AA on near-white; this card can sit
+       on a pale filter colour (e.g. #d3c6e3), which drops it to 2.97:1.
+       --shs-purple passes 4.5:1 against white through mid-tone pastels. */
+    color: var(--shs-purple, #4a1f7a);
     font-weight: 700;
     margin-top: 2px;
 }
@@ -109,7 +112,9 @@
 .staff-directory__empty{
     padding: 24px 0;
     text-align: center;
-    color: #777;
+    /* #777 on white is 4.48:1, just under the 4.5:1 AA minimum for normal
+       text (SC 1.4.3). #666 clears it at 5.74:1. */
+    color: #666;
 }
 
 /* Read bio link + popup dialog */
@@ -154,6 +159,11 @@
     line-height: 1;
     color: #666;
     cursor: pointer;
+}
+/* Glyph as generated content, not a text node, so it never conflicts
+   with the button's aria-label (WCAG 2.5.3 Label in Name). */
+.staff-directory__dialog-close::after{
+    content: '\00d7';
 }
 .staff-directory__dialog-body{
     padding: 0 1.6rem 1.8rem;

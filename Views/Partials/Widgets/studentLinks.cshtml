@@ -75,13 +75,24 @@
                     var icon  = card.Value<string>("icon");
                     var label = card.Value<string>("label");
                     var link  = card.Value<Link>("link");
-                    var url    = link?.Url ?? "#";
+                    var url    = link?.Url;
+                    // A link card with no URL is a content mistake; skip it rather
+                    // than render a dead href="#" that jumps to the top of the page.
+                    if (string.IsNullOrEmpty(url)) { continue; }
+
                     var target = link?.Target ?? "_self";
+                    // When the label is empty only the icon shows, so the link needs
+                    // an accessible name from somewhere.
+                    var accessibleName = !string.IsNullOrWhiteSpace(label) ? label : link?.Name;
 
                     <a href="@url" target="@target" class="student-links__item"
                     @if (target != "_self")
                     {
                         <text>rel="noopener"</text>
+                    }
+                    @if (string.IsNullOrWhiteSpace(label) && !string.IsNullOrWhiteSpace(accessibleName))
+                    {
+                        <text>aria-label="@accessibleName"</text>
                     }>
                         <span class="student-links__icon">
                             @if (!string.IsNullOrEmpty(icon))

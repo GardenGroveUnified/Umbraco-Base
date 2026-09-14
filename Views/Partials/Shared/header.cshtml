@@ -114,9 +114,7 @@
                                 data-nav-toggle
                                 aria-expanded="false"
                                 aria-controls="@(pageId)-submenu"
-                                aria-label="Show @(page.Name) submenu">
-                            <span aria-hidden="true">&rsaquo;</span>
-                        </button>
+                                aria-label="Show @(page.Name) submenu"></button>
                         <div id="@(pageId)-submenu" class="dropdown-menu dropdown-submenu-content">
                             <ul class="list-unstyled">
                                 @foreach (var childPage in children)

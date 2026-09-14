@@ -66,7 +66,13 @@ summary:focus-visible,
 .nav-link:focus-visible,
 .dropdown-link:focus-visible,
 .accordion-button:focus-visible,
-.acc__head:focus-visible {
+.acc__head:focus-visible,
+/* Swiper's a11y module makes these keyboard-focusable (role="button",
+   tabIndex 0) even though they're <div>/<span> elements core.css's
+   `*:focus { outline: none !important; }` still strips their ring. */
+.swiper-button-next:focus-visible,
+.swiper-button-prev:focus-visible,
+.swiper-pagination-bullet:focus-visible {
     outline: 3px solid var(--shs-gold, #c9a227) !important;
     outline-offset: 2px !important;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55) !important;
@@ -416,16 +422,30 @@ header .navbar{
 /* Disclosure caret next to a nested section link - used at every width,
    the toggle is wired in /js/nav.js regardless of viewport. */
 #navbarMainNav .submenu-toggle{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
     background: transparent;
+    /* Content (glyph) is ~17.6px tall; min-height/width bring the actual
+       hit target up to the WCAG 2.2 SC 2.5.8 minimum of 24x24 CSS px
+       without changing the visible caret's size or position. */
+    min-width: 24px;
+    min-height: 24px;
     padding: 0 .5rem;
     font-size: 1.1rem;
     line-height: 1;
     color: inherit;
     cursor: pointer;
 }
-#navbarMainNav .dropdown-submenu.is-open .submenu-toggle span{
+/* Decorative caret as generated content, not a text node, so it never
+   conflicts with the button's aria-label (WCAG 2.5.3 Label in Name). */
+#navbarMainNav .submenu-toggle::after{
+    content: '\203A';
     display: inline-block;
+    transition: transform .15s ease;
+}
+#navbarMainNav .dropdown-submenu.is-open .submenu-toggle::after{
     transform: rotate(90deg);
 }
 

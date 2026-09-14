@@ -179,6 +179,11 @@
     color: #666;
     cursor: pointer;
 }
+/* Glyph as generated content, not a text node, so it never conflicts
+   with the button's aria-label (WCAG 2.5.3 Label in Name). */
+.staff-grid__dialog-close::after{
+    content: '\00d7';
+}
 .staff-grid__dialog-body{
     padding: 0 1.6rem 1.8rem;
     text-align: center;

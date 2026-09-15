@@ -51,15 +51,22 @@ spreadsheet the user already copied from the live site.
 | Profession | `profession` | Public | |
 | Update (short bio) | `update` | Public | free text |
 | Homepage URL | `homepageUrl` | Public | |
-| Email | *(built-in Member email)* | Private | never rendered to the page |
-| Phone | `phone` | Private | |
-| Address | `address` | Private | |
+| Email | *(built-in Member email)* | Private | never rendered to the page. Import uses spreadsheet "Email 1"; "Email 2" is dropped. |
+| Phone | `phone` | Private | Import uses "Phone 1"; "Phone 2" is dropped. |
+| Address | `address` | Private | single free-text field, combining Street/City/State/Zip/Country from the import |
 | Gender | `gender` | Private | |
+| `emailingOk` | `emailingOk` | Private | from the spreadsheet's "Emailing is OK" column, default `true` for new signups. When false, the directory card still shows but the "Send a message" button is hidden/disabled — see Contact-relay flow. |
+| `legacyRecId` | `legacyRecId` | Private | the spreadsheet's REC_ID, stored so re-running the import is idempotent (skip rows whose REC_ID already exists). Not set for new self-service signups. |
 | `IsApproved` | *(built-in)* | System | false until staff approves; import script sets it true directly |
 
 The public-facing widget and API only ever read the public fields plus a
-Member Id (to route a contact request). Private fields are touched only by
-the contact-relay controller and the signup/import code paths, server-side.
+Member Id (to route a contact request) and `emailingOk` (to decide whether
+to show the contact button). Private fields are touched only by the
+contact-relay controller and the signup/import code paths, server-side.
+
+Spreadsheet columns not imported: Title, Middle Name, Record Date (not
+part of the approved field set — dropped rather than added as new Member
+properties, per YAGNI).
 
 ## Signup flow
 
@@ -78,16 +85,24 @@ the contact-relay controller and the signup/import code paths, server-side.
 A small local console script (or a throwaway top-level program), not part
 of the deployed site:
 
-1. Read the CSV/Excel export the user already copied from the live site.
-2. Map each row's columns to the `alumniMember` fields above.
-3. Create a Member per row via `MemberService`, with `IsApproved = true`
-   (these are already-known real members, not public submissions).
-4. Run once locally against a handful of sample rows first, verify the
-   result in the backoffice Members list, then run against the full file.
+Source file: `AlumniDirectory.xls`, 800 rows, headers confirmed as REC_ID,
+Record Date, Graduation Year, Title, First Name, Middle Name, Last Name,
+Former Last Name, Gender, Email 1, Email 2, Homepage, Phone 1, Phone 2,
+Street, City, State, Zip, Country, Industry, Profession, Other
+information, Emailing is OK.
 
-Exact column names need confirming against the real spreadsheet before
-this script is written — the user has described the fields but the script
-should map real header names, not assume order.
+1. Read the `.xls` file (legacy Excel binary format — needs a library that
+   handles it, e.g. `ExcelDataReader`, not just `System.Text.Csv`).
+2. Map each row to the `alumniMember` fields per the table above
+   (Graduation Year → `gradYear`, Other information → `update`, Street/
+   City/State/Zip/Country joined → `address`, Emailing is OK → `emailingOk`,
+   REC_ID → `legacyRecId`; Title/Middle Name/Record Date dropped).
+3. Skip rows whose `legacyRecId` already exists as a Member (idempotent
+   re-runs).
+4. Create a Member per new row via `MemberService`, with `IsApproved = true`
+   (these are already-known real members, not public submissions).
+5. Run once locally against a handful of sample rows first, verify the
+   result in the backoffice Members list, then run against the full file.
 
 ## Browse / search widget
 
@@ -107,15 +122,21 @@ should map real header names, not assume order.
 
 ## Contact-relay flow
 
-1. "Send a message" button opens a small form: sender name, sender email,
+1. The public card shows "Send a message" only when the target's
+   `emailingOk` is true; otherwise no contact button renders at all (the
+   card still shows name/grad year/etc.). This is a display-time check in
+   the widget, not just a controller-side guard.
+2. "Send a message" button opens a small form: sender name, sender email,
    message, plus a hidden honeypot field.
-2. Posts to `AlumniSurfaceController.SendMessage(memberId, senderName, senderEmail, message)`.
-3. Controller re-checks the honeypot and rate limit, validates input.
-4. Loads the target Member server-side via `MemberService`, reads its
+3. Posts to `AlumniSurfaceController.SendMessage(memberId, senderName, senderEmail, message)`.
+4. Controller re-checks the honeypot, rate limit, and `emailingOk` (never
+   trust the client — a direct POST could otherwise bypass a hidden
+   button), then validates input.
+5. Loads the target Member server-side via `MemberService`, reads its
    private email.
-5. Sends via the district SMTP relay: `To` = target's email, `Reply-To` =
+6. Sends via the district SMTP relay: `To` = target's email, `Reply-To` =
    sender's email, `From` = a fixed no-reply address.
-6. Returns a small partial (success or a generic failure message) swapped
+7. Returns a small partial (success or a generic failure message) swapped
    into the form via fetch — no page reload, no personal data in the
    response.
 
@@ -145,7 +166,6 @@ should map real header names, not assume order.
 
 ## Open questions before implementation
 
-- Exact spreadsheet column headers (to write the import mapping).
 - District SMTP host/credentials from IT — the site has no mail config
   today.
 - Where exactly the new browse/signup pages sit in the content tree /

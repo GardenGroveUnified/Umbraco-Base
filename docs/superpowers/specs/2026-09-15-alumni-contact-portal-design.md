@@ -164,10 +164,16 @@ information, Emailing is OK.
 - Manual test: run the import script against a handful of sample CSV rows
   locally before running it against the real file.
 
+## Page placement
+
+The Browse and Sign Up pages are new children of the existing Alumni
+Directory page (`/contact/alumni-directory/…`), alongside its current
+Link Cards. The placeholder "Alumni Directory" and "Register Yourself"
+Link Card entries point at these two new pages instead of `#`.
+
 ## Open questions before implementation
 
 - District SMTP host/credentials from IT — the site has no mail config
-  today.
-- Where exactly the new browse/signup pages sit in the content tree /
-  navigation (a sensible default: children of the existing Alumni
-  Directory page).
+  today. Implementation can proceed with the relay code written against
+  an `IEmailSender` abstraction; the real SMTP settings slot into
+  configuration once IT provides them, without touching the relay logic.

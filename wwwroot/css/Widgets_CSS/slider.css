@@ -362,10 +362,13 @@
     max-width: 480px;
 }
 
-/* Lighter transparent purple panel behind the slide text, replacing the
-   default dark/greyish bg-dark block for better on-brand contrast. */
+/* Transparent purple panel (matches --shs-purple: #4a1f7a) behind the slide
+   text, replacing the default dark/greyish bg-dark block for on-brand
+   contrast. Alpha raised to 0.7 (from 0.35) so solid white slide text keeps
+   >=4.5:1 contrast even over a bright/near-white photo background —
+   worst case is ~5:1. See WCAG 2.2 1.4.3 fix, wwwroot/css/Widgets_CSS/slider.css. */
 .hero-slide__panel {
-    background: rgba(74, 31, 122, 0.35);
+    background: rgba(74, 31, 122, 0.7);
     border-radius: 8px;
 }
 
@@ -396,7 +399,7 @@
 }
 
 .hero-slide__text {
-    color: rgba(255, 255, 255, 0.75);
+    color: #fff;
     line-height: 1.5;
     margin-bottom: 1.25rem;
 }

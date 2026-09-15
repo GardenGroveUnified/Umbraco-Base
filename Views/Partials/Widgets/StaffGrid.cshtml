@@ -159,43 +159,50 @@
                         var dlgId    = hasBio ? $"{gridUid}-{dlgIndex++}" : null;
 
                         <div class="@numberOfColumnClass mb-3">
-                            <div class="staff-grid__card h-100 rounded bg-white p-2 shadow-primary-xs text-center @(hasBio ? "staff-grid__card--clickable" : "")"
-                            @if (hasBio)
-                            {
-                                <text>role="button" tabindex="0" aria-haspopup="dialog" data-staff-dialog="#@dlgId"</text>
-                            }>
-                                @if (!string.IsNullOrEmpty(photoUrl))
+                            <div class="staff-grid__card h-100 rounded bg-white p-2 shadow-primary-xs text-center">
+                                <div class="@(hasBio ? "staff-grid__card--clickable" : "")"
+                                @if (hasBio)
                                 {
-                                    <img src="@photoUrl" class="img-fluid rounded mb-2" width="300" height="300" loading="lazy" decoding="async" alt="@staff?.Name" />
-                                }
-                                else
+                                    <text>role="button" tabindex="0" aria-haspopup="dialog" data-staff-dialog="#@dlgId"</text>
+                                }>
+                                    @if (!string.IsNullOrEmpty(photoUrl))
+                                    {
+                                        <img src="@photoUrl" class="img-fluid rounded mb-2" width="300" height="300" loading="lazy" decoding="async" alt="@staff?.Name" />
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded mb-2" style="background:var(--shs-purple-pale,#f3edfa); aspect-ratio:1; display:flex; align-items:center; justify-content:center; color:var(--shs-purple,#4a1f7a); font-size:2rem; font-weight:700;">
+                                            @(string.IsNullOrEmpty(staff?.Name) ? "?" : staff.Name.Substring(0, 1))
+                                        </div>
+                                    }
+                                    <div class="p-2 pb-0">
+                                        @if (!string.IsNullOrEmpty(staff?.Name))
+                                        {
+                                            <h2 class="staff-grid__name fs-5 mb-1">@staff.Name</h2>
+                                        }
+                                        @if (!string.IsNullOrEmpty(staff?.Title))
+                                        {
+                                            <div class="text-muted small mb-2">@staff.Title</div>
+                                        }
+                                        @if (hasBio)
+                                        {
+                                            <span class="staff-grid__biolink">Read bio &rarr;</span>
+                                        }
+                                    </div>
+                                </div>
+                                @if (hasEmail || hasPhone)
                                 {
-                                    <div class="rounded mb-2" style="background:var(--shs-purple-pale,#f3edfa); aspect-ratio:1; display:flex; align-items:center; justify-content:center; color:var(--shs-purple,#4a1f7a); font-size:2rem; font-weight:700;">
-                                        @(string.IsNullOrEmpty(staff?.Name) ? "?" : staff.Name.Substring(0, 1))
+                                    <div class="p-2 pt-0">
+                                        @if (hasEmail)
+                                        {
+                                            <div><a href="mailto:@staff!.Email" class="small text-decoration-none">@staff.Email</a></div>
+                                        }
+                                        @if (hasPhone)
+                                        {
+                                            <div><a href="tel:@staff!.Phone" class="small text-decoration-none">@staff.Phone</a></div>
+                                        }
                                     </div>
                                 }
-                                <div class="p-2">
-                                    @if (!string.IsNullOrEmpty(staff?.Name))
-                                    {
-                                        <h3 class="staff-grid__name fs-5 mb-1">@staff.Name</h3>
-                                    }
-                                    @if (!string.IsNullOrEmpty(staff?.Title))
-                                    {
-                                        <div class="text-muted small mb-2">@staff.Title</div>
-                                    }
-                                    @if (hasEmail)
-                                    {
-                                        <div><a href="mailto:@staff!.Email" class="small text-decoration-none">@staff.Email</a></div>
-                                    }
-                                    @if (hasPhone)
-                                    {
-                                        <div><a href="tel:@staff!.Phone" class="small text-decoration-none">@staff.Phone</a></div>
-                                    }
-                                    @if (hasBio)
-                                    {
-                                        <span class="staff-grid__biolink">Read bio &rarr;</span>
-                                    }
-                                </div>
                             </div>
                         </div>
 

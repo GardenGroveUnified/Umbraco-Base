@@ -15,7 +15,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Lets UmbracoBase.Tests call internal static decision-logic methods (e.g. AlumniSurfaceController.ProcessSignUp) directly. -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>UmbracoBase.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SeoToolkit.Umbraco" />
+    <PackageReference Include="ExcelDataReader" />
     <!-- <PackageReference Include="Umbraco.AI" />
     <PackageReference Include="Umbraco.AI.OpenAI" />
     <PackageReference Include="Umbraco.AI.Agent" />

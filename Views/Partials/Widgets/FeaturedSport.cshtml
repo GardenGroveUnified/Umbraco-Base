@@ -1,0 +1,114 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Cms.Core.Models.Blocks
+@using Umbraco.Extensions
+@{
+    // Model-agnostic access so the view compiles before ModelsBuilder regenerates.
+    var content = Model.Content;
+    var settings = Model.Settings;
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    var heading = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var rosterLink = content.Value<Link>("rosterLink");
+    var hasRosterLink = rosterLink != null && !string.IsNullOrEmpty(rosterLink.Url);
+
+    var photo = content.Value<MediaWithCrops>("photo");
+    var photoUrl = photo?.GetCropUrl(220, 180) ?? photo?.Url();
+    var photoAlt = photo?.Content?.Value<string>("alternateText") ?? "";
+
+    var sportName = content.Value<string>("sportName");
+    var coach = content.Value<string>("coach");
+    var season = content.Value<string>("season");
+    var league = content.Value<string>("league");
+    var venue = content.Value<string>("venue");
+
+    var coachMeta = string.Join(" &middot; ", new[] { string.IsNullOrEmpty(coach) ? null : $"Coach: {coach}", season }.Where(s => !string.IsNullOrEmpty(s)));
+    var leagueMeta = string.Join(" &middot; ", new[] { league, string.IsNullOrEmpty(venue) ? null : $"Home: {venue}" }.Where(s => !string.IsNullOrEmpty(s)));
+
+    var stats = (content.Value<IEnumerable<BlockListItem>>("stats") ?? Enumerable.Empty<BlockListItem>())
+        .Where(s => s?.Content != null && s.Content.Value<bool?>("blockVisibility") != false)
+        .ToList();
+
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "" : $"background-color:{settings!.Value<string>("backgroundColor")};";
+    var verticalSpacingClass = settings?.Value<string>("verticalSpacing");
+    if (string.IsNullOrWhiteSpace(verticalSpacingClass)) { verticalSpacingClass = "py-3"; }
+    var topBorderClass = settings?.Value<bool?>("showTopBorder") == true ? "border-top" : "";
+    var anchorId = settings?.Value<string>("anchorId");
+    var classNames = string.Join(" ",
+        (settings?.Value<IEnumerable<string>>("classnames") ?? Enumerable.Empty<string>())
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+}
+
+@if (!string.IsNullOrEmpty(sportName))
+{
+    <section class="section block-featured-sport @backgroundColorClass @verticalSpacingClass @topBorderClass @classNames" style="@backgroundColorStyle"
+    @if (!string.IsNullOrEmpty(anchorId))
+    {
+        <text>id="@anchorId"</text>
+    }>
+        <div class="container">
+            @if (!string.IsNullOrEmpty(heading) || !string.IsNullOrEmpty(preheading) || hasRosterLink)
+            {
+                <div class="home-section-title">
+                    <div class="home-section-title__label">
+                        <span class="home-section-title__bar"></span>
+                        @if (!string.IsNullOrEmpty(heading))
+                        {
+                            <h2 class="head display-6 bold mb-0">@heading</h2>
+                        }
+                        else if (!string.IsNullOrEmpty(preheading))
+                        {
+                            @preheading
+                        }
+                    </div>
+                    @if (hasRosterLink)
+                    {
+                        <a href="@rosterLink!.Url" target="@(rosterLink.Target ?? "_self")" class="home-section-title__action">@(string.IsNullOrEmpty(rosterLink.Name) ? "View roster" : rosterLink.Name) &rarr;</a>
+                    }
+                </div>
+            }
+
+            <div class="athletics-featured-standalone">
+                <div class="athletics-featured">
+                    @if (!string.IsNullOrEmpty(photoUrl))
+                    {
+                        <img class="athletics-featured__photo" src="@photoUrl" width="110" height="90" alt="@photoAlt" loading="lazy" decoding="async" />
+                    }
+                    else
+                    {
+                        <div class="athletics-featured__photo"></div>
+                    }
+                    <div>
+                        <div class="athletics-featured__title">@sportName</div>
+                        @if (!string.IsNullOrEmpty(coachMeta))
+                        {
+                            <div class="athletics-featured__meta">@Html.Raw(coachMeta)</div>
+                        }
+                        @if (!string.IsNullOrEmpty(leagueMeta))
+                        {
+                            <div class="athletics-featured__meta">@Html.Raw(leagueMeta)</div>
+                        }
+                    </div>
+                </div>
+                @if (stats.Any())
+                {
+                    <div class="athletics-featured__stats">
+                        @foreach (var item in stats)
+                        {
+                            var stat = item.Content;
+                            var value = stat.Value<string>("value");
+                            var label = stat.Value<string>("label");
+
+                            <div class="athletics-featured__stat">
+                                <div class="athletics-featured__stat-value">@value</div>
+                                <div class="athletics-featured__stat-label">@label</div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}

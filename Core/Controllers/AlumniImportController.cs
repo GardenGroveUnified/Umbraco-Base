@@ -40,7 +40,7 @@ namespace UmbracoBase.Core.Controllers
             var denied = DenyUnlessDevAdmin();
             if (denied != null) { return denied; }
 
-            return View();
+            return View("~/Views/Alumni/Import.cshtml");
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace UmbracoBase.Core.Controllers
             if (file is null || file.Length == 0)
             {
                 ViewBag.Error = "Choose the AlumniDirectory.xls file first.";
-                return View("Index");
+                return View("~/Views/Alumni/Import.cshtml");
             }
 
             using var stream = file.OpenReadStream();
@@ -61,7 +61,7 @@ namespace UmbracoBase.Core.Controllers
 
             ViewBag.Summary = RunImport(_store, mappedRows);
             ViewBag.SkippedNoEmailFromReading = rawRows.Count - mappedRows.Count();
-            return View("Index");
+            return View("~/Views/Alumni/Import.cshtml");
         }
 
         internal static ImportSummary RunImport(IAlumniMemberStore store, IEnumerable<AlumniImportRow> rows)

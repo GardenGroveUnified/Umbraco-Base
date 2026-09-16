@@ -52,26 +52,38 @@
         var form = modal.querySelector('[data-alumni-contact-form]');
         var memberIdField = modal.querySelector('[data-alumni-contact-member-id]');
         var titleEl = modal.querySelector('[data-alumni-contact-title]');
+        var closeButton = modal.querySelector('[data-alumni-contact-close]');
+        var lastTrigger = null;
 
-        function open(memberId, memberName) {
+        function open(memberId, memberName, trigger) {
             memberIdField.value = memberId;
             titleEl.textContent = 'Send a message to ' + memberName;
             modal.hidden = false;
+            lastTrigger = trigger || null;
+            if (closeButton) { closeButton.focus(); }
         }
 
         function close() {
             modal.hidden = true;
             form.reset();
+            if (lastTrigger) { lastTrigger.focus(); }
+            lastTrigger = null;
         }
 
         document.addEventListener('click', function (event) {
             var trigger = event.target.closest('[data-alumni-contact-trigger]');
             if (trigger) {
-                open(trigger.getAttribute('data-member-id'), trigger.getAttribute('data-member-name') || 'this alumnus');
+                open(trigger.getAttribute('data-member-id'), trigger.getAttribute('data-member-name') || 'this alumnus', trigger);
                 return;
             }
 
             if (event.target.closest('[data-alumni-contact-close]') || event.target === modal) {
+                close();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (!modal.hidden && event.key === 'Escape') {
                 close();
             }
         });

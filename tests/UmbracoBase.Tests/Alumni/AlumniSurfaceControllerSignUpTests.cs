@@ -17,11 +17,12 @@ public class AlumniSurfaceControllerSignUpTests
     };
 
     [Fact]
-    public void ProcessSignUp_creates_a_member_for_a_valid_submission()
+    public async Task ProcessSignUp_creates_a_member_for_a_valid_submission()
     {
         var store = new FakeAlumniMemberStore();
+        var emailSender = new FakeEmailSender();
 
-        var (success, _) = AlumniSurfaceController.ProcessSignUp(store, ValidModel());
+        var (success, _) = await AlumniSurfaceController.ProcessSignUp(store, emailSender, ValidModel());
 
         Assert.True(success);
         Assert.Single(store.Signups);
@@ -29,39 +30,42 @@ public class AlumniSurfaceControllerSignUpTests
     }
 
     [Fact]
-    public void ProcessSignUp_silently_rejects_a_tripped_honeypot_without_creating_a_member()
+    public async Task ProcessSignUp_silently_rejects_a_tripped_honeypot_without_creating_a_member()
     {
         var store = new FakeAlumniMemberStore();
+        var emailSender = new FakeEmailSender();
         var model = ValidModel();
         model.Website = "https://spam.example";
 
-        var (success, _) = AlumniSurfaceController.ProcessSignUp(store, model);
+        var (success, _) = await AlumniSurfaceController.ProcessSignUp(store, emailSender, model);
 
         Assert.False(success);
         Assert.Empty(store.Signups);
     }
 
     [Fact]
-    public void ProcessSignUp_rejects_an_invalid_email_without_creating_a_member()
+    public async Task ProcessSignUp_rejects_an_invalid_email_without_creating_a_member()
     {
         var store = new FakeAlumniMemberStore();
+        var emailSender = new FakeEmailSender();
         var model = ValidModel();
         model.Email = "not-an-email";
 
-        var (success, _) = AlumniSurfaceController.ProcessSignUp(store, model);
+        var (success, _) = await AlumniSurfaceController.ProcessSignUp(store, emailSender, model);
 
         Assert.False(success);
         Assert.Empty(store.Signups);
     }
 
     [Fact]
-    public void ProcessSignUp_rejects_a_blank_first_or_last_name()
+    public async Task ProcessSignUp_rejects_a_blank_first_or_last_name()
     {
         var store = new FakeAlumniMemberStore();
+        var emailSender = new FakeEmailSender();
         var model = ValidModel();
         model.FirstName = "  ";
 
-        var (success, _) = AlumniSurfaceController.ProcessSignUp(store, model);
+        var (success, _) = await AlumniSurfaceController.ProcessSignUp(store, emailSender, model);
 
         Assert.False(success);
         Assert.Empty(store.Signups);

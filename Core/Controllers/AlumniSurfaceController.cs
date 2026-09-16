@@ -20,6 +20,13 @@ namespace UmbracoBase.Core.Controllers
     {
         private const int MaxMessageLength = 2000;
 
+        // Placeholder recipient for the staff moderation-notice email sent on
+        // signup (see the Alumni Contact Portal spec's Signup flow, step 4).
+        // Same situation as the "no-reply@santiagohs.org" from-address used
+        // by the contact-relay below: needs a real value confirmed with the
+        // district later.
+        private const string StaffNotificationEmail = "alumni-signups@santiagohs.org";
+
         private readonly IAlumniMemberStore _store;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AlumniSurfaceController> _logger;
@@ -43,9 +50,9 @@ namespace UmbracoBase.Core.Controllers
 
         [HttpPost]
         [EnableRateLimiting("alumni-signup")]
-        public IActionResult SignUp(AlumniSignupFormModel model)
+        public async Task<IActionResult> SignUp(AlumniSignupFormModel model)
         {
-            var (success, message) = ProcessSignUp(_store, model);
+            var (success, message) = await ProcessSignUp(_store, _emailSender, model, _logger);
             return Json(new { success, message });
         }
 
@@ -53,7 +60,8 @@ namespace UmbracoBase.Core.Controllers
         /// The actual signup decision logic, separated from the HTTP action so
         /// it can be unit tested without standing up a full SurfaceController.
         /// </summary>
-        internal static (bool Success, string Message) ProcessSignUp(IAlumniMemberStore store, AlumniSignupFormModel model)
+        internal static async Task<(bool Success, string Message)> ProcessSignUp(
+            IAlumniMemberStore store, IEmailSender emailSender, AlumniSignupFormModel model, ILogger? logger = null)
         {
             const string genericRejection = "We couldn't process that submission. Please check your details and try again.";
 
@@ -62,9 +70,12 @@ namespace UmbracoBase.Core.Controllers
             if (string.IsNullOrWhiteSpace(model.LastName)) { return (false, genericRejection); }
             if (!AlumniFormGuard.IsValidEmail(model.Email)) { return (false, genericRejection); }
 
+            var firstName = model.FirstName.Trim();
+            var lastName = model.LastName.Trim();
+
             store.CreateSignup(new AlumniSignupInput(
-                FirstName: model.FirstName.Trim(),
-                LastName: model.LastName.Trim(),
+                FirstName: firstName,
+                LastName: lastName,
                 FormerLastName: model.FormerLastName,
                 GradYear: model.GradYear,
                 Industry: model.Industry,
@@ -75,6 +86,32 @@ namespace UmbracoBase.Core.Controllers
                 Phone: model.Phone,
                 Address: model.Address,
                 Gender: model.Gender));
+
+            // Best-effort staff moderation notice (spec: Signup flow, step 4).
+            // If this fails, the Member is still created - staff pick it up on
+            // their next regular check of the Members section.
+            try
+            {
+                if (emailSender.CanSendRequiredEmail())
+                {
+                    var notice = new EmailMessage(
+                        from: "no-reply@santiagohs.org",
+                        to: new[] { StaffNotificationEmail },
+                        cc: null,
+                        bcc: null,
+                        replyTo: null,
+                        subject: $"New Alumni Directory signup pending review: {firstName} {lastName}",
+                        body: $"{firstName} {lastName} ({model.Email.Trim()}) submitted a new Alumni Directory signup and is awaiting review in the backoffice Members section.",
+                        isBodyHtml: false,
+                        attachments: null);
+
+                    await emailSender.SendAsync(notice, "AlumniSignupNotice");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Alumni staff moderation-notice email for {Email} failed.", model.Email);
+            }
 
             return (true, "Thanks! Your submission is pending review and will appear in the directory once approved.");
         }
@@ -104,6 +141,8 @@ namespace UmbracoBase.Core.Controllers
 
             var target = store.FindContactTarget(model.MemberId);
             if (target is null || !target.EmailingOk) { return (false, genericRejection); }
+
+            if (!emailSender.CanSendRequiredEmail()) { return (false, sendFailure); }
 
             var email = new EmailMessage(
                 from: "no-reply@santiagohs.org",

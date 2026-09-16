@@ -131,4 +131,16 @@ public class AlumniSurfaceControllerSendMessageTests
         Assert.DoesNotContain("Exception", message);
         Assert.DoesNotContain("SMTP", message, StringComparison.OrdinalIgnoreCase);
     }
+
+    [Fact]
+    public async Task ProcessSendMessage_fails_without_sending_when_no_email_can_actually_be_sent()
+    {
+        var store = StoreWithTarget();
+        var emailSender = new FakeEmailSender { CanSend = false };
+
+        var (success, _) = await AlumniSurfaceController.ProcessSendMessage(store, emailSender, ValidModel());
+
+        Assert.False(success);
+        Assert.Empty(emailSender.Sent);
+    }
 }

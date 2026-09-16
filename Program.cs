@@ -48,6 +48,8 @@ await app.BootUmbracoAsync();
 // Must run before static files so /css/site.bundle.css is served by WebOptimizer.
 app.UseWebOptimizer();
 
+app.UseRouting();
+
 app.UseRateLimiter();
 
 app.UseUmbraco()

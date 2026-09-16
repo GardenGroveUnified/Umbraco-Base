@@ -30,6 +30,10 @@
 
     var result = AlumniStore.Browse(string.IsNullOrWhiteSpace(query) ? null : query, gradYear, page, pageSize);
     var totalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize);
+
+    static bool IsSafeHttpUrl(string? url)
+        => Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 }
 
 <section class="section block-alumni-directory @backgroundColorClass @verticalSpacingClass @classNames" style="@backgroundColorStyle"
@@ -89,7 +93,7 @@
                         {
                             <p class="alumni-directory__update">@alum.Update</p>
                         }
-                        @if (!string.IsNullOrEmpty(alum.HomepageUrl))
+                        @if (!string.IsNullOrEmpty(alum.HomepageUrl) && IsSafeHttpUrl(alum.HomepageUrl))
                         {
                             <a href="@alum.HomepageUrl" target="_blank" rel="noopener" class="alumni-directory__homepage">Visit homepage &rarr;</a>
                         }
@@ -106,7 +110,7 @@
                 <nav class="alumni-directory__pagination" aria-label="Directory pages">
                     @for (var p = 1; p <= totalPages; p++)
                     {
-                        <a href="?q=@query&amp;year=@gradYear&amp;page=@p" class="alumni-directory__page @(p == page ? "alumni-directory__page--active" : "")">@p</a>
+                        <a href="?q=@Uri.EscapeDataString(query ?? "")&amp;year=@gradYear&amp;page=@p" class="alumni-directory__page @(p == page ? "alumni-directory__page--active" : "")">@p</a>
                     }
                 </nav>
             }

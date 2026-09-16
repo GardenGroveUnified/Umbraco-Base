@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Logging;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Logging;
+using Umbraco.Cms.Core.Mail;
+using Umbraco.Cms.Core.Models.Email;
 using Umbraco.Cms.Core.Routing;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
@@ -18,6 +21,8 @@ namespace UmbracoBase.Core.Controllers
         private const int MaxMessageLength = 2000;
 
         private readonly IAlumniMemberStore _store;
+        private readonly IEmailSender _emailSender;
+        private readonly ILogger<AlumniSurfaceController> _logger;
 
         public AlumniSurfaceController(
             IUmbracoContextAccessor umbracoContextAccessor,
@@ -26,10 +31,14 @@ namespace UmbracoBase.Core.Controllers
             AppCaches appCaches,
             IProfilingLogger profilingLogger,
             IPublishedUrlProvider publishedUrlProvider,
-            IAlumniMemberStore store)
+            IAlumniMemberStore store,
+            IEmailSender emailSender,
+            ILogger<AlumniSurfaceController> logger)
             : base(umbracoContextAccessor, databaseFactory, services, appCaches, profilingLogger, publishedUrlProvider)
         {
             _store = store;
+            _emailSender = emailSender;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -68,6 +77,56 @@ namespace UmbracoBase.Core.Controllers
                 Gender: model.Gender));
 
             return (true, "Thanks! Your submission is pending review and will appear in the directory once approved.");
+        }
+
+        [HttpPost]
+        [EnableRateLimiting("alumni-contact")]
+        public async Task<IActionResult> SendMessage(AlumniContactFormModel model)
+        {
+            var (success, message) = await ProcessSendMessage(_store, _emailSender, model, _logger);
+            return Json(new { success, message });
+        }
+
+        /// <summary>
+        /// The actual contact-relay decision logic, separated from the HTTP action so
+        /// it can be unit tested without standing up a full SurfaceController.
+        /// </summary>
+        internal static async Task<(bool Success, string Message)> ProcessSendMessage(
+            IAlumniMemberStore store, IEmailSender emailSender, AlumniContactFormModel model, ILogger? logger = null)
+        {
+            const string genericRejection = "We couldn't send that message. Please check your details and try again.";
+            const string sendFailure = "Your message couldn't be sent right now. Please try again later.";
+
+            if (AlumniFormGuard.IsHoneypotTripped(model.Website)) { return (false, genericRejection); }
+            if (string.IsNullOrWhiteSpace(model.SenderName)) { return (false, genericRejection); }
+            if (!AlumniFormGuard.IsValidEmail(model.SenderEmail)) { return (false, genericRejection); }
+            if (!AlumniFormGuard.IsValidMessage(model.Message, MaxMessageLength)) { return (false, genericRejection); }
+
+            var target = store.FindContactTarget(model.MemberId);
+            if (target is null || !target.EmailingOk) { return (false, genericRejection); }
+
+            var email = new EmailMessage(
+                from: "no-reply@santiagohs.org",
+                to: new[] { target.Email },
+                cc: null,
+                bcc: null,
+                replyTo: new[] { model.SenderEmail },
+                subject: $"Message from {model.SenderName} via the Alumni Directory",
+                body: model.Message,
+                isBodyHtml: false,
+                attachments: null);
+
+            try
+            {
+                await emailSender.SendAsync(email, "AlumniContact");
+            }
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Alumni contact-relay email to member {MemberId} failed.", model.MemberId);
+                return (false, sendFailure);
+            }
+
+            return (true, "Message sent!");
         }
     }
 }

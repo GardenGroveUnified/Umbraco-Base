@@ -98,3 +98,61 @@
     height: 1px;
     overflow: hidden;
 }
+
+.alumni-signup__row {
+    margin-bottom: 12px;
+}
+
+.alumni-signup__row label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.alumni-signup__row input,
+.alumni-signup__row textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.alumni-signup__result {
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+.alumni-signup__result--error {
+    color: #b3261e;
+}
+
+.alumni-contact-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.alumni-contact-modal__panel {
+    background: #fff;
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 480px;
+    width: calc(100% - 32px);
+    position: relative;
+}
+
+.alumni-contact-modal__close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: none;
+    border: 0;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}

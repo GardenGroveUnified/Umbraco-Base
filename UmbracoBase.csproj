@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="SeoToolkit.Umbraco" />
+    <PackageReference Include="ExcelDataReader" />
     <!-- <PackageReference Include="Umbraco.AI" />
     <PackageReference Include="Umbraco.AI.OpenAI" />
     <PackageReference Include="Umbraco.AI.Agent" />

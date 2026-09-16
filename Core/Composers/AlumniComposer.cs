@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
@@ -15,6 +16,9 @@ namespace UmbracoBase.Core.Composers
         public void Compose(IUmbracoBuilder builder)
         {
             builder.Services.AddScoped<IAlumniMemberStore, UmbracoAlumniMemberStore>();
+
+            // ExcelDataReader needs this for legacy .xls code-page text encodings.
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
     }
 }

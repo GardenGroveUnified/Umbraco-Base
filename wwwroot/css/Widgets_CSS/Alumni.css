@@ -87,16 +87,33 @@
 }
 
 /* Honeypot field on the alumni signup/contact forms (Tasks 7-8, wired up
-   in Task 11): off-screen for sighted users, aria-hidden and unfocusable
-   for assistive tech, but present in the DOM for bots that fill every
-   field. Confirmed pattern with existing accessibility-audit conventions
-   in this codebase. */
+   in Task 11): off-screen for sighted users via this clip, out of the tab
+   order via tabindex="-1" on the input itself. No aria-hidden on this
+   wrapper - it contains a focusable input, and aria-hidden on an ancestor
+   of a focusable element is its own WCAG 4.1.2 violation regardless of the
+   input's own tabindex. The label text ("Leave this field blank") is
+   honest, so it's harmless for a screen reader user to land on. */
 .alumni-form__hp {
     position: absolute;
     left: -9999px;
     width: 1px;
     height: 1px;
     overflow: hidden;
+}
+
+/* Visible SC 3.3.2 required-field marker. Screen readers already announce
+   "required" from the HTML required attribute; this is for sighted users
+   who don't get that cue. aria-hidden because it's redundant/decorative
+   to assistive tech - the required attribute is the source of truth. */
+.required-indicator {
+    color: #b3261e;
+    margin-left: 2px;
+}
+
+.alumni-signup__required-note {
+    font-size: 0.8rem;
+    color: #555;
+    margin-bottom: 12px;
 }
 
 .alumni-signup__row {
@@ -155,4 +172,10 @@
     font-size: 1.5rem;
     cursor: pointer;
     line-height: 1;
+}
+/* Glyph as generated content, not a text node, so it never conflicts
+   with the button's aria-label (WCAG 2.5.3 Label in Name). Same pattern
+   as .staff-grid__dialog-close / .staff-directory__dialog-close. */
+.alumni-contact-modal__close::after {
+    content: '\00d7';
 }

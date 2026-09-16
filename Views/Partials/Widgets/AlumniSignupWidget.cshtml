@@ -43,18 +43,20 @@
             </div>
         }
 
-        <form data-alumni-signup-form class="alumni-signup__form">
+        @using (Html.BeginUmbracoForm<UmbracoBase.Core.Controllers.AlumniSurfaceController>("SignUp", null, new { @class = "alumni-signup__form", data_alumni_signup_form = "" }))
+        {
+            <p class="alumni-signup__required-note"><span class="required-indicator" aria-hidden="true">*</span> Required</p>
             <div class="alumni-signup__row">
-                <label for="alumni-signup-firstName">First name</label>
-                <input type="text" id="alumni-signup-firstName" name="firstName" required />
+                <label for="alumni-signup-firstName">First name <span class="required-indicator" aria-hidden="true">*</span></label>
+                <input type="text" id="alumni-signup-firstName" name="firstName" autocomplete="given-name" required />
             </div>
             <div class="alumni-signup__row">
-                <label for="alumni-signup-lastName">Last name</label>
-                <input type="text" id="alumni-signup-lastName" name="lastName" required />
+                <label for="alumni-signup-lastName">Last name <span class="required-indicator" aria-hidden="true">*</span></label>
+                <input type="text" id="alumni-signup-lastName" name="lastName" autocomplete="family-name" required />
             </div>
             <div class="alumni-signup__row">
                 <label for="alumni-signup-formerLastName">Former last name (optional)</label>
-                <input type="text" id="alumni-signup-formerLastName" name="formerLastName" />
+                <input type="text" id="alumni-signup-formerLastName" name="formerLastName" autocomplete="family-name" />
             </div>
             <div class="alumni-signup__row">
                 <label for="alumni-signup-gradYear">Grad year</label>
@@ -77,29 +79,29 @@
                 <input type="url" id="alumni-signup-homepageUrl" name="homepageUrl" />
             </div>
             <div class="alumni-signup__row">
-                <label for="alumni-signup-email">Email (kept private - never shown publicly)</label>
-                <input type="email" id="alumni-signup-email" name="email" required />
+                <label for="alumni-signup-email">Email (kept private - never shown publicly) <span class="required-indicator" aria-hidden="true">*</span></label>
+                <input type="email" id="alumni-signup-email" name="email" autocomplete="email" required />
             </div>
             <div class="alumni-signup__row">
                 <label for="alumni-signup-phone">Phone (optional, kept private)</label>
-                <input type="tel" id="alumni-signup-phone" name="phone" />
+                <input type="tel" id="alumni-signup-phone" name="phone" autocomplete="tel" />
             </div>
             <div class="alumni-signup__row">
                 <label for="alumni-signup-address">Address (optional, kept private)</label>
-                <textarea id="alumni-signup-address" name="address" rows="2"></textarea>
+                <textarea id="alumni-signup-address" name="address" rows="2" autocomplete="street-address"></textarea>
             </div>
             <div class="alumni-signup__row">
                 <label for="alumni-signup-gender">Gender (optional, kept private)</label>
                 <input type="text" id="alumni-signup-gender" name="gender" />
             </div>
 
-            <div class="alumni-form__hp" aria-hidden="true">
+            <div class="alumni-form__hp">
                 <label for="alumni-signup-website">Leave this field blank</label>
                 <input type="text" id="alumni-signup-website" name="website" tabindex="-1" autocomplete="off" />
             </div>
 
             <button type="submit">Join the directory</button>
             <p class="alumni-signup__result" data-alumni-form-result role="status" aria-live="polite"></p>
-        </form>
+        }
     </div>
 </section>

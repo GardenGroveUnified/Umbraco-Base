@@ -62,7 +62,7 @@
 
         <form method="get" class="alumni-directory__search" role="search">
             <label for="alumni-search-q">Search by name</label>
-            <input type="search" id="alumni-search-q" name="q" value="@query" placeholder="Search by name" />
+            <input type="search" id="alumni-search-q" name="q" value="@query" placeholder="Search by name" autocomplete="off" />
             <label for="alumni-search-year">Grad year</label>
             <input type="number" id="alumni-search-year" name="year" value="@(gradYear?.ToString() ?? "")" placeholder="Grad year" />
             <button type="submit">Search</button>
@@ -123,29 +123,31 @@
 
     <div class="alumni-contact-modal" data-alumni-contact-modal hidden>
         <div class="alumni-contact-modal__panel" role="dialog" aria-modal="true" aria-labelledby="alumni-contact-modal-title">
-            <button type="button" class="alumni-contact-modal__close" data-alumni-contact-close aria-label="Close">&times;</button>
+            <button type="button" class="alumni-contact-modal__close" data-alumni-contact-close aria-label="Close"></button>
             <h3 id="alumni-contact-modal-title" data-alumni-contact-title>Send a message</h3>
-            <form data-alumni-contact-form>
+            @using (Html.BeginUmbracoForm<UmbracoBase.Core.Controllers.AlumniSurfaceController>("SendMessage", null, new { data_alumni_contact_form = "" }))
+            {
                 <input type="hidden" name="memberId" data-alumni-contact-member-id />
+                <p class="alumni-signup__required-note"><span class="required-indicator" aria-hidden="true">*</span> Required</p>
                 <div class="alumni-signup__row">
-                    <label for="alumni-contact-senderName">Your name</label>
-                    <input type="text" id="alumni-contact-senderName" name="senderName" required />
+                    <label for="alumni-contact-senderName">Your name <span class="required-indicator" aria-hidden="true">*</span></label>
+                    <input type="text" id="alumni-contact-senderName" name="senderName" autocomplete="name" required />
                 </div>
                 <div class="alumni-signup__row">
-                    <label for="alumni-contact-senderEmail">Your email</label>
-                    <input type="email" id="alumni-contact-senderEmail" name="senderEmail" required />
+                    <label for="alumni-contact-senderEmail">Your email <span class="required-indicator" aria-hidden="true">*</span></label>
+                    <input type="email" id="alumni-contact-senderEmail" name="senderEmail" autocomplete="email" required />
                 </div>
                 <div class="alumni-signup__row">
-                    <label for="alumni-contact-message">Message</label>
+                    <label for="alumni-contact-message">Message <span class="required-indicator" aria-hidden="true">*</span></label>
                     <textarea id="alumni-contact-message" name="message" rows="4" required></textarea>
                 </div>
-                <div class="alumni-form__hp" aria-hidden="true">
+                <div class="alumni-form__hp">
                     <label for="alumni-contact-website">Leave this field blank</label>
                     <input type="text" id="alumni-contact-website" name="website" tabindex="-1" autocomplete="off" />
                 </div>
                 <button type="submit">Send</button>
                 <p class="alumni-signup__result" data-alumni-form-result role="status" aria-live="polite"></p>
-            </form>
+            }
         </div>
     </div>
 </section>

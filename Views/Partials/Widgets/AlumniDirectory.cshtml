@@ -1,0 +1,119 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks
+@using UmbracoBase.Core.Alumni
+@using UmbracoBase.Core.Models
+@inject IAlumniMemberStore AlumniStore
+@{
+    // Model-agnostic access so the view compiles before ModelsBuilder regenerates.
+    var content = Model.Content;
+    var settings = Model.Settings;
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    var heading = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var text = content.Value<Umbraco.Cms.Core.Strings.IHtmlEncodedString>("text");
+
+    var anchorId = settings?.Value<string>("anchorId");
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "" : $"background-color:{settings!.Value<string>("backgroundColor")};";
+    var verticalSpacingClass = settings?.Value<string>("verticalSpacing");
+    if (string.IsNullOrWhiteSpace(verticalSpacingClass)) { verticalSpacingClass = "py-3"; }
+    var classNames = string.Join(" ",
+        (settings?.Value<IEnumerable<string>>("classnames") ?? Enumerable.Empty<string>())
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+
+    const int pageSize = 24;
+    var query = Context.Request.Query["q"].ToString();
+    var yearRaw = Context.Request.Query["year"].ToString();
+    int? gradYear = int.TryParse(yearRaw, out var parsedYear) ? parsedYear : null;
+    var page = int.TryParse(Context.Request.Query["page"].ToString(), out var parsedPage) && parsedPage > 0 ? parsedPage : 1;
+
+    var result = AlumniStore.Browse(string.IsNullOrWhiteSpace(query) ? null : query, gradYear, page, pageSize);
+    var totalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize);
+}
+
+<section class="section block-alumni-directory @backgroundColorClass @verticalSpacingClass @classNames" style="@backgroundColorStyle"
+@if (!string.IsNullOrEmpty(anchorId))
+{
+    <text>id="@anchorId"</text>
+}>
+    <div class="container">
+        @if (!string.IsNullOrEmpty(heading) || !string.IsNullOrEmpty(preheading) || !string.IsNullOrEmpty(text?.ToString()))
+        {
+            <div class="mb-4">
+                @if (!string.IsNullOrEmpty(preheading))
+                {
+                    <div class="pre-head">@preheading</div>
+                }
+                @if (!string.IsNullOrEmpty(heading))
+                {
+                    <h2 class="head display-6 bold">@heading</h2>
+                }
+                @if (!string.IsNullOrEmpty(text?.ToString()))
+                {
+                    <p>@text</p>
+                }
+            </div>
+        }
+
+        <form method="get" class="alumni-directory__search" role="search">
+            <label for="alumni-search-q">Search by name</label>
+            <input type="search" id="alumni-search-q" name="q" value="@query" placeholder="Search by name" />
+            <label for="alumni-search-year">Grad year</label>
+            <input type="number" id="alumni-search-year" name="year" value="@(gradYear?.ToString() ?? "")" placeholder="Grad year" />
+            <button type="submit">Search</button>
+        </form>
+
+        @if (result.Items.Any())
+        {
+            <div class="alumni-directory__grid">
+                @foreach (var alum in result.Items)
+                {
+                    <div class="alumni-directory__card">
+                        <div class="alumni-directory__name">
+                            @alum.FirstName @alum.LastName
+                            @if (!string.IsNullOrEmpty(alum.FormerLastName))
+                            {
+                                <span class="alumni-directory__former">(@alum.FormerLastName)</span>
+                            }
+                        </div>
+                        @if (alum.GradYear.HasValue)
+                        {
+                            <div class="alumni-directory__meta">Class of @alum.GradYear</div>
+                        }
+                        @if (!string.IsNullOrEmpty(alum.Profession) || !string.IsNullOrEmpty(alum.Industry))
+                        {
+                            <div class="alumni-directory__meta">@alum.Profession@(!string.IsNullOrEmpty(alum.Profession) && !string.IsNullOrEmpty(alum.Industry) ? " · " : "")@alum.Industry</div>
+                        }
+                        @if (!string.IsNullOrEmpty(alum.Update))
+                        {
+                            <p class="alumni-directory__update">@alum.Update</p>
+                        }
+                        @if (!string.IsNullOrEmpty(alum.HomepageUrl))
+                        {
+                            <a href="@alum.HomepageUrl" target="_blank" rel="noopener" class="alumni-directory__homepage">Visit homepage &rarr;</a>
+                        }
+                        @if (alum.EmailingOk)
+                        {
+                            <button type="button" class="alumni-directory__contact" data-alumni-contact-trigger data-member-id="@alum.Id" data-member-name="@alum.FirstName @alum.LastName">Send a message</button>
+                        }
+                    </div>
+                }
+            </div>
+
+            @if (totalPages > 1)
+            {
+                <nav class="alumni-directory__pagination" aria-label="Directory pages">
+                    @for (var p = 1; p <= totalPages; p++)
+                    {
+                        <a href="?q=@query&amp;year=@gradYear&amp;page=@p" class="alumni-directory__page @(p == page ? "alumni-directory__page--active" : "")">@p</a>
+                    }
+                </nav>
+            }
+        }
+        else
+        {
+            <p class="text-muted mb-0">No alumni match your search.</p>
+        }
+    </div>
+</section>

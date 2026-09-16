@@ -1,0 +1,100 @@
+/* wwwroot/css/Widgets_CSS/Alumni.css */
+.alumni-directory__search {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+    margin-bottom: 20px;
+}
+
+.alumni-directory__search label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.alumni-directory__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.alumni-directory__card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+}
+
+.alumni-directory__name {
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+}
+
+.alumni-directory__former {
+    font-weight: 400;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.alumni-directory__meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 2px;
+}
+
+.alumni-directory__update {
+    font-size: 0.85rem;
+    margin-top: 8px;
+}
+
+.alumni-directory__homepage,
+.alumni-directory__contact {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+.alumni-directory__contact {
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    border: 0;
+    border-radius: 4px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+.alumni-directory__pagination {
+    display: flex;
+    gap: 6px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.alumni-directory__page {
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+}
+
+.alumni-directory__page--active {
+    background: var(--shs-purple, #4a1f7a);
+    color: #fff;
+    border-color: var(--shs-purple, #4a1f7a);
+}
+
+/* Honeypot field on the alumni signup/contact forms (Tasks 7-8, wired up
+   in Task 11): off-screen for sighted users, aria-hidden and unfocusable
+   for assistive tech, but present in the DOM for bots that fill every
+   field. Confirmed pattern with existing accessibility-audit conventions
+   in this codebase. */
+.alumni-form__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}

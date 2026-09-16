@@ -1,0 +1,105 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    var heading = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var text = content.Value<Umbraco.Cms.Core.Strings.IHtmlEncodedString>("text");
+
+    var anchorId = settings?.Value<string>("anchorId");
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "" : $"background-color:{settings!.Value<string>("backgroundColor")};";
+    var verticalSpacingClass = settings?.Value<string>("verticalSpacing");
+    if (string.IsNullOrWhiteSpace(verticalSpacingClass)) { verticalSpacingClass = "py-3"; }
+    var classNames = string.Join(" ",
+        (settings?.Value<IEnumerable<string>>("classnames") ?? Enumerable.Empty<string>())
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+}
+
+<section class="section block-alumni-signup @backgroundColorClass @verticalSpacingClass @classNames" style="@backgroundColorStyle"
+@if (!string.IsNullOrEmpty(anchorId))
+{
+    <text>id="@anchorId"</text>
+}>
+    <div class="container container-md">
+        @if (!string.IsNullOrEmpty(heading) || !string.IsNullOrEmpty(preheading) || !string.IsNullOrEmpty(text?.ToString()))
+        {
+            <div class="mb-4">
+                @if (!string.IsNullOrEmpty(preheading))
+                {
+                    <div class="pre-head">@preheading</div>
+                }
+                @if (!string.IsNullOrEmpty(heading))
+                {
+                    <h2 class="head display-6 bold">@heading</h2>
+                }
+                @if (!string.IsNullOrEmpty(text?.ToString()))
+                {
+                    <p>@text</p>
+                }
+            </div>
+        }
+
+        <form data-alumni-signup-form class="alumni-signup__form">
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-firstName">First name</label>
+                <input type="text" id="alumni-signup-firstName" name="firstName" required />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-lastName">Last name</label>
+                <input type="text" id="alumni-signup-lastName" name="lastName" required />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-formerLastName">Former last name (optional)</label>
+                <input type="text" id="alumni-signup-formerLastName" name="formerLastName" />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-gradYear">Grad year</label>
+                <input type="number" id="alumni-signup-gradYear" name="gradYear" min="1950" max="2100" />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-industry">Industry</label>
+                <input type="text" id="alumni-signup-industry" name="industry" />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-profession">Profession</label>
+                <input type="text" id="alumni-signup-profession" name="profession" />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-update">Share a brief update (optional)</label>
+                <textarea id="alumni-signup-update" name="update" rows="3"></textarea>
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-homepageUrl">Homepage URL (optional)</label>
+                <input type="url" id="alumni-signup-homepageUrl" name="homepageUrl" />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-email">Email (kept private - never shown publicly)</label>
+                <input type="email" id="alumni-signup-email" name="email" required />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-phone">Phone (optional, kept private)</label>
+                <input type="tel" id="alumni-signup-phone" name="phone" />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-address">Address (optional, kept private)</label>
+                <textarea id="alumni-signup-address" name="address" rows="2"></textarea>
+            </div>
+            <div class="alumni-signup__row">
+                <label for="alumni-signup-gender">Gender (optional, kept private)</label>
+                <input type="text" id="alumni-signup-gender" name="gender" />
+            </div>
+
+            <div class="alumni-form__hp" aria-hidden="true">
+                <label for="alumni-signup-website">Leave this field blank</label>
+                <input type="text" id="alumni-signup-website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <button type="submit">Join the directory</button>
+            <p class="alumni-signup__result" data-alumni-form-result role="status" aria-live="polite"></p>
+        </form>
+    </div>
+</section>

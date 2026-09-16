@@ -54,6 +54,35 @@ public sealed class UmbracoAlumniMemberStore : IAlumniMemberStore
         return new AlumniContactTarget(member.Key, displayName, member.Email, emailingOk);
     }
 
+    public bool ImportLegacyRow(AlumniImportRow row)
+    {
+        var alreadyImported = _memberService
+            .GetMembersByMemberType(MemberTypeAlias)
+            .Any(m => GetString(m, "legacyRecId") == row.LegacyRecId);
+        if (alreadyImported) { return false; }
+
+        var displayName = $"{row.FirstName} {row.LastName}".Trim();
+        var member = _memberService.CreateMember(row.Email, row.Email, displayName, MemberTypeAlias);
+
+        SetString(member, "firstName", row.FirstName);
+        SetString(member, "lastName", row.LastName);
+        SetString(member, "formerLastName", row.FormerLastName);
+        SetInt(member, "gradYear", row.GradYear);
+        SetString(member, "industry", row.Industry);
+        SetString(member, "profession", row.Profession);
+        SetString(member, "update", row.Update);
+        SetString(member, "homepageUrl", row.HomepageUrl);
+        SetString(member, "phone", row.Phone);
+        SetString(member, "address", row.Address);
+        SetString(member, "gender", row.Gender);
+        SetBool(member, "emailingOk", row.EmailingOk);
+        SetString(member, "legacyRecId", row.LegacyRecId);
+        member.IsApproved = true; // already-known real members, not a public submission
+
+        _memberService.Save(member, Umbraco.Cms.Core.Constants.Security.SuperUserId);
+        return true;
+    }
+
     private static void SetProfile(IMember member, AlumniSignupInput input)
     {
         SetString(member, "firstName", input.FirstName);

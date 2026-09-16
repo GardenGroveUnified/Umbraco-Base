@@ -7,6 +7,7 @@ public sealed class FakeAlumniMemberStore : IAlumniMemberStore
 {
     public List<AlumniSignupInput> Signups { get; } = new();
     public Dictionary<Guid, AlumniContactTarget> Targets { get; } = new();
+    public HashSet<string> ImportedRecIds { get; } = new();
 
     public AlumniMemberSummary CreateSignup(AlumniSignupInput input)
     {
@@ -22,4 +23,6 @@ public sealed class FakeAlumniMemberStore : IAlumniMemberStore
 
     public AlumniContactTarget? FindContactTarget(Guid memberId)
         => Targets.TryGetValue(memberId, out var target) ? target : null;
+
+    public bool ImportLegacyRow(AlumniImportRow row) => ImportedRecIds.Add(row.LegacyRecId);
 }

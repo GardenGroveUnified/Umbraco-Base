@@ -15,4 +15,11 @@ public interface IAlumniMemberStore
     AlumniBrowseResult Browse(string? query, int? gradYear, int page, int pageSize);
 
     AlumniContactTarget? FindContactTarget(Guid memberId);
+
+    /// <summary>
+    /// Creates an approved Member for one legacy row, unless a Member with
+    /// the same LegacyRecId already exists (re-running the import is then
+    /// a no-op for that row). Returns true if a Member was created.
+    /// </summary>
+    bool ImportLegacyRow(AlumniImportRow row);
 }

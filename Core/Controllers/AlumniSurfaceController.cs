@@ -22,9 +22,7 @@ namespace UmbracoBase.Core.Controllers
 
         // Placeholder recipient for the staff moderation-notice email sent on
         // signup (see the Alumni Contact Portal spec's Signup flow, step 4).
-        // Same situation as the "no-reply@santiagohs.org" from-address used
-        // by the contact-relay below: needs a real value confirmed with the
-        // district later.
+        // Needs a real value confirmed with the district later.
         private const string StaffNotificationEmail = "alumni-signups@santiagohs.org";
 
         private readonly IAlumniMemberStore _store;
@@ -95,7 +93,7 @@ namespace UmbracoBase.Core.Controllers
                 if (emailSender.CanSendRequiredEmail())
                 {
                     var notice = new EmailMessage(
-                        from: "no-reply@santiagohs.org",
+                        from: "alumnishs53@gmail.com",
                         to: new[] { StaffNotificationEmail },
                         cc: null,
                         bcc: null,
@@ -145,7 +143,7 @@ namespace UmbracoBase.Core.Controllers
             if (!emailSender.CanSendRequiredEmail()) { return (false, sendFailure); }
 
             var email = new EmailMessage(
-                from: "no-reply@santiagohs.org",
+                from: "alumnishs53@gmail.com",
                 to: new[] { target.Email },
                 cc: null,
                 bcc: null,

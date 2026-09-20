@@ -1,0 +1,55 @@
+@model IReadOnlyList<UmbracoBase.Core.Models.AlumniPendingApproval>
+@{
+    Layout = null;
+    ViewData["Title"] = "Alumni Approvals";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0">Alumni signups awaiting approval</h1>
+            <a href="/umbraco/section/member-management/workspace/member-root" class="btn btn-outline-secondary btn-sm">Open Members section</a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <p class="text-muted">Nothing waiting right now.</p>
+        }
+        else
+        {
+            <table class="table table-striped bg-white shadow-sm">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Submitted</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pending in Model)
+                    {
+                        <tr>
+                            <td>@pending.FirstName @pending.LastName</td>
+                            <td>@pending.Email</td>
+                            <td>@pending.SubmittedUtc.ToString("MMM d, yyyy h:mm tt")</td>
+                            <td>
+                                <a href="/umbraco/section/member-management/workspace/member/edit/@pending.Id/invariant/view/info" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Review</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</body>
+</html>

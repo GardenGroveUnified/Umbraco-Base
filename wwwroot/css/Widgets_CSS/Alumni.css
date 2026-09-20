@@ -163,6 +163,10 @@
     position: relative;
 }
 
+.alumni-contact-modal__panel h3 {
+    font-family: var(--font-titles);
+}
+
 .alumni-contact-modal__close {
     position: absolute;
     top: 10px;

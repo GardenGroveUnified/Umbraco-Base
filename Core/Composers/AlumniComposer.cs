@@ -2,7 +2,9 @@ using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Notifications;
 using UmbracoBase.Core.Alumni;
+using UmbracoBase.Core.Notifications;
 
 namespace UmbracoBase.Core.Composers
 {
@@ -16,6 +18,7 @@ namespace UmbracoBase.Core.Composers
         public void Compose(IUmbracoBuilder builder)
         {
             builder.Services.AddScoped<IAlumniMemberStore, UmbracoAlumniMemberStore>();
+            builder.AddNotificationAsyncHandler<MemberSavedNotification, AlumniApprovalEmailHandler>();
 
             // ExcelDataReader needs this for legacy .xls code-page text encodings.
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

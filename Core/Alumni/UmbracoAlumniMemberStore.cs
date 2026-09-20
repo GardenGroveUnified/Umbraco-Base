@@ -54,6 +54,19 @@ public sealed class UmbracoAlumniMemberStore : IAlumniMemberStore
         return new AlumniContactTarget(member.Key, displayName, member.Email, emailingOk);
     }
 
+    public IReadOnlyList<AlumniPendingApproval> GetPendingApprovals()
+        => _memberService
+            .GetMembersByMemberType(MemberTypeAlias)
+            .Where(m => !m.IsApproved)
+            .OrderBy(m => m.CreateDate)
+            .Select(m => new AlumniPendingApproval(
+                Id: m.Key,
+                FirstName: GetString(m, "firstName") ?? string.Empty,
+                LastName: GetString(m, "lastName") ?? string.Empty,
+                Email: m.Email,
+                SubmittedUtc: m.CreateDate))
+            .ToList();
+
     public bool ImportLegacyRow(AlumniImportRow row)
     {
         var alreadyImported = _memberService
@@ -136,7 +149,10 @@ public sealed class UmbracoAlumniMemberStore : IAlumniMemberStore
         => member.Properties[alias]?.GetValue(null, null, false) switch
         {
             bool b => b,
+            int i => i != 0,
+            long l => l != 0,
             string s when bool.TryParse(s, out var parsed) => parsed,
+            string s when int.TryParse(s, out var parsedInt) => parsedInt != 0,
             _ => false
         };
 }

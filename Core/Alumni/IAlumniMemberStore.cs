@@ -4,9 +4,9 @@ namespace UmbracoBase.Core.Alumni;
 
 /// <summary>
 /// The only thing that touches Umbraco's IMemberService for the Alumni
-/// Contact Portal. Kept narrow (three operations) so controllers and
-/// widgets can be tested against a hand-written fake instead of the much
-/// larger IMemberService interface.
+/// Contact Portal. Kept narrow so controllers and widgets can be tested
+/// against a hand-written fake instead of the much larger IMemberService
+/// interface.
 /// </summary>
 public interface IAlumniMemberStore
 {
@@ -22,4 +22,10 @@ public interface IAlumniMemberStore
     /// a no-op for that row). Returns true if a Member was created.
     /// </summary>
     bool ImportLegacyRow(AlumniImportRow row);
+
+    /// <summary>
+    /// Alumni signups with IsApproved still false, oldest first, for the
+    /// staff-only pending approvals page.
+    /// </summary>
+    IReadOnlyList<AlumniPendingApproval> GetPendingApprovals();
 }

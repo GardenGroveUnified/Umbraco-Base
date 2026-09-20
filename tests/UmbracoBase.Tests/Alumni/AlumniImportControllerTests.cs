@@ -16,6 +16,7 @@ public class AlumniImportControllerTests
         public AlumniMemberSummary CreateSignup(AlumniSignupInput input) => throw new NotSupportedException();
         public AlumniBrowseResult Browse(string? query, int? gradYear, int page, int pageSize) => throw new NotSupportedException();
         public AlumniContactTarget? FindContactTarget(Guid memberId) => throw new NotSupportedException();
+        public IReadOnlyList<AlumniPendingApproval> GetPendingApprovals() => throw new NotSupportedException();
     }
 
     private static AlumniImportRow Row(string recId, string email = "a@example.com") => new(

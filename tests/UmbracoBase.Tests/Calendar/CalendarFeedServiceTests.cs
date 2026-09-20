@@ -47,6 +47,16 @@ public class CalendarFeedServiceTests
     }
 
     [Fact]
+    public async Task GetUpcomingAsync_returns_empty_when_the_request_times_out()
+    {
+        var service = Build(StubHandler.Throws(new TaskCanceledException("timed out", new TimeoutException())));
+
+        var events = await service.GetUpcomingAsync(Url, daysAhead: 40000, maxResults: 12);
+
+        Assert.Empty(events);
+    }
+
+    [Fact]
     public async Task GetUpcomingAsync_returns_empty_for_a_blank_url()
     {
         var handler = StubHandler.Returns(HttpStatusCode.OK, Feed("service-feed.ics"));

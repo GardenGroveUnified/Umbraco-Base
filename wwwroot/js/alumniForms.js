@@ -1,10 +1,11 @@
 // wwwroot/js/alumniForms.js
-// Handles the Alumni Sign Up form and the Alumni Directory's per-card
-// "Send a message" contact form, both posted via fetch to
-// AlumniSurfaceController (see Core/Controllers/AlumniSurfaceController.cs).
+// Handles the Alumni Sign Up form, the Alumni Directory's per-card
+// "Send a message" contact form, and the "Post a Memoir" form, all posted
+// via fetch to AlumniSurfaceController (see
+// Core/Controllers/AlumniSurfaceController.cs).
 (function () {
     function showResult(form, message, isError) {
-        var result = form.querySelector('[data-alumni-form-result]');
+        var result = form.querySelector('[data-alumni-form-result], [data-memoir-form-result]');
         if (!result) { return; }
         result.textContent = message;
         result.classList.toggle('alumni-signup__result--error', !!isError);
@@ -94,6 +95,17 @@
         });
     }
 
+    function initMemoirSubmitForm() {
+        var form = document.querySelector('[data-memoir-submit-form]');
+        if (!form) { return; }
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            submitForm(form, '/umbraco/surface/AlumniSurface/SubmitMemoir');
+        });
+    }
+
     initSignupForm();
     initContactModal();
+    initMemoirSubmitForm();
 })();

@@ -19,6 +19,7 @@ namespace UmbracoBase.Core.Controllers
     public class AlumniSurfaceController : SurfaceController
     {
         private const int MaxMessageLength = 2000;
+        private const int MaxMemoirLength = 5000;
 
         // Placeholder recipient for the staff moderation-notice email sent on
         // signup (see the Alumni Contact Portal spec's Signup flow, step 4).
@@ -26,6 +27,7 @@ namespace UmbracoBase.Core.Controllers
         private const string StaffNotificationEmail = "alumni-signups@santiagohs.org";
 
         private readonly IAlumniMemberStore _store;
+        private readonly IMemoirStore _memoirStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<AlumniSurfaceController> _logger;
 
@@ -37,11 +39,13 @@ namespace UmbracoBase.Core.Controllers
             IProfilingLogger profilingLogger,
             IPublishedUrlProvider publishedUrlProvider,
             IAlumniMemberStore store,
+            IMemoirStore memoirStore,
             IEmailSender emailSender,
             ILogger<AlumniSurfaceController> logger)
             : base(umbracoContextAccessor, databaseFactory, services, appCaches, profilingLogger, publishedUrlProvider)
         {
             _store = store;
+            _memoirStore = memoirStore;
             _emailSender = emailSender;
             _logger = logger;
         }
@@ -164,6 +168,37 @@ namespace UmbracoBase.Core.Controllers
             }
 
             return (true, "Message sent!");
+        }
+
+        [HttpPost]
+        [EnableRateLimiting("alumni-memoir")]
+        public IActionResult SubmitMemoir(MemoirSubmissionFormModel model)
+        {
+            var (success, message) = ProcessSubmitMemoir(_memoirStore, model);
+            return Json(new { success, message });
+        }
+
+        /// <summary>
+        /// The actual memoir-submission decision logic, separated from the HTTP
+        /// action so it can be unit tested without standing up a full
+        /// SurfaceController.
+        /// </summary>
+        internal static (bool Success, string Message) ProcessSubmitMemoir(IMemoirStore store, MemoirSubmissionFormModel model)
+        {
+            const string genericRejection = "We couldn't process that submission. Please check your details and try again.";
+
+            if (AlumniFormGuard.IsHoneypotTripped(model.Website)) { return (false, genericRejection); }
+            if (string.IsNullOrWhiteSpace(model.AuthorName)) { return (false, genericRejection); }
+            if (!AlumniFormGuard.IsValidEmail(model.Email)) { return (false, genericRejection); }
+            if (!AlumniFormGuard.IsValidMessage(model.MemoirText, MaxMemoirLength)) { return (false, genericRejection); }
+
+            store.CreateSubmission(new MemoirSubmissionInput(
+                AuthorName: model.AuthorName.Trim(),
+                GradYear: model.GradYear,
+                Email: model.Email.Trim(),
+                MemoirText: model.MemoirText.Trim()));
+
+            return (true, "Thanks! Your memoir is pending review and will appear in Read Memoirs once approved.");
         }
     }
 }

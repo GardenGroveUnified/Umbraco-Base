@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Core.Security;
 using UmbracoBase.Core.Alumni;
+using UmbracoBase.Core.Models;
 
 namespace UmbracoBase.Core.Controllers
 {
@@ -15,11 +16,13 @@ namespace UmbracoBase.Core.Controllers
     public class AlumniApprovalsController : Controller
     {
         private readonly IAlumniMemberStore _store;
+        private readonly IMemoirStore _memoirStore;
         private readonly IBackOfficeSecurity _backOfficeSecurity;
 
-        public AlumniApprovalsController(IAlumniMemberStore store, IBackOfficeSecurity backOfficeSecurity)
+        public AlumniApprovalsController(IAlumniMemberStore store, IMemoirStore memoirStore, IBackOfficeSecurity backOfficeSecurity)
         {
             _store = store;
+            _memoirStore = memoirStore;
             _backOfficeSecurity = backOfficeSecurity;
         }
 
@@ -33,7 +36,8 @@ namespace UmbracoBase.Core.Controllers
                 return RedirectToAction("Login", "CustomBackOfficeLogin", new { returnUrl = "/admin/alumni-approvals" });
             }
 
-            return View(_store.GetPendingApprovals());
+            var model = new AlumniApprovalsPageModel(_store.GetPendingApprovals(), _memoirStore.GetPendingApprovals());
+            return View(model);
         }
     }
 }

@@ -1,4 +1,4 @@
-@model IReadOnlyList<UmbracoBase.Core.Models.AlumniPendingApproval>
+@model UmbracoBase.Core.Models.AlumniApprovalsPageModel
 @{
     Layout = null;
     ViewData["Title"] = "Alumni Approvals";
@@ -16,40 +16,79 @@
 <body class="bg-light">
     <div class="container py-5">
         <div class="d-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0">Alumni signups awaiting approval</h1>
+            <h1 class="h3 mb-0">Alumni approvals</h1>
             <a href="/umbraco/section/member-management/workspace/member-root" class="btn btn-outline-secondary btn-sm">Open Members section</a>
         </div>
 
-        @if (!Model.Any())
-        {
-            <p class="text-muted">Nothing waiting right now.</p>
-        }
-        else
-        {
-            <table class="table table-striped bg-white shadow-sm">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Submitted</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var pending in Model)
-                    {
+        <section class="mb-5" aria-labelledby="signups-heading">
+            <h2 id="signups-heading" class="h5">Alumni signups awaiting approval</h2>
+            @if (!Model.Signups.Any())
+            {
+                <p class="text-muted">Nothing waiting right now.</p>
+            }
+            else
+            {
+                <table class="table table-striped bg-white shadow-sm">
+                    <thead>
                         <tr>
-                            <td>@pending.FirstName @pending.LastName</td>
-                            <td>@pending.Email</td>
-                            <td>@pending.SubmittedUtc.ToString("MMM d, yyyy h:mm tt")</td>
-                            <td>
-                                <a href="/umbraco/section/member-management/workspace/member/edit/@pending.Id/invariant/view/info" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Review</a>
-                            </td>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Submitted</th>
+                            <th scope="col"></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        }
+                    </thead>
+                    <tbody>
+                        @foreach (var pending in Model.Signups)
+                        {
+                            <tr>
+                                <td>@pending.FirstName @pending.LastName</td>
+                                <td>@pending.Email</td>
+                                <td>@pending.SubmittedUtc.ToString("MMM d, yyyy h:mm tt")</td>
+                                <td>
+                                    <a href="/umbraco/section/member-management/workspace/member/edit/@pending.Id/invariant/view/info" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Review<span class="visually-hidden"> signup from @pending.FirstName @pending.LastName</span></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+
+        <section aria-labelledby="memoirs-heading">
+            <h2 id="memoirs-heading" class="h5">Memoirs awaiting approval</h2>
+            @if (!Model.Memoirs.Any())
+            {
+                <p class="text-muted">Nothing waiting right now.</p>
+            }
+            else
+            {
+                <table class="table table-striped bg-white shadow-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">Author</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Memoir</th>
+                            <th scope="col">Submitted</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pending in Model.Memoirs)
+                        {
+                            <tr>
+                                <td>@pending.AuthorName</td>
+                                <td>@pending.Email</td>
+                                <td>@(pending.MemoirText.Length > 120 ? pending.MemoirText.Substring(0, 120) + "…" : pending.MemoirText)</td>
+                                <td>@pending.SubmittedUtc.ToString("MMM d, yyyy h:mm tt")</td>
+                                <td>
+                                    <a href="/umbraco/section/member-management/workspace/member/edit/@pending.Id/invariant/view/info" class="btn btn-primary btn-sm" target="_blank" rel="noopener">Review<span class="visually-hidden"> memoir from @pending.AuthorName</span></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
     </div>
 </body>
 </html>

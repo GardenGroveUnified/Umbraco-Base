@@ -1,0 +1,44 @@
+/* wwwroot/css/Widgets_CSS/Memoir.css */
+.alumni-signup__hint {
+    display: block;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+.memoir-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.memoir-list__item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 20px;
+    background: #fff;
+}
+
+.memoir-list__name {
+    font-family: var(--font-titles);
+    font-weight: 700;
+    color: var(--shs-purple, #4a1f7a);
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+}
+
+.memoir-list__meta {
+    font-weight: 400;
+    color: #666;
+    font-size: 0.85rem;
+    margin-left: 8px;
+}
+
+.memoir-list__text {
+    margin: 0;
+    white-space: pre-wrap;
+    line-height: 1.6;
+}

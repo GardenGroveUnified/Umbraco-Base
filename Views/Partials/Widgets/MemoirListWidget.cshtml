@@ -1,0 +1,94 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks
+@using UmbracoBase.Core.Alumni
+@inject IMemoirStore MemoirStore
+@{
+    // Model-agnostic access so the view compiles before ModelsBuilder regenerates.
+    var content = Model.Content;
+    var settings = Model.Settings;
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    var heading = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var text = content.Value<Umbraco.Cms.Core.Strings.IHtmlEncodedString>("text");
+
+    var anchorId = settings?.Value<string>("anchorId");
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "" : $"background-color:{settings!.Value<string>("backgroundColor")};";
+    var verticalSpacingClass = settings?.Value<string>("verticalSpacing");
+    if (string.IsNullOrWhiteSpace(verticalSpacingClass)) { verticalSpacingClass = "py-3"; }
+    var classNames = string.Join(" ",
+        (settings?.Value<IEnumerable<string>>("classnames") ?? Enumerable.Empty<string>())
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+
+    const int pageSize = 10;
+    var page = int.TryParse(Context.Request.Query["page"].ToString(), out var parsedPage) && parsedPage > 0 ? parsedPage : 1;
+
+    var result = MemoirStore.GetApproved(page, pageSize);
+    var totalPages = (int)Math.Ceiling(result.TotalCount / (double)pageSize);
+}
+
+<section class="section block-memoir-list @backgroundColorClass @verticalSpacingClass @classNames" style="@backgroundColorStyle"
+@if (!string.IsNullOrEmpty(anchorId))
+{
+    <text>id="@anchorId"</text>
+}>
+    <div class="container">
+        @if (!string.IsNullOrEmpty(heading) || !string.IsNullOrEmpty(preheading) || !string.IsNullOrEmpty(text?.ToString()))
+        {
+            <div class="mb-4">
+                @if (!string.IsNullOrEmpty(preheading))
+                {
+                    <div class="pre-head">@preheading</div>
+                }
+                @if (!string.IsNullOrEmpty(heading))
+                {
+                    <h2 class="head display-6 bold">@heading</h2>
+                }
+                @if (!string.IsNullOrEmpty(text?.ToString()))
+                {
+                    <p>@text</p>
+                }
+            </div>
+        }
+
+        @if (result.Items.Any())
+        {
+            <ul class="memoir-list">
+                @foreach (var memoir in result.Items)
+                {
+                    <li class="memoir-list__item">
+                        <article aria-labelledby="memoir-@memoir.Id-name">
+                            <h3 class="memoir-list__name" id="memoir-@memoir.Id-name">
+                                @memoir.AuthorName
+                                @if (memoir.GradYear.HasValue)
+                                {
+                                    <span class="memoir-list__meta">Class of @memoir.GradYear</span>
+                                }
+                            </h3>
+                            <p class="memoir-list__text">@memoir.MemoirText</p>
+                        </article>
+                    </li>
+                }
+            </ul>
+
+            @if (totalPages > 1)
+            {
+                <nav class="alumni-directory__pagination" aria-label="Memoir pages">
+                    @for (var p = 1; p <= totalPages; p++)
+                    {
+                        <a href="?page=@p" class="alumni-directory__page @(p == page ? "alumni-directory__page--active" : "")"
+                        @if (p == page)
+                        {
+                            <text>aria-current="page"</text>
+                        }>@p</a>
+                    }
+                </nav>
+            }
+        }
+        else
+        {
+            <p class="text-muted mb-0">No memoirs have been shared yet. Be the first!</p>
+        }
+    </div>
+</section>

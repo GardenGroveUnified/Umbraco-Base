@@ -18,6 +18,7 @@ namespace UmbracoBase.Core.Composers
         public void Compose(IUmbracoBuilder builder)
         {
             builder.Services.AddScoped<IAlumniMemberStore, UmbracoAlumniMemberStore>();
+            builder.Services.AddScoped<IMemoirStore, UmbracoMemoirStore>();
             builder.AddNotificationAsyncHandler<MemberSavedNotification, AlumniApprovalEmailHandler>();
 
             // ExcelDataReader needs this for legacy .xls code-page text encodings.

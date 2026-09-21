@@ -45,6 +45,7 @@
     <PackageReference Include="Our.Umbraco.ConditionalDisplayers" />
     <PackageReference Include="Our.Umbraco.FullTextSearch" />
     <PackageReference Include="Skybrud.Umbraco.Redirects" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" />
   </ItemGroup>
 
   <ItemGroup>

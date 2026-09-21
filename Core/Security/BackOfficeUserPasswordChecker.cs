@@ -1,70 +1,45 @@
-// using Microsoft.Extensions.Configuration;
-// using System;
-// using System.DirectoryServices.AccountManagement;
-// using System.Threading.Tasks;
-// using System.Runtime.InteropServices;
-// using Umbraco.Cms.Core.Security;
-// using Microsoft.Extensions.Logging;
+using System.DirectoryServices.AccountManagement;
+using System.Runtime.InteropServices;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Umbraco.Cms.Core.Security;
+using UmbracoBase.Core.Constants;
 
-// namespace UmbracoBase.Core.Security
-// {
-//     //https://our.umbraco.com/documentation/reference/security/custom-password-checker
-//     public class BackOfficeUserPasswordChecker : IBackOfficeUserPasswordChecker
-//     {
-//         private readonly IConfiguration _config;
-//         private readonly ILogger<BackOfficeUserPasswordChecker> _logger;
-        
-//         public BackOfficeUserPasswordChecker(IConfiguration configuration, ILogger<BackOfficeUserPasswordChecker> logger)
-//         {
-//             _config = configuration;
-//             _logger = logger;
-//         }
-//         public Task<BackOfficeUserPasswordCheckerResult> CheckPasswordAsync(BackOfficeIdentityUser user, string password)
-//         {
-//             //NOTE: if the username entered in the login screen does not exist in Umbraco then ActiveDirectoryPasswordChecker() does not run, instead Umbraco will immediately fall back to its internal checks (default Umbraco behavior).
-//             var result = IsValidADUser(user.UserName ?? "", password)
-//                 ? Task.FromResult(BackOfficeUserPasswordCheckerResult.ValidCredentials)
-//                 : Task.FromResult(BackOfficeUserPasswordCheckerResult.InvalidCredentials);
-//             return result;
-//         }
+namespace UmbracoBase.Core.Security;
 
-//         [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
-//         private bool IsValidADUser(string userName, string password)
-//         {
-//             // Check if running on Windows - AD integration only works on Windows
-//             if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-//             {
-//                 _logger.LogWarning("Active Directory authentication is only supported on Windows. Running on {OS}.", RuntimeInformation.OSDescription);
-//                 return false; // Fall back to Umbraco's built-in authentication
-//             }
+// https://our.umbraco.com/documentation/reference/security/custom-password-checker
+public class BackOfficeUserPasswordChecker : IBackOfficeUserPasswordChecker
+{
+    private readonly IConfiguration _config;
+    private readonly ILogger<BackOfficeUserPasswordChecker> _logger;
 
-//             try
-//             {
-//                 var domain = _config.GetValue<string>("ActiveDirectory:Domain");  //get active directory domain from appsettings 
+    public BackOfficeUserPasswordChecker(IConfiguration configuration, ILogger<BackOfficeUserPasswordChecker> logger)
+    {
+        _config = configuration;
+        _logger = logger;
+    }
 
-//                 if (string.IsNullOrEmpty(domain))
-//                 {
-//                     _logger.LogWarning("ActiveDirectory:Domain not configured in appsettings.json");
-//                     return false;
-//                 }
+    // NOTE: if the username entered in the login screen does not exist in Umbraco, Umbraco never calls
+    // this checker at all and falls straight back to its own stored-password check.
+    public Task<BackOfficeUserPasswordCheckerResult> CheckPasswordAsync(BackOfficeIdentityUser user, string password)
+    {
+        var domain = _config.GetValue<string>(AppSettings.ActiveDirectoryDomain);
 
-//                 using (PrincipalContext pc = new PrincipalContext(ContextType.Domain, domain))
-//                 {
-//                     var valid = pc.ValidateCredentials(userName, password);
-//                     _logger.LogInformation("AD authentication for user {Username}: {Result}", userName, valid ? "Success" : "Failed");
-//                     return valid;
-//                 }
-//             }
-//             catch (PlatformNotSupportedException ex)
-//             {
-//                 _logger.LogWarning(ex, "Active Directory authentication not supported on this platform.");
-//                 return false;
-//             }
-//             catch (Exception ex)
-//             {
-//                 _logger.LogError(ex, "Error during Active Directory authentication for user {Username}", userName);
-//                 return false;
-//             }
-//         }
-//     }
-// }
+        var result = ActiveDirectoryPasswordEvaluator.Evaluate(
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows),
+            domain,
+            ValidateAgainstDomain,
+            user.UserName ?? string.Empty,
+            password,
+            _logger);
+
+        return Task.FromResult(result);
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Only reached when ActiveDirectoryPasswordEvaluator has confirmed OSPlatform.Windows.")]
+    private static bool ValidateAgainstDomain(string domain, string userName, string password)
+    {
+        using var context = new PrincipalContext(ContextType.Domain, domain);
+        return context.ValidateCredentials(userName, password);
+    }
+}

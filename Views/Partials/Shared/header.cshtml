@@ -12,7 +12,7 @@
         if (parent == null) return new List<IPublishedContent>();
 
         return parent.Children()?
-            .Where(x => !x.IsVisible())
+            .Where(x => x.IsVisible())
             .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page
                      || x?.ContentType?.Alias == ContentTypeAlias.Link
                      || x?.ContentType?.Alias == ContentTypeAlias.PagesList
@@ -180,7 +180,7 @@
 
     // Get navigation items from the determined root
     var level1Pages = navRoot?.Children()?
-        .Where(x => !x.IsVisible())
+        .Where(x => x.IsVisible())
         .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page
                  || x?.ContentType?.Alias == ContentTypeAlias.Link
                  || x?.ContentType?.Alias == ContentTypeAlias.PagesList

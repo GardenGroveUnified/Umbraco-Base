@@ -105,7 +105,7 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.Link> TopBarLinks => this.Value<global::System.Collections.Generic.IEnumerable<global::Umbraco.Cms.Core.Models.Link>>(_publishedValueFallback, "topBarLinks");
 
 		///<summary>
-		/// Navbar Visibility: Show/Hide in navbar.
+		/// Hide from Navigation: Tick to keep this page out of the main menu and breadcrumbs.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[ImplementPropertyType("umbracoNaviHide")]

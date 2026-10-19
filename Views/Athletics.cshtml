@@ -58,29 +58,10 @@
         </div>
     }
 
-    @* --- Quick actions bar --- *@
-    <div class="athletics-quickactions">
-        @{
-            string DescendantUrl(string name) => Model?.Descendants()
-                .FirstOrDefault(c =>
-                    string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(c.Value<string>("pageTitle"), name, StringComparison.OrdinalIgnoreCase))
-                ?.Url() ?? "#";
-
-            var quickActions = new (string Label, string Url)[]
-            {
-                ("Athletic Clearance", DescendantUrl("Athletic Clearance")),
-                ("Schedules", DescendantUrl("Athletics Calendar")),
-                ("Sports Demographics", Model?.AncestorOrSelf(2)?.Url() ?? "#"),
-                ("Summer Sports", DescendantUrl("Summer Sports")),
-                ("Athletic Staff", DescendantUrl("Athletic Staff"))
-            };
-        }
-        @for (var i = 0; i < quickActions.Length; i++)
-        {
-            <a href="@quickActions[i].Url" class="athletics-quickactions__item @(i == 0 ? "athletics-quickactions__item--active" : "")">@quickActions[i].Label</a>
-        }
-    </div>
+    @* --- Quick actions / jump bar ---
+         Was hardcoded here; now the first block in Model.Blocks, a Quick Links
+         Bar with an "athletics-jump" Classnames marker (same pattern as the
+         Guidance jump nav - see [[extending-a-shared-widget-via-classnames]]). *@
 
     @if (hasSidebar)
     {
@@ -105,58 +86,19 @@
     {
         @if (Model!.Blocks!.Any())
         {
-            <div class="container">
-                @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
-                {
-                    { "Blocks", Model.Blocks }
-                })
-            </div>
+            @* No .container wrapper here: each widget supplies its own
+               .container / .container-fluid, so a widget set to "full width"
+               (or the jump bar's own edge-to-edge styling) can actually span
+               the viewport (matches home.cshtml / Students.cshtml). *@
+            @await Html.PartialAsync("~/Views/Partials/Widgets/RenderBlocks.cshtml", new ViewDataDictionary(ViewData)
+            {
+                { "Blocks", Model.Blocks }
+            })
         }
     }
 
-    @* --- Featured Sport ---
-         Placeholder content until a real "featured sport" content type exists;
-         edit the values below directly, or replace with real CMS data later.
-         The schedule that used to live next to this is now the real,
-         backoffice-editable Athletics Schedule widget below (in Model.Blocks). *@
-    <div class="athletics-featured-standalone">
-        <div class="home-section-title">
-            <div class="home-section-title__label">
-                <span class="home-section-title__bar"></span>
-                Featured Sport
-            </div>
-            <a href="#" class="home-section-title__action">View roster &rarr;</a>
-        </div>
-        <div class="athletics-featured">
-            <div class="athletics-featured__photo"></div>
-            <div>
-                <div class="athletics-featured__title">Boys Varsity Soccer</div>
-                <div class="athletics-featured__meta">Coach: Mr. Rodriguez &middot; Spring 2026</div>
-                <div class="athletics-featured__meta">Empire League &middot; Home: Santiago Stadium</div>
-            </div>
-        </div>
-        <div class="athletics-featured__stats">
-            @{
-                var stats = new (string Label, string Value)[] { ("Wins", "8"), ("Losses", "3"), ("Ties", "1") };
-            }
-            @foreach (var stat in stats)
-            {
-                <div class="athletics-featured__stat">
-                    <div class="athletics-featured__stat-value">@stat.Value</div>
-                    <div class="athletics-featured__stat-label">@stat.Label</div>
-                </div>
-            }
-        </div>
-    </div>
-
-    @* --- Athletic Clearance CTA band --- *@
-    <div class="athletics-clearance-cta">
-        <span style="font-size:20px;">&#128203;</span>
-        <div>
-            <div class="athletics-clearance-cta__title">Ready to play? Get your Athletic Clearance first.</div>
-            <div class="athletics-clearance-cta__text">All student athletes must complete clearance before tryouts. Deadline: Aug 1, 2026.</div>
-        </div>
-        <div class="flex-grow-1"></div>
-        <a href="#" class="btn" style="background:var(--shs-purple); color:#fff;">Get Cleared &rarr;</a>
-    </div>
+    @* --- Featured Sport and Athletic Clearance CTA ---
+         Both used to be hardcoded here. They are now real, backoffice-editable
+         widgets (Featured Sport, Notice Banner) - add them as blocks on this
+         page's "Blocks" property, above in Model.Blocks, and they render there. *@
 }

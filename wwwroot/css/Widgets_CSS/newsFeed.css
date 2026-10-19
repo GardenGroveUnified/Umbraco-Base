@@ -82,7 +82,9 @@
     font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: var(--shs-gold, #c9a227);
+    /* --shs-gold is 2.4:1 on white and fails AA; --shs-gold-text is the
+       palette's AA-passing gold for text on a near-white background. */
+    color: var(--shs-gold-text, #8f6d00);
     font-weight: 700;
     margin-bottom: 1rem;
 }

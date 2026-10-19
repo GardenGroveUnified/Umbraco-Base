@@ -1,0 +1,33 @@
+@* Views/Alumni/Import.cshtml *@
+@using UmbracoBase.Core.Controllers
+@{
+    Layout = null;
+    var summary = ViewBag.Summary as ImportSummary;
+}
+<!DOCTYPE html>
+<html>
+<head><title>Alumni Import (dev only)</title></head>
+<body style="font-family: sans-serif; max-width: 600px; margin: 40px auto;">
+    <h1>Alumni Directory Import</h1>
+    <p>Development-only, one-time import of AlumniDirectory.xls into the alumniMember Member Type. Safe to re-run - rows already imported (by REC_ID) are skipped.</p>
+
+    @if (ViewBag.Error != null)
+    {
+        <p style="color:#b3261e;">@ViewBag.Error</p>
+    }
+
+    @if (summary != null)
+    {
+        <p>
+            Imported: @summary.Imported<br />
+            Skipped (already imported): @summary.SkippedExisting<br />
+            Skipped (no email in the spreadsheet): @ViewBag.SkippedNoEmailFromReading
+        </p>
+    }
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xls,.xlsx" required />
+        <button type="submit">Run import</button>
+    </form>
+</body>
+</html>

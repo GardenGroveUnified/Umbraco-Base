@@ -1,0 +1,76 @@
+@inherits UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models.Blocks
+@{
+    var content = Model.Content;
+    var settings = Model.Settings;
+    if (settings?.Value<bool?>("blockVisibility") == false) { return; }
+
+    var heading = content.Value<string>("heading");
+    var preheading = content.Value<string>("preheading");
+    var text = content.Value<Umbraco.Cms.Core.Strings.IHtmlEncodedString>("text");
+
+    var anchorId = settings?.Value<string>("anchorId");
+    var backgroundColorClass = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "bg-transparent" : "";
+    var backgroundColorStyle = string.IsNullOrWhiteSpace(settings?.Value<string>("backgroundColor")) ? "" : $"background-color:{settings!.Value<string>("backgroundColor")};";
+    var verticalSpacingClass = settings?.Value<string>("verticalSpacing");
+    if (string.IsNullOrWhiteSpace(verticalSpacingClass)) { verticalSpacingClass = "py-3"; }
+    var classNames = string.Join(" ",
+        (settings?.Value<IEnumerable<string>>("classnames") ?? Enumerable.Empty<string>())
+        .Where(s => !string.IsNullOrWhiteSpace(s)));
+}
+
+<section class="section block-memoir-submit @backgroundColorClass @verticalSpacingClass @classNames" style="@backgroundColorStyle"
+@if (!string.IsNullOrEmpty(anchorId))
+{
+    <text>id="@anchorId"</text>
+}>
+    <div class="container container-md">
+        @if (!string.IsNullOrEmpty(heading) || !string.IsNullOrEmpty(preheading) || !string.IsNullOrEmpty(text?.ToString()))
+        {
+            <div class="mb-4">
+                @if (!string.IsNullOrEmpty(preheading))
+                {
+                    <div class="pre-head">@preheading</div>
+                }
+                @if (!string.IsNullOrEmpty(heading))
+                {
+                    <h2 class="head display-6 bold">@heading</h2>
+                }
+                @if (!string.IsNullOrEmpty(text?.ToString()))
+                {
+                    <p>@text</p>
+                }
+            </div>
+        }
+
+        @using (Html.BeginUmbracoForm<UmbracoBase.Core.Controllers.AlumniSurfaceController>("SubmitMemoir", null, new { @class = "alumni-signup__form", data_memoir_submit_form = "" }))
+        {
+            <p class="alumni-signup__required-note"><span class="required-indicator" aria-hidden="true">*</span> Required</p>
+            <div class="alumni-signup__row">
+                <label for="memoir-submit-authorName">Your name <span class="required-indicator" aria-hidden="true">*</span></label>
+                <input type="text" id="memoir-submit-authorName" name="authorName" autocomplete="name" required />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="memoir-submit-gradYear">Grad year (optional)</label>
+                <input type="number" id="memoir-submit-gradYear" name="gradYear" min="1950" max="2100" />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="memoir-submit-email">Email (kept private - never shown publicly) <span class="required-indicator" aria-hidden="true">*</span></label>
+                <input type="email" id="memoir-submit-email" name="email" autocomplete="email" required />
+            </div>
+            <div class="alumni-signup__row">
+                <label for="memoir-submit-memoirText">Your memoir <span class="required-indicator" aria-hidden="true">*</span></label>
+                <textarea id="memoir-submit-memoirText" name="memoirText" rows="8" maxlength="5000" required aria-describedby="memoir-submit-memoirText-hint"></textarea>
+                <span id="memoir-submit-memoirText-hint" class="alumni-signup__hint">Up to 5000 characters. Shown publicly with your name once approved.</span>
+            </div>
+
+            <div class="alumni-form__hp">
+                <label for="memoir-submit-website">Leave this field blank</label>
+                <input type="text" id="memoir-submit-website" name="website" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <button type="submit">Submit your memoir</button>
+            <p class="alumni-signup__result" data-memoir-form-result role="status" aria-live="polite"></p>
+        }
+    </div>
+</section>

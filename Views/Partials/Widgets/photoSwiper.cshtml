@@ -115,6 +115,20 @@
                             history: false,
                             shareEl: false
                         });
+                        // The shared .pswp root keeps its buttons out of the tab
+                        // order (tabindex="-1") while aria-hidden, so a closed
+                        // gallery never traps keyboard focus. Restore normal
+                        // tabbing only while this instance is actually open.
+                        pswp.listen('afterInit', function () {
+                            pswpElement.querySelectorAll('.pswp__button').forEach(function (btn) {
+                                btn.removeAttribute('tabindex');
+                            });
+                        });
+                        pswp.listen('destroy', function () {
+                            pswpElement.querySelectorAll('.pswp__button').forEach(function (btn) {
+                                btn.setAttribute('tabindex', '-1');
+                            });
+                        });
                         pswp.init();
                     });
                 });

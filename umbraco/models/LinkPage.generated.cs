@@ -65,7 +65,7 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual bool SideBarNaviHide => this.Value<bool>(_publishedValueFallback, "sideBarNaviHide");
 
 		///<summary>
-		/// umbracoNaviHide
+		/// Hide from Navigation: Tick to keep this page out of the main menu and breadcrumbs.
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.3.5+1486121")]
 		[ImplementPropertyType("umbracoNaviHide")]

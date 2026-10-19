@@ -12,7 +12,7 @@
         if (parent == null) return new List<IPublishedContent>();
 
         return parent.Children()?
-            .Where(x => !x.IsVisible())
+            .Where(x => x.IsVisible())
             .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page
                      || x?.ContentType?.Alias == ContentTypeAlias.Link
                      || x?.ContentType?.Alias == ContentTypeAlias.PagesList
@@ -114,9 +114,7 @@
                                 data-nav-toggle
                                 aria-expanded="false"
                                 aria-controls="@(pageId)-submenu"
-                                aria-label="Show @(page.Name) submenu">
-                            <span aria-hidden="true">&rsaquo;</span>
-                        </button>
+                                aria-label="Show @(page.Name) submenu"></button>
                         <div id="@(pageId)-submenu" class="dropdown-menu dropdown-submenu-content">
                             <ul class="list-unstyled">
                                 @foreach (var childPage in children)
@@ -182,7 +180,7 @@
 
     // Get navigation items from the determined root
     var level1Pages = navRoot?.Children()?
-        .Where(x => !x.IsVisible())
+        .Where(x => x.IsVisible())
         .Where(x => x?.ContentType?.Alias == ContentTypeAlias.Page
                  || x?.ContentType?.Alias == ContentTypeAlias.Link
                  || x?.ContentType?.Alias == ContentTypeAlias.PagesList
@@ -265,9 +263,8 @@
                                                     id="languageDropdown"
                                                     data-bs-toggle="dropdown"
                                                     aria-expanded="false"
-                                                    aria-haspopup="true"
-                                                    aria-label="Select language">
-                                                🌍 <span>Language</span>
+                                                    aria-haspopup="true">
+                                                Select Language
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-hover dropdown-fadeinup"
                                                 aria-labelledby="languageDropdown">
@@ -279,10 +276,11 @@
                                     }
                                     else
                                     {
+                                        var opensNewTab = link.Target == "_blank";
                                         <a href="@link.Url" target="@link.Target"
                                            rel="noopener"
                                            class="p-2 px-3 d-inline-block text-white font-weight-medium transition-hover-zoom"
-                                           aria-label="@link.Name">
+                                           aria-label="@(opensNewTab ? $"{link.Name} webpage opens in a new tab" : link.Name)">
                                             @link.Name
                                         </a>
                                     }
@@ -332,13 +330,19 @@
                             <ul class="m-0 p-0 justify-content-center list-unstyled" role="list">
                                 @foreach (var link in topBarNavItems)
                                 {
-                                    <li class="nav-item ms-4">
-                                        <a href="@link.Url" target="@link.Target"
-                                           rel="noopener"
-                                           class="nav-link dropdown-link">
-                                            @link.Name
-                                        </a>
-                                    </li>
+                                    @* The "translate" entry drives the Google Translate dropdown
+                                       above; it has no real destination of its own, so it's
+                                       skipped here rather than shown as a dead link. *@
+                                    if (link.Name?.ToLower() != "translate")
+                                    {
+                                        <li class="nav-item ms-4">
+                                            <a href="@link.Url" target="@link.Target"
+                                               rel="noopener"
+                                               class="nav-link dropdown-link">
+                                                @link.Name
+                                            </a>
+                                        </li>
+                                    }
                                 }
                             </ul>
                         </li>

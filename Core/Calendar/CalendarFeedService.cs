@@ -56,7 +56,12 @@ public sealed class CalendarFeedService : ICalendarFeedService
 
             ics = await response.Content.ReadAsStringAsync(cancellationToken);
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogWarning(ex, "Timed out fetching calendar feed {Url}. Showing no events.", icsUrl);
+            return Array.Empty<EventCardViewModel>();
+        }
+        catch (Exception ex)
         {
             _logger.LogWarning(ex, "Could not fetch calendar feed {Url}. Showing no events.", icsUrl);
             return Array.Empty<EventCardViewModel>();

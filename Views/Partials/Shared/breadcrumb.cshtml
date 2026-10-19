@@ -18,7 +18,7 @@
     <ol class="breadcrumb justify-content-md-end justify-content-center">
         @foreach (IPublishedContent item in selection)
         {
-            if (!item.IsVisible())
+            if (item.IsVisible())
             {
                 <li class="breadcrumb-item"><a href="@item.Url(PublishedUrlProvider)">@(string.IsNullOrWhiteSpace(item.Value<string>(PropertyAlias.PageTitle)) ? item.Name : item.Value<string>(PropertyAlias.PageTitle))</a></li>
             }

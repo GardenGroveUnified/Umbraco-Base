@@ -58,6 +58,8 @@ namespace UmbracoBase.Core.Bundling
             "css/Widgets_CSS/noticeBanner.css",
             "css/Widgets_CSS/newsFeed.css",
             "css/Widgets_CSS/achievements.css",
+            "css/Widgets_CSS/Alumni.css",
+            "css/Widgets_CSS/Memoir.css",
             "assets/css/vendor.fancybox.min.css",
         ];
 

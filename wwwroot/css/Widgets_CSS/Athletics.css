@@ -1,39 +1,53 @@
-.athletics-quickactions {
+/* The "athletics-jump" marker turns a standard Quick Links Bar widget into the
+   quick-actions bar at the top of the Athletics overview page. Set it in the
+   block's settings > Classnames field. Every other Quick Links Bar instance
+   on the site is unaffected. Same pattern as .guidance-jump in Guidance.css. */
+
+.home-quicklinks.athletics-jump {
     background: var(--shs-purple, #4a1f7a);
+    border: 0;
+    border-radius: 0;
     padding: 12px 28px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
 }
 
-.athletics-quickactions__item {
+.home-quicklinks.athletics-jump .container-fluid {
+    padding: 0;
+}
+
+.home-quicklinks.athletics-jump .home-quicklinks__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.home-quicklinks.athletics-jump .home-quicklinks__item {
     height: 32px;
     padding: 0 14px;
     border-radius: 4px;
-    display: flex;
-    align-items: center;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-decoration: none;
     background: rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.85);
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-direction: row;
+    gap: 0;
     transition: background .15s ease;
 }
 
-.athletics-quickactions__item:hover {
+.home-quicklinks.athletics-jump .home-quicklinks__item:hover {
     background: rgba(255, 255, 255, 0.22);
     color: #fff;
 }
 
-.athletics-quickactions__item--active {
-    background: var(--shs-gold, #c9a227);
-    color: #2a1040;
+.home-quicklinks.athletics-jump .home-quicklinks__icon {
+    display: none;
 }
 
-.athletics-quickactions__item--active:hover {
-    background: var(--shs-gold, #c9a227);
-    color: #2a1040;
+.home-quicklinks.athletics-jump .home-quicklinks__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: left;
+    line-height: 1;
 }
 
 .athletics-featured-games {
@@ -77,7 +91,7 @@
 
 .athletics-featured__meta {
     font-size: 0.8rem;
-    color: #888;
+    color: #666;
     margin-bottom: 2px;
 }
 
@@ -102,7 +116,7 @@
 
 .athletics-featured__stat-label {
     font-size: 0.7rem;
-    color: #888;
+    color: #666;
 }
 
 .athletics-game {
@@ -139,7 +153,7 @@
 .athletics-game__month {
     font-size: 8px;
     font-weight: 700;
-    color: #888;
+    color: #666;
 }
 
 .athletics-game--next .athletics-game__month {
@@ -166,7 +180,7 @@
 
 .athletics-game__time {
     font-size: 0.75rem;
-    color: #888;
+    color: #666;
 }
 
 .athletics-game__loc {
@@ -251,6 +265,10 @@
     object-fit: cover;
 }
 
+.sports-grid__icon span {
+    color: #fff;
+}
+
 .sports-grid__name {
     font-weight: 700;
     color: var(--shs-purple, #4a1f7a);
@@ -280,11 +298,11 @@
 
 .athletics-clearance-cta__title {
     font-weight: 700;
-    color: #fff;
+    color: #2a1040;
     margin-bottom: 4px;
 }
 
 .athletics-clearance-cta__text {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: #2a1040;
 }

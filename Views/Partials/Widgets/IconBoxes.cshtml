@@ -99,7 +99,7 @@
                                             <div class="overlay"></div>
                                             @if (!string.IsNullOrEmpty(iconBox?.Icon))
                                             {
-                                                <i class="@iconBox.Icon"></i>
+                                                <i class="@iconBox.Icon" aria-hidden="true"></i>
                                             }
                                         </div>
                                         @if (!string.IsNullOrEmpty(iconBox?.Title))
@@ -120,7 +120,7 @@
                                 <div class="my-icon d-flex justify-content-center mb-3">
                                     @if (!string.IsNullOrEmpty(iconBox?.Icon))
                                     {
-                                        <i class="@iconBox.Icon fs-1"></i>
+                                        <i class="@iconBox.Icon fs-1" aria-hidden="true"></i>
                                     }
                                 </div>
                                 @if (!string.IsNullOrEmpty(iconBox?.Title))

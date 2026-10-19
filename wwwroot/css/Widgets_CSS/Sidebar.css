@@ -105,6 +105,14 @@
     background: var(--sidebar-header-bg);
 }
 
+/* This text is Bootstrap's .visually-hidden (clipped to 1px, off-screen) -
+   never seen by any user, so its colour has no real effect. Some contrast
+   checkers compute a ratio for it anyway; give it the sidebar's own
+   foreground colour so that check passes too. */
+.sidebar-nav__search-label .visually-hidden {
+    color: var(--sidebar-fg);
+}
+
 /* Qualified with .sidebar-nav (not just the input's own class) and !important
    on the theme-controlled properties: widget/base.css styles every
    input[type="search"] (including a `:focus` rule) at a higher specificity

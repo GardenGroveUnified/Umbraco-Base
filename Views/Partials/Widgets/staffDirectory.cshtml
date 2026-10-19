@@ -198,7 +198,7 @@
                         {
                             <dialog id="@dlgId" class="staff-directory__dialog">
                                 <form method="dialog" class="staff-directory__dialog-close-form">
-                                    <button class="staff-directory__dialog-close" aria-label="Close">&times;</button>
+                                    <button class="staff-directory__dialog-close" aria-label="Close"></button>
                                 </form>
                                 <div class="staff-directory__dialog-body">
                                     @if (!string.IsNullOrEmpty(photoUrl))
@@ -207,7 +207,7 @@
                                     }
                                     @if (!string.IsNullOrEmpty(name))
                                     {
-                                        <h3 class="staff-directory__dialog-name">@name</h3>
+                                        <h2 class="staff-directory__dialog-name">@name</h2>
                                     }
                                     @if (!string.IsNullOrEmpty(title))
                                     {

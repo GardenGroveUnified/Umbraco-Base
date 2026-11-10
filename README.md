@@ -2,9 +2,9 @@
 
 An Umbraco 17 site built on .NET 10. It currently runs the Santiago High School website, but it is meant to be a base that other schools can clone.
 
-- **CMS:** Umbraco 17.3.5 (block-list widgets, ModelsBuilder in `SourceCodeAuto` mode)
+- **CMS:** Umbraco 17.8.1 (block-list widgets, ModelsBuilder in `SourceCodeAuto` mode)
 - **Database:** SQL Server (SQL Server Express locally)
-- **Content and schema in git:** uSync 17.3.1 (`uSync/v17/`)
+- **Content and schema in git:** uSync 17.6.1 (`uSync/v17/`)
 - **Other packages:** see `Directory.Packages.props` (SeoToolkit, Contentment, Full Text Search, Skybrud Redirects, Accessibility Toolkit, WebOptimizer, Ical.Net, ExcelDataReader)
 
 ---
@@ -145,7 +145,8 @@ Create this file in the project root and fill in the `<...>` values. Never commi
   "Umbraco": {
     "CMS": {
       "Content": { "MacroErrors": "Throw" },
-      "Hosting": { "Debug": true }
+      "Hosting": { "Debug": true },
+      "WebRouting": { "UmbracoApplicationUrl": "https://localhost:44389" }
     }
   }
 }
@@ -159,6 +160,7 @@ Create this file in the project root and fill in the `<...>` values. Never commi
 | `Umbraco:CMS:Unattended` | Creates the first admin user on a blank database. You can remove the user/email/password values after the first boot. |
 | `Umbraco:CMS:Global:Smtp` | Outgoing email (alumni sign-up, memoir and approval emails). If it is missing, Umbraco silently skips sending. It does not throw an error. |
 | `Umbraco:CMS:Imaging:HMACSecretKey` | Signs image-crop URLs. Any long random string. |
+| `Umbraco:CMS:WebRouting:UmbracoApplicationUrl` | The site's public address, used to build links in emails (user invites, password resets, alumni and memoir approvals). Required since Umbraco 17.8: without it, startup logs a warning and email links cannot be built. Set it **per environment**: `https://localhost:44389` locally, the real domain on the server. |
 | `ActiveDirectory:Domain` | Optional. The on-premises AD domain for backoffice password checks. If it is empty, or AD is unreachable, login falls back to the normal Umbraco password. Local machines normally leave it empty. |
 
 **Production:** prefer environment variables over plain-text secrets on disk, for example `Umbraco__CMS__Global__Smtp__Password=...` and `ConnectionStrings__umbracoDbDSN=...`.
@@ -174,6 +176,7 @@ Create this file in the project root and fill in the `<...>` values. Never commi
 - **Pages** (document type `page`) are built from **widgets** (block-list elements) in the `blocks`, `headerBlocks` and `sidebarBlocks` properties. Each widget renders through `Views/Partials/Widgets/<elementAlias>.cshtml`.
 - **Link pages** (`linkPage`) are menu entries that point somewhere else (an external URL or a PDF).
 - **Members** store alumni directory and memoir data. Real personal data lives in the database, never in uSync or git.
+- **The "School Admins" backoffice user group** (Content, Media and Members sections) is created by code on startup if it is missing (`Core/Notifications/EnsureSchoolAdminsUserGroupHandler.cs`), because uSync does not sync user groups. An existing group is left alone, so permission changes made in the backoffice are kept. Assigning people to the group is still done by hand in **Users**.
 
 **Navigation:** every page shows in the main menu and breadcrumbs unless **"Hide from Navigation" (`umbracoNaviHide`) is ticked**. This is the standard Umbraco convention. See `Views/Partials/Shared/header.cshtml` and `breadcrumb.cshtml`.
 
@@ -210,8 +213,13 @@ Create this file in the project root and fill in the `<...>` values. Never commi
    --shs-gold: #c9a227;
    --shs-gold-text: #8f6d00;   /* darker gold for text on white (contrast) */
    --shs-orange-text: #a85f00;
+   --shs-purple-deep: #220c36; /* text on a gold background (7:1) */
+   --shs-gold-bright: #ecd06b; /* gold text on a purple background (7:1) */
+   --shs-grey-text: #555;      /* muted text (dates, labels) on white (7:1) */
    ```
-   Keep the variable *names*, because widgets reference them. Many widget files also contain hard-coded fallbacks such as `var(--shs-purple, #4a1f7a)`. Those fallbacks only apply if a variable is missing, so they are harmless, but a search and replace keeps things tidy. Check that new colors still pass WCAG AA contrast (4.5:1 for text).
+   Keep the variable *names*, because widgets reference them. Many widget files also contain hard-coded fallbacks such as `var(--shs-purple, #4a1f7a)`. Those fallbacks only apply if a variable is missing, so they are harmless, but a search and replace keeps things tidy.
+
+   **Check contrast after changing colors.** WCAG AA needs 4.5:1 for text. The home page currently also passes the stricter AAA level (7:1), which is what the last three variables are for. Use the base `--shs-gold` only for backgrounds, borders and accents, never for text. The hero text panel is solid purple on purpose: a see-through panel lets a light photo lower the text contrast.
 
 5. **Replace the logos** in `wwwroot/assets/images/logo/`. If the new school uses different fonts, change the Google Fonts links in `Views/Master.cshtml`.
 
@@ -229,7 +237,7 @@ Create this file in the project root and fill in the `<...>` values. Never commi
 
    To find anything new, search the code (not `uSync/`) for `santiago`, `SHS` and `santiagohs`.
 
-7. **Update the configuration** for the new school: a new `Umbraco:CMS:Global:Id` GUID, database name, SMTP account and AD domain.
+7. **Update the configuration** for the new school: a new `Umbraco:CMS:Global:Id` GUID, database name, SMTP account, AD domain and `UmbracoApplicationUrl`.
 
 8. **Set the domain** on the server in the backoffice: right-click Home, then **Culture and Hostnames**.
 

@@ -367,8 +367,12 @@
    contrast. Alpha raised to 0.7 (from 0.35) so solid white slide text keeps
    >=4.5:1 contrast even over a bright/near-white photo background —
    worst case is ~5:1. See WCAG 2.2 1.4.3 fix, wwwroot/css/Widgets_CSS/slider.css. */
+/* Solid for AAA (7:1). Any translucency lets a light photo lift the panel:
+   at 0.85 alpha the gold label/button fell to ~5.2:1 over a white photo.
+   Solid purple gives white 9.9:1 and --shs-gold-bright 7.8:1 regardless
+   of the image. */
 .hero-slide__panel {
-    background: rgba(74, 31, 122, 0.7);
+    background: var(--shs-purple, #4a1f7a);
     border-radius: 8px;
 }
 
@@ -381,7 +385,7 @@
     letter-spacing: 0.08em;
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--shs-gold, #c9a227);
+    color: var(--shs-gold-bright, #ecd06b);
 }
 
 .hero-slide__label-bar {
@@ -429,18 +433,18 @@
 
 .hero-slide__btn--primary {
     background: var(--shs-gold, #c9a227);
-    color: #2a1f00;
+    color: #1a1200; /* 7.7:1 on gold (AAA) */
     border: 2px solid var(--shs-gold, #c9a227);
 }
 
 .hero-slide__btn--primary:hover {
-    color: #2a1f00;
+    color: #1a1200;
 }
 
 .hero-slide__btn--secondary {
     background: transparent;
-    color: var(--shs-gold, #c9a227);
-    border: 2px solid var(--shs-gold, #c9a227);
+    color: var(--shs-gold-bright, #ecd06b);
+    border: 2px solid var(--shs-gold-bright, #ecd06b);
 }
 
 .hero-slide__btn--secondary:hover {

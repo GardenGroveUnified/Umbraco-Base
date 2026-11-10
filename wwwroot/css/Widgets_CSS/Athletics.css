@@ -157,7 +157,7 @@
 }
 
 .athletics-game--next .athletics-game__month {
-    color: var(--shs-gold, #c9a227);
+    color: var(--shs-gold-bright, #ecd06b);
 }
 
 .athletics-game__day {

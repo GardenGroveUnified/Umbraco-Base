@@ -82,12 +82,13 @@
     flex-shrink: 0;
     font-size: 0.8rem;
     font-weight: 700;
-    color: var(--shs-purple, #4a1f7a);
+    color: var(--shs-purple-deep, #220c36);
     text-decoration: none;
     white-space: nowrap;
 }
+/* Already the darkest purple, so hover signals with an underline instead */
 .notice-banner__more:hover{
-    color: #2a1040;
+    text-decoration: underline;
 }
 
 @keyframes notice-banner-pulse{

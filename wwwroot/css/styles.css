@@ -33,6 +33,15 @@
        do not. Use them for text; keep --shs-gold for accents on dark. */
     --shs-gold-text: #8f6d00;
     --shs-orange-text: #a85f00;
+
+    /* AAA (7:1) text colours for the purple/gold pairing, which only
+       reaches 4.9:1 with the base tokens.
+       --shs-purple-deep: text ON --shs-gold (7.4:1).
+       --shs-gold-bright: text ON --shs-purple (7.8:1).
+       --shs-grey-text:   muted text ON white (7.5:1). */
+    --shs-purple-deep: #220c36;
+    --shs-gold-bright: #ecd06b;
+    --shs-grey-text: #555;
 }
 
 /* Skip link markup is in Master.cshtml. core.min.css already positions it
@@ -225,8 +234,9 @@ p{
     color: var(--shs-purple, #4a1f7a) !important;
     font-family: var(--font-nav-and-texts);
 }
+/* Only used on the purple top bar (header.cshtml), so the bright gold */
 .text-gold{
-    color: var(--shs-gold, #c9a227) !important;
+    color: var(--shs-gold-bright, #ecd06b) !important;
 }
 .text-purple{
     color: var(--shs-purple, #4a1f7a) !important;
@@ -677,7 +687,7 @@ header .navbar{
 }
 
 #footer .footer-link:hover {
-    color: var(--shs-gold, #c9a227);
+    color: var(--shs-gold-bright, #ecd06b);
 }
 
 #footer p {
@@ -691,7 +701,7 @@ header .navbar{
 }
 
 #footer a:hover {
-    color: var(--shs-gold, #c9a227);
+    color: var(--shs-gold-bright, #ecd06b);
 }
 
 /* Icon Boxes CSS */

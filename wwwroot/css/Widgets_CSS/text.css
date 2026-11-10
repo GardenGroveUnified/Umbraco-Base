@@ -112,7 +112,7 @@
   font-family: var(--font-nav-and-texts);
 }
 .block-text--filled .pre-head{
-  color: var(--shs-gold, #c9a227);
+  color: var(--shs-gold-bright, #ecd06b);
   font-weight: 700;
   font-size: 0.75rem;
   text-transform: uppercase;

@@ -21,10 +21,9 @@ namespace UmbracoBase.Core.Controllers
         private const int MaxMessageLength = 2000;
         private const int MaxMemoirLength = 5000;
 
-        // Placeholder recipient for the staff moderation-notice email sent on
-        // signup (see the Alumni Contact Portal spec's Signup flow, step 4).
-        // Needs a real value confirmed with the district later.
-        private const string StaffNotificationEmail = "alumni-signups@santiagohs.org";
+        // Inbox that gets the "pending review" notices for new signups and
+        // memoirs. They are still sent from the Gmail SMTP account.
+        private const string StaffNotificationEmail = "shs@ggusd.us";
 
         private readonly IAlumniMemberStore _store;
         private readonly IMemoirStore _memoirStore;
@@ -172,9 +171,9 @@ namespace UmbracoBase.Core.Controllers
 
         [HttpPost]
         [EnableRateLimiting("alumni-memoir")]
-        public IActionResult SubmitMemoir(MemoirSubmissionFormModel model)
+        public async Task<IActionResult> SubmitMemoir(MemoirSubmissionFormModel model)
         {
-            var (success, message) = ProcessSubmitMemoir(_memoirStore, model);
+            var (success, message) = await ProcessSubmitMemoir(_memoirStore, _emailSender, model, _logger);
             return Json(new { success, message });
         }
 
@@ -183,7 +182,8 @@ namespace UmbracoBase.Core.Controllers
         /// action so it can be unit tested without standing up a full
         /// SurfaceController.
         /// </summary>
-        internal static (bool Success, string Message) ProcessSubmitMemoir(IMemoirStore store, MemoirSubmissionFormModel model)
+        internal static async Task<(bool Success, string Message)> ProcessSubmitMemoir(
+            IMemoirStore store, IEmailSender emailSender, MemoirSubmissionFormModel model, ILogger? logger = null)
         {
             const string genericRejection = "We couldn't process that submission. Please check your details and try again.";
 
@@ -192,11 +192,38 @@ namespace UmbracoBase.Core.Controllers
             if (!AlumniFormGuard.IsValidEmail(model.Email)) { return (false, genericRejection); }
             if (!AlumniFormGuard.IsValidMessage(model.MemoirText, MaxMemoirLength)) { return (false, genericRejection); }
 
+            var authorName = model.AuthorName.Trim();
+
             store.CreateSubmission(new MemoirSubmissionInput(
-                AuthorName: model.AuthorName.Trim(),
+                AuthorName: authorName,
                 GradYear: model.GradYear,
                 Email: model.Email.Trim(),
                 MemoirText: model.MemoirText.Trim()));
+
+            // Best-effort staff moderation notice, same as signups: if it fails
+            // the memoir is still saved and shows on /admin/alumni-approvals.
+            try
+            {
+                if (emailSender.CanSendRequiredEmail())
+                {
+                    var notice = new EmailMessage(
+                        from: "alumnishs53@gmail.com",
+                        to: new[] { StaffNotificationEmail },
+                        cc: null,
+                        bcc: null,
+                        replyTo: null,
+                        subject: $"New memoir pending review: {authorName}",
+                        body: $"{authorName} ({model.Email.Trim()}) posted a memoir that is awaiting review. See the pending list at /admin/alumni-approvals.",
+                        isBodyHtml: false,
+                        attachments: null);
+
+                    await emailSender.SendAsync(notice, "MemoirNotice");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.LogWarning(ex, "Memoir staff moderation-notice email for {Email} failed.", model.Email);
+            }
 
             return (true, "Thanks! Your memoir is pending review and will appear in Read Memoirs once approved.");
         }

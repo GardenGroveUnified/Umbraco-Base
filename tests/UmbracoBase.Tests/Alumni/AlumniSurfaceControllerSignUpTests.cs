@@ -70,4 +70,17 @@ public class AlumniSurfaceControllerSignUpTests
         Assert.False(success);
         Assert.Empty(store.Signups);
     }
+
+    [Fact]
+    public async Task ProcessSignUp_emails_a_review_notice_to_the_school_inbox()
+    {
+        var store = new FakeAlumniMemberStore();
+        var emailSender = new FakeEmailSender();
+
+        var (success, _) = await AlumniSurfaceController.ProcessSignUp(store, emailSender, ValidModel());
+
+        Assert.True(success);
+        var (message, _) = Assert.Single(emailSender.Sent);
+        Assert.Contains("shs@ggusd.us", message.To);
+    }
 }

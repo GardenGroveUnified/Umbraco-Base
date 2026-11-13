@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using UmbracoBase.Core.ViewModels;
 using Umbraco.Cms.Web.Common.Security;
 using Umbraco.Cms.Core.Security;
+using UmbracoBase.Core.Security;
 namespace UmbracoBase.Core.Controllers
 {
     [AllowAnonymous]
@@ -23,16 +24,19 @@ namespace UmbracoBase.Core.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(string? returnUrl = null)
+        public async Task<IActionResult> Login(string? returnUrl = null)
         {
             try
             {
                 // Check if user is authenticated and approved
-                var currentUser = _backOfficeSecurity.CurrentUser;
-                if (currentUser != null && currentUser.IsApproved)
+                var currentUser = await this.GetApprovedBackOfficeUserAsync(_backOfficeSecurity);
+                if (currentUser != null)
                 {
-                    _logger.LogInformation("User is already authenticated, redirecting to backoffice");
-                    return Redirect("/umbraco"); // Already logged in
+                    _logger.LogInformation("User is already authenticated, redirecting");
+                    // Already logged in: go where they were headed, not always /umbraco
+                    return !string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)
+                        ? Redirect(returnUrl)
+                        : Redirect("/umbraco");
                 }
             }
             catch (Exception ex)

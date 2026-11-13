@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Core.Security;
 using UmbracoBase.Core.Alumni;
 using UmbracoBase.Core.Models;
+using UmbracoBase.Core.Security;
 
 namespace UmbracoBase.Core.Controllers
 {
@@ -28,10 +29,10 @@ namespace UmbracoBase.Core.Controllers
 
         [HttpGet]
         [Route("admin/alumni-approvals")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var currentUser = _backOfficeSecurity.CurrentUser;
-            if (currentUser is null || !currentUser.IsApproved)
+            var currentUser = await this.GetApprovedBackOfficeUserAsync(_backOfficeSecurity);
+            if (currentUser is null)
             {
                 return RedirectToAction("Login", "CustomBackOfficeLogin", new { returnUrl = "/admin/alumni-approvals" });
             }

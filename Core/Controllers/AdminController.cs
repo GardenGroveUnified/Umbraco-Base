@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Umbraco.Cms.Core.Security;
+using UmbracoBase.Core.Security;
 
 namespace UmbracoBase.Core.Controllers
 {
@@ -20,13 +21,13 @@ namespace UmbracoBase.Core.Controllers
 
         [HttpGet]
         [Route("admin")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             try
             {
                 // Check if user is authenticated and approved
-                var currentUser = _backOfficeSecurity.CurrentUser;
-                if (currentUser != null && currentUser.IsApproved)
+                var currentUser = await this.GetApprovedBackOfficeUserAsync(_backOfficeSecurity);
+                if (currentUser != null)
                 {
                     _logger.LogInformation("User is already authenticated, redirecting to backoffice");
                     // User is already logged in, redirect to Umbraco backoffice

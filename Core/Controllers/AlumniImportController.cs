@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Core.Security;
 using UmbracoBase.Core.Alumni;
 using UmbracoBase.Core.Models;
+using UmbracoBase.Core.Security;
 
 namespace UmbracoBase.Core.Controllers
 {
@@ -35,18 +36,18 @@ namespace UmbracoBase.Core.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var denied = DenyUnlessDevAdmin();
+            var denied = await DenyUnlessDevAdminAsync();
             if (denied != null) { return denied; }
 
             return View("~/Views/Alumni/Import.cshtml");
         }
 
         [HttpPost]
-        public IActionResult Import(IFormFile file)
+        public async Task<IActionResult> Import(IFormFile file)
         {
-            var denied = DenyUnlessDevAdmin();
+            var denied = await DenyUnlessDevAdminAsync();
             if (denied != null) { return denied; }
 
             if (file is null || file.Length == 0)
@@ -77,12 +78,12 @@ namespace UmbracoBase.Core.Controllers
             return new ImportSummary(imported, skippedExisting, SkippedNoEmail: 0);
         }
 
-        private IActionResult? DenyUnlessDevAdmin()
+        private async Task<IActionResult?> DenyUnlessDevAdminAsync()
         {
             if (!_environment.IsDevelopment()) { return NotFound(); }
 
-            var user = _backOfficeSecurity.CurrentUser;
-            if (user is null || !user.IsApproved) { return NotFound(); }
+            var user = await this.GetApprovedBackOfficeUserAsync(_backOfficeSecurity);
+            if (user is null) { return NotFound(); }
 
             return null;
         }

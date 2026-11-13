@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using UmbracoBase.Core.ViewModels;
 using Umbraco.Cms.Web.Common.Security;
 using Umbraco.Cms.Core.Security;
+using UmbracoBase.Core.Constants;
 using UmbracoBase.Core.Security;
 namespace UmbracoBase.Core.Controllers
 {
@@ -12,15 +13,18 @@ namespace UmbracoBase.Core.Controllers
         private readonly IBackOfficeSignInManager _signInManager;
         private readonly ILogger<CustomBackOfficeLoginController> _logger;
         private readonly IBackOfficeSecurity _backOfficeSecurity;
+        private readonly IConfiguration _config;
 
         public CustomBackOfficeLoginController(
             IBackOfficeSignInManager signInManager,
             ILogger<CustomBackOfficeLoginController> logger,
-            IBackOfficeSecurity backOfficeSecurity)
+            IBackOfficeSecurity backOfficeSecurity,
+            IConfiguration config)
         {
             _signInManager = signInManager;
             _logger = logger;
             _backOfficeSecurity = backOfficeSecurity;
+            _config = config;
         }
 
         [HttpGet]
@@ -65,6 +69,11 @@ namespace UmbracoBase.Core.Controllers
             {
                 return View(model);
             }
+
+            // Staff can type just their AD username; add the email domain so
+            // Umbraco (whose usernames are emails) can find the account.
+            model.Username = LoginNameNormalizer.Normalize(
+                model.Username, _config.GetValue<string>(AppSettings.ActiveDirectoryUsernameSuffix));
 
             try
             {

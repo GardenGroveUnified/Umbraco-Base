@@ -16,4 +16,6 @@ public static class Constants
 public static class AppSettings
 {
 	public const string ActiveDirectoryDomain = "ActiveDirectory:Domain";
+	// Email domain added to a bare username on the custom login page, e.g. "@ggusd.us".
+	public const string ActiveDirectoryUsernameSuffix = "ActiveDirectory:UsernameSuffix";
 }

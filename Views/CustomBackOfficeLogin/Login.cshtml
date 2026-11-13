@@ -43,9 +43,9 @@
                     <input type="hidden" asp-for="ReturnUrl" />
                     
                     <div class="form-floating">
-                        <input asp-for="Username" class="form-control" placeholder="Username" required autocomplete="username">
+                        <input asp-for="Username" class="form-control" placeholder="Username" required autocomplete="username" autocapitalize="none" spellcheck="false">
                         <label asp-for="Username">
-                            <i class="fas fa-user me-2"></i>Username
+                            <i class="fas fa-user me-2"></i>Username or email
                         </label>
                         <span asp-validation-for="Username" class="text-danger small"></span>
                     </div>

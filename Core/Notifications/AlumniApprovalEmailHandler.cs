@@ -50,7 +50,7 @@ public sealed class AlumniApprovalEmailHandler : INotificationAsyncHandler<Membe
             }
 
             var email = new EmailMessage(
-                from: "alumnishs53@gmail.com",
+                from: "shs@ggusd.us",
                 to: new[] { member.Email },
                 cc: null,
                 bcc: null,

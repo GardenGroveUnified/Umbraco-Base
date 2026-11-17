@@ -162,6 +162,32 @@ Create this file in the project root and fill in the `<...>` values. Never commi
 | `Umbraco:CMS:Imaging:HMACSecretKey` | Signs image-crop URLs. Any long random string. |
 | `Umbraco:CMS:WebRouting:UmbracoApplicationUrl` | The site's public address, used to build links in emails (user invites, password resets, alumni and memoir approvals). Required since Umbraco 17.8: without it, startup logs a warning and email links cannot be built. Set it **per environment**: `https://localhost:44389` locally, the real domain on the server. |
 | `ActiveDirectory:Domain` | Optional. The on-premises AD domain for backoffice password checks. If it is empty, or AD is unreachable, login falls back to the normal Umbraco password. Local machines normally leave it empty. |
+| `GraphMail` | Optional. When filled in, **all** site email goes through Microsoft Graph instead of SMTP (see below). Used on the live server, where the district network blocks outbound SMTP. Leave it out locally. |
+
+### Sending email through Microsoft Graph (live server)
+
+The district network resets outbound SMTP from GGUSD-PRODWEB01, so the live site sends through Graph over HTTPS instead. Every message goes out **from `shs@ggusd.us`**, and a copy lands in that mailbox's Sent Items.
+
+1. **Entra admin (IT):** create an app registration, add **Microsoft Graph > Application > `Mail.Send`**, and **Grant admin consent**. Restrict it to the `shs@ggusd.us` mailbox with an Exchange application access policy (or RBAC for Applications). Otherwise the app could send as anyone in the tenant.
+2. **On the server (as admin)**, create the certificate. The private key never leaves the machine:
+   ```powershell
+   $cert = New-SelfSignedCertificate -Subject "CN=SantiagoSiteMail" -CertStoreLocation Cert:\LocalMachine\My `
+     -KeyExportPolicy NonExportable -KeySpec Signature -NotAfter (Get-Date).AddYears(2)
+   Export-Certificate -Cert $cert -FilePath C:\Temp\SantiagoSiteMail.cer
+   $cert.Thumbprint
+   ```
+   Upload `SantiagoSiteMail.cer` to the app registration under **Certificates & secrets > Certificates**. Then, in `certlm.msc` > Personal > Certificates, right-click the certificate > All Tasks > **Manage Private Keys**, and give the site's app pool identity (`IIS AppPool\<pool name>`) **Read**.
+3. **Server `appsettings.json`:**
+   ```json
+   "GraphMail": {
+     "TenantId": "<Directory (tenant) ID>",
+     "ClientId": "<Application (client) ID>",
+     "CertificateThumbprint": "<thumbprint from step 2>",
+     "SenderMailbox": "shs@ggusd.us"
+   }
+   ```
+   A `ClientSecret` can be used instead of the thumbprint, but secrets expire (24 months at most) and email stops silently when they do. The certificate also expires (2 years above), so put a reminder in the calendar.
+4. Recycle the app pool, then submit a test alumni signup. The umbraco log shows `Graph email AlumniSignupNotice sent from shs@ggusd.us`, or a `Graph sendMail ... failed: 403 ...` warning with Graph's reason.
 
 **Production:** prefer environment variables over plain-text secrets on disk, for example `Umbraco__CMS__Global__Smtp__Password=...` and `ConnectionStrings__umbracoDbDSN=...`.
 

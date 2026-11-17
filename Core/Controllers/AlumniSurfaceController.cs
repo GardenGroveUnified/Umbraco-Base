@@ -96,7 +96,7 @@ namespace UmbracoBase.Core.Controllers
                 if (emailSender.CanSendRequiredEmail())
                 {
                     var notice = new EmailMessage(
-                        from: "alumnishs53@gmail.com",
+                        from: "shs@ggusd.us",
                         to: new[] { StaffNotificationEmail },
                         cc: null,
                         bcc: null,
@@ -146,7 +146,7 @@ namespace UmbracoBase.Core.Controllers
             if (!emailSender.CanSendRequiredEmail()) { return (false, sendFailure); }
 
             var email = new EmailMessage(
-                from: "alumnishs53@gmail.com",
+                from: "shs@ggusd.us",
                 to: new[] { target.Email },
                 cc: null,
                 bcc: null,
@@ -207,7 +207,7 @@ namespace UmbracoBase.Core.Controllers
                 if (emailSender.CanSendRequiredEmail())
                 {
                     var notice = new EmailMessage(
-                        from: "alumnishs53@gmail.com",
+                        from: "shs@ggusd.us",
                         to: new[] { StaffNotificationEmail },
                         cc: null,
                         bcc: null,

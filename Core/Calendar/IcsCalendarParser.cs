@@ -60,7 +60,7 @@ public static class IcsCalendarParser
         {
             foreach (var occ in occurrences)
             {
-                var start = occ.Period.StartTime.Value;
+                var start = ToSiteWallClock(occ.Period.StartTime);
 
                 // GetOccurrences yields in chronological order, so once we pass the
                 // window there is nothing left to find.
@@ -93,6 +93,26 @@ public static class IcsCalendarParser
             .OrderBy(c => c.Start)
             .Take(maxResults)
             .ToList();
+    }
+
+    // The school's time zone. Every card shows its time as Santiago's clock reads it.
+    private static readonly TimeZoneInfo SiteTimeZone =
+        TimeZoneInfo.FindSystemTimeZoneById("America/Los_Angeles");
+
+    /// <summary>
+    /// CalDateTime.Value is the raw clock value in whatever zone the feed wrote it in.
+    /// Google writes most timed events in UTC ("...T200000Z"), so the raw value would
+    /// show noon as 8 PM. Convert any zoned or UTC time to Pacific. Leave date-only
+    /// and floating times alone, since they have no zone to convert from.
+    /// </summary>
+    private static DateTime ToSiteWallClock(CalDateTime value)
+    {
+        if (!value.HasTime || (!value.IsUtc && value.TzId is null))
+        {
+            return value.Value;
+        }
+
+        return TimeZoneInfo.ConvertTimeFromUtc(value.AsUtc, SiteTimeZone);
     }
 
     private static string? ToHtml(string? text)

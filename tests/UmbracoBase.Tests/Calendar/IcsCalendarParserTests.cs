@@ -102,6 +102,30 @@ public class IcsCalendarParserTests
         Assert.Contains(events, e => e.Title == "Movie Night");
     }
 
+    [Theory]
+    // Google publishes most timed events in UTC. 20:00Z is noon in Santiago during PST
+    // and 19:00Z is noon during PDT.
+    [InlineData("20261119T200000Z", 2026, 11, 19)]
+    [InlineData("20261015T190000Z", 2026, 10, 15)]
+    public void Parse_converts_a_utc_start_to_pacific_wall_clock(string dtStart, int y, int m, int d)
+    {
+        var ics = string.Join("\r\n",
+            "BEGIN:VCALENDAR",
+            "VERSION:2.0",
+            "PRODID:-//test//EN",
+            "BEGIN:VEVENT",
+            "UID:utc-noon@test",
+            $"DTSTART:{dtStart}",
+            "SUMMARY:Noon Event",
+            "END:VEVENT",
+            "END:VCALENDAR");
+
+        var events = IcsCalendarParser.Parse(ics, From, daysAhead: 60, maxResults: 12);
+
+        var noon = Assert.Single(events);
+        Assert.Equal(new DateTime(y, m, d, 12, 0, 0), noon.Start);
+    }
+
     [Fact]
     public void Parse_returns_empty_for_malformed_input()
     {
